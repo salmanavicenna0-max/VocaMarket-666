@@ -1,15 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProductController::class, 'index']);
+Route::get('/product/{id}', [ProductController::class, 'show']);
 
-Route::get('/admin/dashboard', function () {
-    return view('Admin.Dashboard');
-});
-
-Route::get('/login', function () {
-    return view('auth.login');
-});
