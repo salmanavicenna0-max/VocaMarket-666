@@ -20,7 +20,7 @@
         
         <!-- LEFT COLUMN: Image Gallery (Sticky) -->
         <div class="md:col-span-4">
-            <div class="flex flex-col gap-3 sticky top-24">
+            <div class="flex flex-col gap-3">
                 <!-- Main Image -->
                 <div class="w-full aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group">
                     <img src="{{ $product->image_path }}" alt="Product Image" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-image">
@@ -112,18 +112,17 @@
                         <i class="ph-fill ph-check-circle text-primary"></i> 
                         {{ $product->store_name ?: 'Toko Esemka' }}
                     </h3>
-                    <span class="text-sm text-gray-500">{{ $product->store_location ?: 'Indonesia' }}</span>
                 </div>
-                <button class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm">
-                    Follow
+                <button class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
+                    <i class="ph-bold ph-chat-circle text-lg"></i> Chat Langsung
                 </button>
             </div>
 
         </div>
 
-        <!-- RIGHT COLUMN: Sticky Checkout Card -->
+        <!-- RIGHT COLUMN: Checkout Card -->
         <div class="md:col-span-3">
-            <div class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5 sticky top-24">
+            <div class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
                 <h3 class="font-bold text-gray-900 mb-4">Atur jumlah dan catatan</h3>
                 
                 <!-- Quantity & Stock -->
@@ -161,9 +160,6 @@
                 
                 <!-- Extras -->
                 <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-                    <button class="flex items-center gap-1 hover:text-gray-800 transition">
-                        <i class="ph-bold ph-chat-circle"></i> Chat
-                    </button>
                     <button class="flex items-center gap-1 hover:text-gray-800 transition">
                         <i class="ph-bold ph-share-network"></i> Share
                     </button>

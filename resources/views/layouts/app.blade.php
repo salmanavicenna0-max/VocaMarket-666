@@ -63,9 +63,9 @@
         <div class="container mx-auto px-4 h-36 relative z-30 flex items-center">
             <!-- Left Logo Area -->
             <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
-            <div class="w-auto lg:w-1/4 h-full flex items-center justify-start pr-4 shrink-0">
+            <div class="w-auto lg:w-1/4 h-full flex items-start pt-2 justify-start pr-4 shrink-0">
                 <a href="{{ url('/') }}" class="flex items-center text-black">
-                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-12 md:h-16 lg:h-18 w-auto object-contain">
+                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-16 md:h-20 w-auto object-contain">
                 </a>
             </div>
             
@@ -115,10 +115,12 @@
                     </div>
                     
                     <!-- Login / Register -->
-                    <div class="shrink-0">
-                        <a href="#" class="flex items-center gap-2 hover:text-primary transition text-gray-800 font-bold whitespace-nowrap">
-                            <i class="ph-fill ph-user text-xl"></i>
-                            Masuk / Daftar
+                    <div class="shrink-0 flex items-center gap-3">
+                        <a href="#" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
+                            Masuk
+                        </a>
+                        <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
+                            Daftar
                         </a>
                     </div>
                     
@@ -130,18 +132,17 @@
     <!-- Main Content -->
     <main class="flex-grow relative bg-gray-50 flex flex-col">
         
-        <!-- Secondary Navbar (Categories) -->
-        <div class="bg-primary-dark text-white text-sm relative z-20">
+        <!-- Secondary Navbar (Popular Searches) -->
+        <div class="bg-primary-dark text-white text-xs md:text-sm relative z-20">
             <div class="container mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
-                <a href="#" class="flex items-center gap-1 hover:text-accent font-bold shrink-0">
-                    <i class="ph ph-list text-lg"></i> Kategori
-                </a>
-                <span class="text-white/30 mx-2 shrink-0">|</span>
-                <a href="#" class="hover:text-accent shrink-0">Produk Sekolah</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">DKV & Animasi</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Pemasaran</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">PPLG</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Akuntansi</a>
+                <span class="flex items-center gap-1 font-bold shrink-0 text-white/80">
+                    <i class="ph-bold ph-trend-up text-lg"></i> Pencarian Populer:
+                </span>
+                <a href="#" class="hover:text-accent shrink-0 ml-2">Seragam SD</a>
+                <a href="#" class="hover:text-accent ml-4 shrink-0">Buku Tulis</a>
+                <a href="#" class="hover:text-accent ml-4 shrink-0">Sepatu Hitam</a>
+                <a href="#" class="hover:text-accent ml-4 shrink-0">Atribut Pramuka</a>
+                <a href="#" class="hover:text-accent ml-4 shrink-0">Jasa Desain</a>
             </div>
         </div>
 
@@ -241,6 +242,19 @@
             </div>
         </div>
     </footer>
+
+    <!-- Floating Cart Button -->
+    <a href="{{ url('/keranjang') }}" class="fixed bottom-6 right-6 z-[100] hover:scale-110 transition-transform duration-300 group">
+        <div class="relative">
+            <!-- Notification Badge -->
+            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full shadow-md z-20 border-2 border-white">2</span>
+            
+            <!-- Cart Icon Container -->
+            <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-primary shadow-[0_4px_15px_rgba(0,125,204,0.4)] group-hover:bg-primary-dark transition flex items-center justify-center">
+                <i class="ph-fill ph-shopping-cart text-white text-2xl md:text-3xl"></i>
+            </div>
+        </div>
+    </a>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
