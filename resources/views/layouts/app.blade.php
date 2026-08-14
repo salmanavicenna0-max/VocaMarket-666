@@ -123,6 +123,9 @@
                     
                     <!-- Icons & Login / Register -->
                     <div class="shrink-0 flex items-center gap-3">
+                        <a href="{{ url('/user') }}" class="text-gray-500 hover:text-primary font-bold text-sm transition mr-3 hidden md:block">
+                            Mulai Jualan
+                        </a>
                         <a href="{{ url('/cart') }}" class="relative p-1.5 text-gray-700 hover:text-primary transition mr-2 flex items-center group">
                             <i class="ph-bold ph-shopping-cart text-2xl group-hover:scale-110 transition-transform"></i>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">2</span>

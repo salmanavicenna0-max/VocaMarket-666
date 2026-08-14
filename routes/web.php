@@ -17,6 +17,10 @@ Route::get('/login', function () {
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/seller/dashboard', function () {
+    return view('seller.products');
+});
+
 Route::get('/seller/{id?}', function () {
     return view('profile.seller');
 });
