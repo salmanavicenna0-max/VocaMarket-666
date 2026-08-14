@@ -154,7 +154,7 @@
                         <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
                             Masuk
                         </a>
-                        <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
+                        <a href="{{ route('register') }}" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-sm whitespace-nowrap text-sm">
                             Daftar
                         </a>
                     </div>

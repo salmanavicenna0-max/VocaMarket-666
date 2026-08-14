@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Voca Market 666</title>
+    <title>Daftar - Voca Market 666</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,80 +45,96 @@
         }
     </script>
 </head>
-<body class="bg-body antialiased min-h-screen flex items-center justify-center font-sans">
+<body class="bg-body antialiased min-h-screen flex items-center justify-center font-sans py-10">
 
-    <!-- Login Container -->
+    <!-- Register Container -->
     <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden p-8 border border-gray-100">
         
         <!-- Header -->
-        <div class="text-center mb-10">
+        <div class="text-center mb-8">
             <a href="{{ url('/') }}" class="inline-block hover:opacity-90 transition">
                 <h1 class="font-bold text-3xl text-primary tracking-tight mb-1">
                     Voca Market <span class="text-accent">666</span>
                 </h1>
             </a>
-            <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">SMK Bakti Nusantara</p>
+            <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Buat Akun Baru</p>
         </div>
 
         <!-- Form -->
-        <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+        <form action="#" method="POST" class="space-y-5">
             @csrf
-
-            @if ($errors->any())
-                <div class="bg-red-50 text-red-500 p-3 rounded-lg text-sm mb-4">
-                    {{ $errors->first() }}
-                </div>
-            @endif
             
-            <!-- Email / NIS -->
+            <!-- Nama Lengkap -->
             <div>
-                <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Email atau NIS</label>
+                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
                 <input 
                     type="text" 
-                    id="username" 
-                    name="username" 
-                    placeholder="Masukkan Email atau NIS"
+                    id="name" 
+                    name="name" 
+                    placeholder="Masukkan Nama Lengkap"
                     class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
+                >
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Masukkan Email Aktif"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    required
+                >
+            </div>
+
+            <!-- NIS (Opsional) -->
+            <div>
+                <label for="nis" class="block text-sm font-semibold text-gray-700 mb-2">NIS <span class="text-gray-400 font-normal text-xs">(Opsional, untuk Siswa)</span></label>
+                <input 
+                    type="text" 
+                    id="nis" 
+                    name="nis" 
+                    placeholder="Masukkan Nomor Induk Siswa"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                 >
             </div>
 
             <!-- Password -->
             <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
-                    <a href="#" class="text-xs font-semibold text-primary hover:text-blue-800 transition">Lupa password?</a>
-                </div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                 <input 
                     type="password" 
                     id="password" 
                     name="password" 
-                    placeholder="Masukkan Password"
+                    placeholder="Buat Password"
                     class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
 
-            <!-- Remember Me -->
-            <div class="flex items-center">
+            <!-- Konfirmasi Password -->
+            <div>
+                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Password</label>
                 <input 
-                    id="remember-me" 
-                    name="remember-me" 
-                    type="checkbox" 
-                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                    type="password" 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    placeholder="Ulangi Password"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    required
                 >
-                <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
-                    Ingat Saya
-                </label>
             </div>
 
             <!-- Submit Button -->
-            <div>
+            <div class="pt-2">
                 <button 
                     type="submit" 
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
                 >
-                    Masuk
+                    Daftar Akun
                 </button>
             </div>
             
@@ -127,11 +143,8 @@
         <!-- Footer -->
         <div class="mt-8 text-center border-t border-gray-100 pt-6">
             <p class="text-sm text-gray-600">
-                Belum punya akun? 
-                <a href="{{ route('register') }}" class="font-bold text-primary hover:text-blue-800 transition">Daftar Sekarang</a>
-            </p>
-            <p class="text-[10px] text-gray-400 mt-4">
-                Platform Kewirausahaan Siswa &bull; PPLG | DKV | Animasi | Akuntansi | Pemasaran
+                Sudah punya akun? 
+                <a href="{{ route('login') }}" class="font-bold text-primary hover:text-blue-800 transition">Masuk di sini</a>
             </p>
         </div>
 
