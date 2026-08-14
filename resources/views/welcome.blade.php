@@ -164,7 +164,49 @@
                 <!-- Grid 8 cols on desktop, 4 on mobile -->
                 <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 border-l border-t border-gray-100">
                     
-                    <!-- Kategori akan diisi nanti -->
+                    <!-- Kategori: Produk Sekolah -->
+                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100">
+                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Produk Sekolah</span>
+                    </div>
+
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-handbag text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Aksesoris</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Merchandise</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-cpu text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Hardware</span>
+                    </a>
+
+                    <!-- Kategori: Jasa / Produk Jurusan -->
+                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100">
+                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Jasa & Produk Jurusan</span>
+                    </div>
+
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-palette text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">DKV</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-film-strip text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Animasi</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-megaphone text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pemasaran</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-code text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">PPLG</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-calculator text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Akuntansi</span>
+                    </a>
 
                 </div>
             </div>
