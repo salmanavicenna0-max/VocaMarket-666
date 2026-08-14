@@ -18,4 +18,17 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         return view('product.show', compact('product'));
     }
+
+    public function category($slug)
+    {
+        // Fetch all active products as a dummy for now
+        $products = Product::where('is_active', true)->get();
+        
+        $categoryName = str_replace('-', ' ', ucfirst($slug));
+        if (strtoupper($slug) === 'DKV' || strtoupper($slug) === 'PPLG') {
+            $categoryName = strtoupper($slug);
+        }
+
+        return view('product.category', compact('products', 'categoryName', 'slug'));
+    }
 }
