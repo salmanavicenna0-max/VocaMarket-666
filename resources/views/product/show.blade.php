@@ -106,16 +106,18 @@
 
             <!-- Store Profile (Tokopedia Style inside middle column) -->
             <div class="flex items-center gap-4 py-2">
-                <img src="https://picsum.photos/seed/{{ Str::slug($product->store_name) }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm">
+                <a href="{{ url('/seller/1') }}" class="shrink-0 block">
+                    <img src="https://picsum.photos/seed/{{ Str::slug($product->store_name) }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                </a>
                 <div class="flex flex-col flex-1">
-                    <h3 class="font-bold text-gray-900 text-base flex items-center gap-1.5">
+                    <a href="{{ url('/seller/1') }}" class="font-bold text-gray-900 text-base flex items-center gap-1.5 hover:text-primary transition w-fit">
                         <i class="ph-fill ph-check-circle text-primary"></i> 
                         {{ $product->store_name ?: 'Toko Esemka' }}
-                    </h3>
+                    </a>
                 </div>
-                <button class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
+                <a href="#" onclick="openMiniChat(event)" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
                     <i class="ph-bold ph-chat-circle text-lg"></i> Chat Langsung
-                </button>
+                </a>
             </div>
 
         </div>

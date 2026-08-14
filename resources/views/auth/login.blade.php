@@ -10,6 +10,7 @@
         tailwind.config = {
             theme: {
                 extend: {
+             
                     colors: {
                         primary: '#007DCC',
                         accent: '#FFB900', 

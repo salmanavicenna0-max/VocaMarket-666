@@ -45,8 +45,8 @@
             <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-4">
                 <input type="checkbox" class="w-5 h-5 border-2 border-gray-300 rounded cursor-pointer text-primary" checked>
                 <i class="ph-fill ph-storefront text-gray-700 text-xl"></i>
-                <span class="font-bold text-gray-900 text-sm md:text-base">Toko Seragam Esemka</span>
-                <button class="ml-auto text-sm text-primary hover:text-blue-700 transition flex items-center gap-1"><i class="ph-fill ph-chat-circle"></i> Chat</button>
+                <a href="{{ url('/seller/1') }}" class="font-bold text-gray-900 text-sm md:text-base hover:text-primary transition">Toko Seragam Esemka</a>
+                <a href="#" onclick="openMiniChat(event)" class="ml-auto text-sm text-primary hover:text-blue-700 transition flex items-center gap-1"><i class="ph-fill ph-chat-circle"></i> Chat</a>
             </div>
             
             <!-- Produk -->
@@ -91,8 +91,8 @@
             <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-4">
                 <input type="checkbox" class="w-5 h-5 border-2 border-gray-300 rounded cursor-pointer text-primary" checked>
                 <i class="ph-fill ph-storefront text-gray-700 text-xl"></i>
-                <span class="font-bold text-gray-900 text-sm md:text-base">Studio Animasi 666</span>
-                <button class="ml-auto text-sm text-primary hover:text-blue-700 transition flex items-center gap-1"><i class="ph-fill ph-chat-circle"></i> Chat</button>
+                <a href="{{ url('/seller/2') }}" class="font-bold text-gray-900 text-sm md:text-base hover:text-primary transition">Studio Animasi 666</a>
+                <a href="#" onclick="openMiniChat(event)" class="ml-auto text-sm text-primary hover:text-blue-700 transition flex items-center gap-1"><i class="ph-fill ph-chat-circle"></i> Chat</a>
             </div>
             
             <!-- Produk -->
@@ -151,9 +151,9 @@
                         <span class="text-sm text-gray-700">Total (2 produk):</span>
                         <span class="text-xl md:text-2xl font-bold text-primary">Rp205.000</span>
                     </div>
-                    <button class="px-8 py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm text-sm transition">
+                    <a href="{{ url('/checkout') }}" class="px-8 py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm text-sm transition">
                         Beli Sekarang
-                    </button>
+                    </a>
                 </div>
                 
             </div>
