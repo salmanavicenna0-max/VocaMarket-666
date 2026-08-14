@@ -161,52 +161,58 @@
                 <div class="p-4 border-b border-gray-100">
                     <h2 class="text-gray-500 font-medium text-sm md:text-base">KATEGORI</h2>
                 </div>
-                <!-- Grid 8 cols on desktop, 4 on mobile -->
-                <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 border-l border-t border-gray-100">
+                <!-- Grid 7 cols on desktop, 1 on mobile -->
+                <div class="grid grid-cols-1 lg:grid-cols-7 border-l border-t border-gray-100">
                     
                     <!-- ============================================== -->
-                    <!-- PRODUK SEKOLAH -->
+                    <!-- PRODUK SEKOLAH (3 columns) -->
                     <!-- ============================================== -->
-                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100 flex items-center justify-between">
-                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Produk Sekolah</span>
+                    <div class="lg:col-span-3 flex flex-col border-r border-gray-100">
+                        <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                            <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Produk Sekolah</span>
+                        </div>
+                        <div class="grid grid-cols-3 flex-grow">
+                            <a href="{{ route('kategori', 'aksesoris') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-handbag text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Aksesoris</span>
+                            </a>
+                            <a href="{{ route('kategori', 'merchandise') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Merchandise</span>
+                            </a>
+                            <a href="{{ route('kategori', 'hardware') }}" class="flex flex-col items-center justify-center p-4 border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-cpu text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Hardware</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <a href="{{ route('kategori', 'aksesoris') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-handbag text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Aksesoris</span>
-                    </a>
-                    <a href="{{ route('kategori', 'merchandise') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Merchandise</span>
-                    </a>
-                    <a href="{{ route('kategori', 'hardware') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-cpu text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Hardware</span>
-                    </a>
-
                     <!-- ============================================== -->
-                    <!-- JASA SETIAP JURUSAN -->
+                    <!-- JASA SETIAP JURUSAN (4 columns) -->
                     <!-- ============================================== -->
-                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100 flex items-center justify-between mt-2">
-                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Jasa Setiap Jurusan</span>
+                    <div class="lg:col-span-4 flex flex-col">
+                        <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                            <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Jasa Setiap Jurusan</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 flex-grow">
+                            <a href="{{ route('kategori', 'dkv-animasi') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-video-camera text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">DKV & Animasi</span>
+                            </a>
+                            <a href="{{ route('kategori', 'pemasaran') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 md:border-r bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-megaphone text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pemasaran</span>
+                            </a>
+                            <a href="{{ route('kategori', 'pplg') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-code text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">PPLG</span>
+                            </a>
+                            <a href="{{ route('kategori', 'akuntansi') }}" class="flex flex-col items-center justify-center p-4 border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                                <i class="ph-fill ph-calculator text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                                <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Akuntansi</span>
+                            </a>
+                        </div>
                     </div>
-
-                    <a href="{{ route('kategori', 'dkv-animasi') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-video-camera text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">DKV & Animasi</span>
-                    </a>
-                    <a href="{{ route('kategori', 'pemasaran') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-megaphone text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pemasaran</span>
-                    </a>
-                    <a href="{{ route('kategori', 'pplg') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-code text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">PPLG</span>
-                    </a>
-                    <a href="{{ route('kategori', 'akuntansi') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-calculator text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Akuntansi</span>
-                    </a>
 
                 </div>
             </div>
