@@ -18,10 +18,10 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'nis' => null,
-                'password' => 'admin123',
+                'email_verification' => 'verified',
+                'password' => bcrypt('admin123'),
                 'role' => 'admin',
-                'verification_seller' => 'no',
-                'verification_seller_at' => null,
+                'verification_seller' => true,
             ]
         );
     }
