@@ -139,11 +139,14 @@
         </form>
 
         <!-- Footer -->
-        <div class="mt-8 text-center border-t border-gray-100 pt-6">
+        <div class="mt-8 text-center border-t border-gray-100 pt-6 flex flex-col items-center gap-4">
             <p class="text-sm text-gray-600">
                 Sudah punya akun? 
                 <a href="{{ route('login') }}" class="font-bold text-primary hover:text-blue-800 transition">Masuk di sini</a>
             </p>
+            <a href="{{ url('/') }}" class="inline-block text-xs font-bold text-gray-500 hover:text-primary transition border border-gray-200 rounded-md px-4 py-2 bg-gray-50 hover:bg-white shadow-sm">
+                Kembali ke Halaman Utama
+            </a>
         </div>
 
     </div>

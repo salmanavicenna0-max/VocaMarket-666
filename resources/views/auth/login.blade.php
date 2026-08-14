@@ -124,12 +124,15 @@
         </form>
 
         <!-- Footer -->
-        <div class="mt-8 text-center border-t border-gray-100 pt-6">
+        <div class="mt-8 text-center border-t border-gray-100 pt-6 flex flex-col items-center gap-4">
             <p class="text-sm text-gray-600">
                 Belum punya akun? 
                 <a href="{{ route('register') }}" class="font-bold text-primary hover:text-blue-800 transition">Daftar Sekarang</a>
             </p>
-            <p class="text-[10px] text-gray-400 mt-4">
+            <a href="{{ url('/') }}" class="inline-block text-xs font-bold text-gray-500 hover:text-primary transition border border-gray-200 rounded-md px-4 py-2 bg-gray-50 hover:bg-white shadow-sm">
+                Kembali ke Halaman Utama
+            </a>
+            <p class="text-[10px] text-gray-400 mt-2">
                 Platform Kewirausahaan Siswa &bull; PPLG | DKV | Animasi | Akuntansi | Pemasaran
             </p>
         </div>
