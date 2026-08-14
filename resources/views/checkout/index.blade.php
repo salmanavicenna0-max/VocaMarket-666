@@ -150,11 +150,6 @@
                     <span class="font-bold text-gray-900 text-base">Total Tagihan</span>
                     <span class="font-bold text-primary text-xl">Rp216.000</span>
                 </div>
-                <div class="flex justify-end mt-1">
-                    <span class="text-xs text-gray-500 flex items-center gap-1">
-                        <i class="ph-fill ph-wallet text-primary"></i> Saldo VocaPay: <span class="font-bold">Rp250.000</span>
-                    </span>
-                </div>
             </div>
             
             <button class="w-full py-4 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm transition text-lg">

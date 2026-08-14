@@ -35,15 +35,7 @@
                     </button>
                 </div>
                 <h3 class="font-bold text-gray-900 text-lg">Budi Santoso</h3>
-                <p class="text-gray-500 text-sm mb-4">budi.santoso@email.com</p>
-                
-                <div class="w-full bg-blue-50 border border-blue-100 rounded-lg p-3 flex justify-between items-center text-left">
-                    <div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Saldo VocaPay</p>
-                        <p class="font-bold text-primary text-sm mt-0.5">Rp 250.000</p>
-                    </div>
-                    <button class="bg-primary text-white px-3 py-1 rounded text-xs font-bold hover:bg-blue-700 transition">Isi Saldo</button>
-                </div>
+                <p class="text-gray-500 text-sm">budi.santoso@email.com</p>
             </div>
 
             <!-- Menu Navigasi -->
