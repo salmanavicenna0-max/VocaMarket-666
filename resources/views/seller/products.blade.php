@@ -43,29 +43,24 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <ul class="flex flex-col">
+                <ul class="flex flex-col" id="nav-tabs">
                     <li>
-                        <a href="#" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-squares-four text-xl"></i> Dashboard
-                        </a>
+                        </button>
                     </li>
                     <li>
-                        <a href="#" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
+                        <button onclick="switchTab('produk')" id="nav-produk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
                             <i class="ph-fill ph-package text-xl"></i> Produk Saya
-                        </a>
+                        </button>
                     </li>
                     <li>
-                        <a href="#" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
+                        <button onclick="switchTab('pesanan')" id="nav-pesanan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
                             <div class="flex items-center gap-3">
                                 <i class="ph-fill ph-shopping-bag text-xl"></i> Pesanan Masuk
                             </div>
                             <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-wallet text-xl"></i> Saldo Penjual
-                        </a>
+                        </button>
                     </li>
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
@@ -77,10 +72,24 @@
             
         </div>
 
-        <!-- Konten Kanan: Kelola Produk -->
+        <!-- Konten Kanan: Tab Area -->
         <div class="lg:col-span-3">
             
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <!-- TAB: Dashboard (Dummy) -->
+            <div id="tab-dashboard" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Dashboard Toko</h2>
+                        <p class="text-gray-500 text-sm mt-1">Ringkasan performa toko Anda hari ini</p>
+                    </div>
+                </div>
+                <div class="p-6 text-center text-gray-500">
+                    Fitur ini dalam tahap pengembangan.
+                </div>
+            </div>
+
+            <!-- TAB: Produk Saya -->
+            <div id="tab-produk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content block">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Produk Saya</h2>
@@ -217,10 +226,122 @@
                         <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:bg-gray-50"><i class="ph-bold ph-caret-right"></i></button>
                     </div>
                 </div>
+            </div>
 
+            <!-- TAB: Pesanan Masuk -->
+            <div id="tab-pesanan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Pesanan Masuk</h2>
+                    <p class="text-gray-500 text-sm mt-1">Kelola dan proses pesanan dari pelanggan Anda</p>
+                </div>
+                
+                <!-- Horizontal Tabs for Status -->
+                <div class="flex overflow-x-auto border-b border-gray-200 whitespace-nowrap">
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-primary text-primary font-bold text-sm">Semua</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition relative">
+                        Perlu Diproses
+                        <span class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">1</span>
+                    </button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Perlu Dikirim</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Selesai</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dibatalkan</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Pengembalian</button>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-4">
+                    <!-- Pesanan 1 (Baru) -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition border-l-4 border-l-yellow-400">
+                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-user-circle text-gray-500 text-xl"></i>
+                                <div>
+                                    <span class="font-bold text-gray-900">Andi Saputra</span>
+                                    <p class="text-[10px] text-gray-500">INV-20231015-001</p>
+                                </div>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200">Perlu Diproses</span>
+                        </div>
+                        <div class="p-4 flex gap-4">
+                            <img src="https://picsum.photos/seed/desain/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100 shrink-0">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900">Jasa Pembuatan Logo Bisnis & E-Sports</h4>
+                                <p class="text-xs text-gray-500 mt-1">1 barang x Rp150.000</p>
+                                <div class="mt-2 bg-blue-50 text-blue-700 text-xs p-2 rounded-lg border border-blue-100">
+                                    <span class="font-bold">Catatan Pembeli:</span> "Tolong logonya warna dominan merah dan hitam ya kak, untuk tim e-sport."
+                                </div>
+                            </div>
+                            <div class="text-right flex flex-col justify-between shrink-0 ml-4">
+                                <div>
+                                    <p class="text-xs text-gray-500">Total Pembayaran</p>
+                                    <p class="font-bold text-primary text-lg">Rp150.000</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2 bg-gray-50">
+                            <button class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">Tolak Pesanan</button>
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition">Terima & Proses</button>
+                        </div>
+                    </div>
+
+                    <!-- Pesanan 2 (Dikirim) -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition">
+                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-user-circle text-gray-500 text-xl"></i>
+                                <div>
+                                    <span class="font-bold text-gray-900">Rini Wulandari</span>
+                                    <p class="text-[10px] text-gray-500">INV-20231014-089</p>
+                                </div>
+                            </div>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded border border-blue-200">Sedang Dikirim</span>
+                        </div>
+                        <div class="p-4 flex gap-4">
+                            <img src="https://picsum.photos/seed/makanan/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100 shrink-0">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900">Keripik Kaca Pedas Level Dewa (100gr)</h4>
+                                <p class="text-xs text-gray-500 mt-1">2 barang x Rp12.000</p>
+                            </div>
+                            <div class="text-right flex flex-col justify-between shrink-0 ml-4">
+                                <div>
+                                    <p class="text-xs text-gray-500">Total Pembayaran</p>
+                                    <p class="font-bold text-primary text-lg">Rp24.000</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2">
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-50 transition">Cetak Label</button>
+                            <button class="px-4 py-2 border border-primary text-primary rounded-lg text-sm font-bold hover:bg-blue-50 transition">Lacak Pengiriman</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
         </div>
     </div>
 </div>
+
+<script>
+    function switchTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Remove active state from all nav buttons
+        document.querySelectorAll('#nav-tabs button').forEach(el => {
+            el.classList.remove('text-primary', 'bg-blue-50', 'border-primary');
+            el.classList.add('text-gray-600', 'border-transparent');
+        });
+        
+        // Show target tab content
+        document.getElementById('tab-' + tabId).classList.remove('hidden');
+        document.getElementById('tab-' + tabId).classList.add('block');
+        
+        // Set active state on clicked nav button
+        const activeNav = document.getElementById('nav-' + tabId);
+        activeNav.classList.remove('text-gray-600', 'border-transparent');
+        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+    }
+</script>
 @endsection
