@@ -309,14 +309,10 @@
                 <div class="p-6 flex flex-col gap-6">
                     <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex gap-3 text-sm text-blue-800">
                         <i class="ph-fill ph-info text-xl shrink-0"></i>
-                        <p>Pastikan nama toko dan foto kartu pelajar yang Anda unggah terlihat jelas. Proses verifikasi biasanya memakan waktu 1x24 jam kerja.</p>
+                        <p>Pastikan foto kartu pelajar yang Anda unggah terlihat jelas. Nama toko Anda akan secara otomatis disesuaikan dengan nama profil Anda. Proses verifikasi biasanya memakan waktu 1x24 jam kerja.</p>
                     </div>
 
                     <div class="flex flex-col gap-4 max-w-lg">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko <span class="text-red-500">*</span></label>
-                            <input type="text" placeholder="Contoh: Toko Seragam Budi" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
-                        </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1.5">Kelas / Jurusan <span class="text-red-500">*</span></label>
                             <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
