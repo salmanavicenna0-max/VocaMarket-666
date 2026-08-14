@@ -26,8 +26,11 @@
             <!-- Right Area (Search & Navbars) -->
             <div class="flex-1 h-full flex flex-col justify-between">
 
-                <!-- Top Bar Content (Empty to maintain vertical spacing) -->
-                <div class="h-12"></div>
+                <!-- Top Bar Content (Address) -->
+                <div class="h-12 flex items-center justify-end pr-4 text-[10px] md:text-[11px] text-gray-600 font-medium relative z-40">
+                    <i class="ph-fill ph-map-pin mr-1 text-red-500 text-sm"></i>
+                    JL. PERCOBAAN KM. 17 NO. 65 CILEUNYI, Kec. Cileunyi, Kab. Bandung, Prov. Jawa Barat
+                </div>
 
                 <!-- Bottom White Navbar Content (Search & Auth) -->
                 <!-- Pushed to the right (justify-end) and added padding (pl-24) to avoid the slanted line -->
