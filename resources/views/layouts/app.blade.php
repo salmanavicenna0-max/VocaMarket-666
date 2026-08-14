@@ -11,9 +11,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#007DCC', // Amazon-like Blue requested
+                        primary: '#0a84d4', // Custom Blue requested
                         accent: '#FFB900',  // Amazon-like Yellow requested
-                        'primary-dark': '#0065a6',
+                        'primary-dark': '#086ab0',
                         'accent-hover': '#e6a600'
                     },
                     borderRadius: {
