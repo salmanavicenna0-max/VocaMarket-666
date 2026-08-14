@@ -84,17 +84,17 @@
         <div class="absolute top-0 left-0 w-full h-36 z-0 pointer-events-none overflow-hidden">
             <svg class="w-full h-full opacity-90" preserveAspectRatio="none" viewBox="0 0 1000 144">
                 <!-- Top Line (Blue) -->
-                <!-- Slanting earlier (280 to 340) to stay clear of the Search Bar -->
-                <path d="M -10 134 L 280 134 L 340 55 L 1010 55" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
+                <!-- Slanting further right (380 to 440) to clear the wide logo -->
+                <path d="M -10 134 L 380 134 L 440 55 L 1010 55" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
                 <!-- Bottom Line (Yellow) -->
-                <path d="M -10 142 L 280 142 L 340 63 L 1010 63" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
+                <path d="M -10 142 L 380 142 L 440 63 L 1010 63" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
             </svg>
         </div>
 
         <div class="container mx-auto px-4 h-36 relative z-30 flex items-center">
             <!-- Left Logo Area -->
             <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
-            <div class="w-auto lg:w-1/4 h-full flex items-start pt-2 justify-start pr-4 shrink-0">
+            <div class="w-auto lg:w-1/3 h-full flex items-start pt-2 justify-start pr-4 shrink-0">
                 <a href="{{ url('/') }}" class="flex items-center text-black">
                     <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-24 md:h-32 w-auto object-contain">
                 </a>
@@ -107,8 +107,8 @@
                 <div class="h-12"></div>
 
                 <!-- Bottom White Navbar Content (Search & Auth) -->
-                <!-- Pushed to the right (justify-end) and added padding (pl-24) to avoid the slanted line -->
-                <div class="h-24 flex items-center justify-end pl-12 lg:pl-24 gap-6 pr-4">
+                <!-- Pushed to the right (justify-end) and added padding (pl-32 xl:pl-40) to avoid the slanted line -->
+                <div class="h-24 flex items-center justify-end pl-16 lg:pl-32 xl:pl-40 gap-6 pr-4">
                     
                     <!-- Search Bar Wrapper -->
                     <div class="w-full max-w-2xl relative" id="search-container">
