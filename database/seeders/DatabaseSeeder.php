@@ -15,10 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (\Illuminate\Support\Facades\Schema::hasTable('users')) {
-            $this->call([
-                UserSeeder::class,
-            ]);
-        }
+        $this->call([
+            UserSeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 }
