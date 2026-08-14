@@ -173,11 +173,11 @@
                 <span class="flex items-center gap-1 font-bold shrink-0 text-white/80">
                     <i class="ph-bold ph-trend-up text-lg"></i> Pencarian Populer:
                 </span>
-                <a href="#" class="hover:text-accent shrink-0 ml-2">Seragam SD</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Buku Tulis</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Sepatu Hitam</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Atribut Pramuka</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Jasa Desain</a>
+                <a href="{{ route('kategori', 'ganci') }}" class="hover:text-accent shrink-0 ml-2">Ganci</a>
+                <a href="{{ route('kategori', 'kaos-sekolah') }}" class="hover:text-accent ml-4 shrink-0">Kaos Sekolah</a>
+                <a href="{{ route('kategori', 'desain-grafis') }}" class="hover:text-accent ml-4 shrink-0">Desain Grafis</a>
+                <a href="{{ route('kategori', 'website') }}" class="hover:text-accent ml-4 shrink-0">Pembuatan Website</a>
+                <a href="{{ route('kategori', 'animasi') }}" class="hover:text-accent ml-4 shrink-0">Jasa Animasi</a>
             </div>
         </div>
 
