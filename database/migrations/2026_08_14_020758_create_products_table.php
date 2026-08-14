@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->integer('price');
+
+            // Note: Ghif, Image path sementara dihapus, jadi pakai tabel product_images
+            // alasan personal: gambarnya mungkin akan ada banyak jika produk itu barang kaya:
+            // foto dari samping, belakang, depan.
             $table->string('image_path')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('original_price')->nullable();
