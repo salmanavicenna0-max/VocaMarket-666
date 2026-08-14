@@ -28,11 +28,7 @@ class AuthController extends Controller
         if (Auth::attempt($authData, $request->boolean('remember-me'))) {
             $request->session()->regenerate();
 
-            // Redirect admin to dashboard, others to home
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
-            }
-
+            // Semua role (termasuk admin) diarahkan ke halaman utama (home) terlebih dahulu
             return redirect()->intended('/');
         }
 
