@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->integer('nis')->nullable()->unique();
             $table->string('email')->unique();
-            $table->string('email_verification');
             $table->string('password');
             $table->enum('role', ['admin', 'siswa', 'pembeli'])->default('pembeli');
-            $table->boolean('verification_seller');
+            $table->boolean('verification_seller')->default(false);
+            $table->timestamp('verification_seller_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
