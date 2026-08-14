@@ -13,6 +13,10 @@ Route::get('/seller/{id?}', function () {
     return view('profile.seller');
 });
 
+Route::get('/user', function () {
+    return view('profile.user');
+});
+
 Route::get('/chat', function () {
     return view('chat.index');
 });
