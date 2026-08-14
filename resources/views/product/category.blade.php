@@ -11,7 +11,17 @@
             <span class="text-gray-800 font-medium">{{ $categoryName }}</span>
         </nav>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800">{{ $categoryName }}</h1>
-        <p class="text-gray-500 text-sm mt-1">Menampilkan produk untuk kategori {{ $categoryName }}</p>
+        <p class="text-gray-500 text-sm mt-1 mb-4">Menampilkan produk untuk kategori {{ $categoryName }}</p>
+        
+        <!-- Filter Subkategori -->
+        @if(count($currentSubcategories) > 0)
+        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
+            <a href="#" class="px-4 py-1.5 bg-primary text-white rounded-full text-sm font-medium whitespace-nowrap shadow-sm">Semua</a>
+            @foreach($currentSubcategories as $sub)
+            <a href="#" class="px-4 py-1.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 rounded-full text-sm font-medium whitespace-nowrap transition shadow-sm">{{ $sub }}</a>
+            @endforeach
+        </div>
+        @endif
     </div>
 
     <!-- Product Grid -->

@@ -21,14 +21,33 @@ class ProductController extends Controller
 
     public function category($slug)
     {
+        // Define subcategories mapping
+        $subcategories = [
+            'aksesoris' => ['Ganci', 'Nametag', 'Pin', 'Kaos', 'Gelas Custom'],
+            'merchandise' => ['Kaos Khusus Sekolah', 'Gelas BN', 'Pulpen BN'],
+            'pepelege-produk' => ['IoT (Hardware)'],
+            'dkv-animasi' => ['Animasi (Logo gerak, iklan, dll)', 'Motion Graphic', 'Video Promosi', 'Desain Grafis'],
+            'pemasaran' => ['Digital Marketing', 'Admin Medsos'],
+            'pplg' => ['Website', 'Mobile', 'Server Hosting', 'Cloud', 'Game DEV', 'Excel', 'IoT (Software)'],
+            'akuntansi' => ['Pembukuan', 'Pembuatan Laporan', 'Konsul Pajak']
+        ];
+
+        $categoryNames = [
+            'aksesoris' => 'Aksesoris',
+            'merchandise' => 'Merchandise',
+            'pepelege-produk' => 'Pepelege Produk (Hardware)',
+            'dkv-animasi' => 'DKV & Animasi',
+            'pemasaran' => 'Pemasaran',
+            'pplg' => 'PPLG',
+            'akuntansi' => 'Akuntansi'
+        ];
+
         // Fetch all active products as a dummy for now
         $products = Product::where('is_active', true)->get();
         
-        $categoryName = str_replace('-', ' ', ucfirst($slug));
-        if (strtoupper($slug) === 'DKV' || strtoupper($slug) === 'PPLG') {
-            $categoryName = strtoupper($slug);
-        }
+        $categoryName = $categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug));
+        $currentSubcategories = $subcategories[$slug] ?? [];
 
-        return view('product.category', compact('products', 'categoryName', 'slug'));
+        return view('product.category', compact('products', 'categoryName', 'slug', 'currentSubcategories'));
     }
 }
