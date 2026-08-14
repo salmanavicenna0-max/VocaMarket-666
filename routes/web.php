@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', [ProductController::class, 'index']);
+Route::get('/kategori/{slug}', [ProductController::class, 'category'])->name('kategori');
 Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/cart', function () {
     return view('cart.index');
