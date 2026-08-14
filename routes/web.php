@@ -17,6 +17,11 @@ Route::get('/login', function () {
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
 Route::get('/seller/dashboard', function () {
     return view('seller.products');
 });

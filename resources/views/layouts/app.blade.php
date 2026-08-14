@@ -94,9 +94,9 @@
         <div class="container mx-auto px-4 h-36 relative z-30 flex items-center">
             <!-- Left Logo Area -->
             <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
-            <div class="w-auto lg:w-1/4 h-full flex items-start pt-2 justify-start pr-4 shrink-0">
-                <a href="{{ url('/') }}" class="flex items-center text-black">
-                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-16 md:h-20 w-auto object-contain">
+            <div class="w-[250px] shrink-0 h-full flex items-center justify-start pr-4 relative z-40 pb-4">
+                <a href="{{ url('/') }}" class="flex items-center text-black w-full">
+                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="w-full h-auto max-h-24 object-contain">
                 </a>
             </div>
             
@@ -155,7 +155,7 @@
                             <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
                                 Masuk
                             </a>
-                            <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
+                            <a href="{{ route('register') }}" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-sm whitespace-nowrap text-sm">
                                 Daftar
                             </a>
                         @else

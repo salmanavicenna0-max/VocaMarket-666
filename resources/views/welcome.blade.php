@@ -164,86 +164,48 @@
                 <!-- Grid 8 cols on desktop, 4 on mobile -->
                 <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 border-l border-t border-gray-100">
                     
-                    <!-- Cat 1 -->
+                    <!-- Kategori: Produk Sekolah -->
+                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100">
+                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Produk Sekolah</span>
+                    </div>
+
+                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                        <i class="ph-fill ph-handbag text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Aksesoris</span>
+                    </a>
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
                         <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Seragam SD</span>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Merchandise</span>
                     </a>
-                    <!-- Cat 2 -->
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Seragam SMP</span>
+                        <i class="ph-fill ph-cpu text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Hardware</span>
                     </a>
-                    <!-- Cat 3 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Seragam SMA</span>
-                    </a>
-                    <!-- Cat 4 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-sneaker text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Sepatu Sekolah</span>
-                    </a>
-                    <!-- Cat 5 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-backpack text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Tas Sekolah</span>
-                    </a>
-                    <!-- Cat 6 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-notebook text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Buku Tulis</span>
-                    </a>
-                    <!-- Cat 7 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-pen-nib text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Alat Tulis</span>
-                    </a>
-                    <!-- Cat 8 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-tent text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pramuka</span>
-                    </a>
-                    
-                    <!-- Cat 9 -->
+
+                    <!-- Kategori: Jasa / Produk Jurusan -->
+                    <div class="col-span-full px-4 py-2.5 bg-gray-50 border-r border-b border-gray-100">
+                        <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Jasa & Produk Jurusan</span>
+                    </div>
+
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
                         <i class="ph-fill ph-palette text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Alat Lukis</span>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">DKV</span>
                     </a>
-                    <!-- Cat 10 -->
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-book-open text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Buku Pelajaran</span>
+                        <i class="ph-fill ph-film-strip text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Animasi</span>
                     </a>
-                    <!-- Cat 11 -->
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-baseball-cap text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Topi & Dasi</span>
+                        <i class="ph-fill ph-megaphone text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pemasaran</span>
                     </a>
-                    <!-- Cat 12 -->
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-basketball text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Olahraga</span>
+                        <i class="ph-fill ph-code text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">PPLG</span>
                     </a>
-                    <!-- Cat 13 -->
                     <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-socks text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Kaos Kaki</span>
-                    </a>
-                    <!-- Cat 14 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-chalkboard text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Perlengkapan</span>
-                    </a>
-                    <!-- Cat 15 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-laptop text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Aksesoris IT</span>
-                    </a>
-                    <!-- Cat 16 -->
-                    <a href="#" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
-                        <i class="ph-fill ph-dots-three-circle text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Lainnya</span>
+                        <i class="ph-fill ph-calculator text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Akuntansi</span>
                     </a>
 
                 </div>
