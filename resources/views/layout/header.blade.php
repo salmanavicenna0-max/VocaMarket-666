@@ -6,10 +6,10 @@
         <div class="absolute top-0 left-0 w-full h-36 z-0 pointer-events-none overflow-hidden">
             <svg class="w-full h-full opacity-90" preserveAspectRatio="none" viewBox="0 0 1000 144">
                 <!-- Top Line (Blue) -->
-                <!-- Slanting earlier to the left (200 to 260) to avoid the search bar -->
-                <path d="M -10 112 L 200 112 L 260 55 L 1010 55" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
+                <!-- Slanting earlier to the left (200 to 260) and going higher (y=30) to fill the empty top space -->
+                <path d="M -10 112 L 200 112 L 260 30 L 1010 30" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
                 <!-- Bottom Line (Yellow) -->
-                <path d="M -10 120 L 200 120 L 260 63 L 1010 63" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
+                <path d="M -10 120 L 200 120 L 260 38 L 1010 38" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
             </svg>
         </div>
 
