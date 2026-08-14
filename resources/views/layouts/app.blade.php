@@ -96,7 +96,7 @@
             <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
             <div class="w-auto lg:w-1/4 h-full flex items-start pt-2 justify-start pr-4 shrink-0">
                 <a href="{{ url('/') }}" class="flex items-center text-black">
-                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-16 md:h-20 w-auto object-contain">
+                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-24 md:h-32 w-auto object-contain">
                 </a>
             </div>
             
