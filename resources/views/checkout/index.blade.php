@@ -2,34 +2,40 @@
 @section('title', 'Checkout - VocaMarket')
 @section('content')
 
-<div class="container mx-auto px-4 py-8 max-w-6xl">
-    
-    <!-- Header -->
-    <div class="flex items-center gap-3 mb-6">
-        <i class="ph-bold ph-receipt text-3xl text-primary"></i>
-        <h1 class="text-2xl font-bold text-gray-900">Checkout</h1>
-    </div>
-
+<div class="container mx-auto px-4 py-8">
     <div class="flex flex-col gap-6 max-w-3xl mx-auto">
         
-        <!-- 1. Alamat Pengiriman -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <i class="ph-fill ph-map-pin text-primary text-xl"></i> Alamat Pengiriman
-                </h3>
-                <button class="text-sm font-bold text-primary hover:text-blue-700 transition">Ubah</button>
-            </div>
-            
-            <div class="border-l-4 border-primary pl-4 py-1">
-                <p class="font-bold text-gray-900">Budi Santoso <span class="font-normal text-gray-500">(+62 812-3456-7890)</span></p>
-                <p class="text-gray-600 text-sm mt-1">
-                    Jalan Merdeka No. 45, RT 01 / RW 02, Kel. Suka Maju<br>
-                    Kecamatan Sukaresmi, Kota Bandung, Jawa Barat 40123
-                </p>
+        <!-- Breadcrumb & Header -->
+        <div>
+            <!-- Breadcrumb -->
+            <nav class="flex text-sm text-gray-500 mb-3" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                    <li class="inline-flex items-center">
+                        <a href="{{ url('/') }}" class="hover:text-primary transition flex items-center gap-1">
+                            <i class="ph-fill ph-house"></i> Beranda
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="ph-bold ph-caret-right text-gray-400 mx-1 text-xs"></i>
+                            <a href="{{ url('/cart') }}" class="hover:text-primary transition">Keranjang</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="ph-bold ph-caret-right text-gray-400 mx-1 text-xs"></i>
+                            <span class="text-gray-900 font-medium">Checkout</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3">
+                <i class="ph-bold ph-receipt text-3xl text-primary"></i>
+                <h1 class="text-2xl font-bold text-gray-900">Checkout</h1>
             </div>
         </div>
-
         <!-- 2. Pesanan Anda -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-200 bg-gray-50">
@@ -60,14 +66,6 @@
                 <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
                     <div class="flex items-center justify-between gap-4">
                         <div class="w-1/2">
-                            <label class="text-xs font-bold text-gray-700 mb-1 block">Opsi Pengiriman:</label>
-                            <select class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
-                                <option>Reguler (Rp15.000)</option>
-                                <option>Hemat (Rp10.000)</option>
-                                <option>Cargo (Rp35.000)</option>
-                            </select>
-                        </div>
-                        <div class="w-1/2">
                             <label class="text-xs font-bold text-gray-700 mb-1 block">Pesan untuk Penjual:</label>
                             <input type="text" placeholder="Silakan tinggalkan pesan..." class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
                         </div>
@@ -96,13 +94,6 @@
                 <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
                     <div class="flex items-center justify-between gap-4">
                         <div class="w-1/2">
-                            <label class="text-xs font-bold text-gray-700 mb-1 block">Opsi Pengiriman:</label>
-                            <select class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary bg-gray-100 text-gray-500" disabled>
-                                <option>Termasuk Ongkos Kirim (Gratis)</option>
-                            </select>
-                            <span class="text-[10px] text-gray-500">* Produk digital/jasa tidak dikenakan ongkir</span>
-                        </div>
-                        <div class="w-1/2">
                             <label class="text-xs font-bold text-gray-700 mb-1 block">Pesan untuk Penjual:</label>
                             <input type="text" placeholder="Email untuk pengiriman file..." class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
                         </div>
@@ -118,26 +109,15 @@
             </h3>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <label class="border-2 border-primary bg-blue-50 p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer relative">
-                    <input type="radio" name="payment" class="absolute top-2 right-2" checked>
-                    <i class="ph-fill ph-wallet text-3xl text-primary"></i>
-                    <span class="text-xs font-bold text-center">VocaPay</span>
-                </label>
-                <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
-                    <input type="radio" name="payment" class="absolute top-2 right-2">
-                    <i class="ph-fill ph-bank text-3xl text-gray-500"></i>
-                    <span class="text-xs font-bold text-center">Transfer Bank</span>
-                </label>
-                <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
-                    <input type="radio" name="payment" class="absolute top-2 right-2">
-                    <i class="ph-fill ph-storefront text-3xl text-gray-500"></i>
-                    <span class="text-xs font-bold text-center">Alfamart / Indomaret</span>
-                </label>
                 <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative opacity-50">
-                    <input type="radio" name="payment" class="absolute top-2 right-2" disabled>
+                    <input type="radio" name="payment" class="absolute top-2 right-2">
                     <i class="ph-fill ph-truck text-3xl text-gray-500"></i>
                     <span class="text-xs font-bold text-center">COD</span>
-                    <span class="absolute -bottom-2 bg-red-100 text-red-600 text-[8px] font-bold px-1 rounded">Tidak Tersedia</span>
+                </label>
+                 <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
+                    <input type="radio" name="payment" class="absolute top-2 right-2">
+                    <i class="ph-fill ph-bank text-3xl text-gray-500"></i>
+                    <span class="text-xs font-bold text-center">Transfer Bank/Qris</span>
                 </label>
             </div>
         </div>
