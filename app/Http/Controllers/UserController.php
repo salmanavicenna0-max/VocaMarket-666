@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -112,5 +113,36 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+    }
+
+    /**
+     * Handle a user's request to become a seller.
+     */
+    public function requestSeller(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Cek jika statusnya masih none atau rejected
+        if ($user->seller_status === 'none' || $user->seller_status === 'rejected') {
+            $user->seller_status = 'pending';
+            $user->save();
+            return back()->with('success', 'Permintaan buka toko berhasil dikirim! Menunggu verifikasi admin.');
+        }
+
+        return back()->with('error', 'Permintaan sudah diproses atau toko Anda sudah aktif.');
+    }
+
+    /**
+     * Handle admin approving a seller request.
+     */
+    public function approveSeller(User $user)
+    {
+        $user->seller_status = 'approved';
+        $user->verification_seller = 1;
+        // Opsional: ganti role menjadi penjual atau tetap siswa
+        // $user->role = 'penjual';
+        $user->save();
+
+        return back()->with('success', 'Toko milik ' . $user->name . ' berhasil disetujui!');
     }
 }

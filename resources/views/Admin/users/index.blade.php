@@ -227,13 +227,26 @@
                                         @endif
                                     </td>
                                     <td class="px-5 py-4 text-right">
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Hapus User">
-                                                <i class="ph-bold ph-trash text-base"></i>
-                                            </button>
-                                        </form>
+                                        <div class="flex items-center justify-end gap-1">
+                                            @if($user->seller_status === 'pending')
+                                                <a href="{{ route('users.show', $user->id) }}" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Cek Detail">
+                                                    <i class="ph-bold ph-eye text-base"></i>
+                                                </a>
+                                                <form action="{{ route('users.approve_seller', $user->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition" title="Setujui Buka Toko">
+                                                        <i class="ph-bold ph-check-circle text-base"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Hapus User">
+                                                    <i class="ph-bold ph-trash text-base"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
