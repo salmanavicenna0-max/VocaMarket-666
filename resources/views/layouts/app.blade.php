@@ -151,12 +151,44 @@
                             <i class="ph-bold ph-shopping-cart text-2xl group-hover:scale-110 transition-transform"></i>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">2</span>
                         </a>
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
-                            Masuk
-                        </a>
-                        <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
-                            Daftar
-                        </a>
+                        @guest
+                            <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
+                                Masuk
+                            </a>
+                            <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
+                                Daftar
+                            </a>
+                        @else
+                            <div class="relative group cursor-pointer ml-2">
+                                <a href="{{ url('/user') }}" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-50 transition border border-transparent hover:border-gray-200">
+                                    <div class="w-9 h-9 rounded-full bg-blue-100 text-primary font-bold flex items-center justify-center text-xs shadow-sm">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                    </div>
+                                    <div class="hidden md:flex flex-col items-start leading-none justify-center h-full pt-1">
+                                        <span class="text-xs font-bold text-gray-800">{{ Auth::user()->name }}</span>
+                                        <span class="text-[10px] text-gray-500 capitalize">{{ Auth::user()->role }}</span>
+                                    </div>
+                                </a>
+                                <!-- Dropdown -->
+                                <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[80]">
+                                    @if(Auth::user()->role === 'admin')
+                                    <a href="{{ url('/admin/dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition border-b border-gray-50 rounded-t-lg">
+                                        <i class="ph-bold ph-squares-four mr-2"></i> Dashboard Admin
+                                    </a>
+                                    @else
+                                    <a href="{{ url('/user') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition border-b border-gray-50 rounded-t-lg">
+                                        <i class="ph-bold ph-user mr-2"></i> Profil Saya
+                                    </a>
+                                    @endif
+                                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition rounded-b-lg">
+                                            <i class="ph-bold ph-sign-out mr-2"></i> Keluar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endguest
                     </div>
                     
                 </div>

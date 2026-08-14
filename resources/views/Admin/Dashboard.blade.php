@@ -27,11 +27,8 @@
         <div>
             <!-- Logo -->
             <div class="p-6">
-                <a href="#" class="flex items-center gap-3">
-                    <div class="flex-1">
-                        <h1 class="font-bold text-xl leading-tight whitespace-nowrap">Voca Market <span class="text-accent">666</span></h1>
-                        <p class="text-[9px] uppercase tracking-wider text-white/70 whitespace-nowrap">Marketplace SMK Bakti Nusantara</p>
-                    </div>
+                <a href="{{ url('/admin/dashboard') }}" class="flex items-center justify-center bg-white rounded-lg p-2 shadow-sm">
+                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-10 md:h-12 w-auto object-contain">
                 </a>
             </div>
 
@@ -81,13 +78,28 @@
             </div>
 
             <!-- Right -->
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-6 relative group cursor-pointer">
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <p class="font-bold text-sm text-gray-800">Pak Andrew Wibowo</p>
-                        <p class="text-[11px] text-gray-500">Kepala Hubin / Admin</p>
+                        <p class="font-bold text-sm text-gray-800">{{ Auth::user()->name }}</p>
+                        <p class="text-[11px] text-gray-500 capitalize">{{ Auth::user()->role }}</p>
                     </div>
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-primary font-bold flex items-center justify-center text-sm shadow-sm border-2 border-white">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                    </div>
+                </div>
+                
+                <!-- Dropdown -->
+                <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[80]">
+                    <a href="{{ url('/') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition border-b border-gray-50 rounded-t-lg">
+                        <i class="ph-bold ph-house mr-2"></i> Home
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full text-left block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition rounded-b-lg">
+                            <i class="ph-bold ph-sign-out mr-2"></i> Keluar
+                        </button>
+                    </form>
                 </div>
             </div>
         </header>
