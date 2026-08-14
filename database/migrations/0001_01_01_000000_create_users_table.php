@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->char('nis', '12')->unique();
+            $table->integer('nis')->nullable()->unique();
             $table->string('email')->unique();
-            $table->string('email_verification');
             $table->string('password');
-            $table->enum('role', ['admin', 'siswa', 'pembeli', ]);
-            $table->boolean('verification_seller');
+            $table->enum('role', ['admin', 'siswa', 'pembeli'])->default('pembeli');
+            $table->boolean('verification_seller')->default(false);
+            $table->timestamp('verification_seller_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

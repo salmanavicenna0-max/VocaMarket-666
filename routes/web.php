@@ -1,15 +1,53 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [ProductController::class, 'index']);
+Route::get('/kategori/{slug}', [ProductController::class, 'category'])->name('kategori');
+Route::get('/product/{id}', [ProductController::class, 'show']);
+Route::get('/cart', function () {
+    return view('cart.index');
+});
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+Route::get('/seller/dashboard', function () {
+    return view('seller.products');
+});
+
+Route::get('/seller/{id?}', function () {
+    return view('profile.seller');
+});
+
+Route::get('/user', function () {
+    return view('profile.user');
+})->middleware('auth');
+
+Route::post('/user/request-seller', [UserController::class, 'requestSeller'])->name('user.request_seller')->middleware('auth');
+
+Route::get('/chat', function () {
+    return view('chat.index');
+});
+
+Route::get('/checkout', function () {
+    return view('checkout.index');
 });
 
 Route::get('/admin/dashboard', function () {
     return view('Admin.Dashboard');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-});
+Route::resource('admin/users', UserController::class)->names('users');
+Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');

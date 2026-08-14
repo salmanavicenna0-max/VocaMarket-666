@@ -27,11 +27,8 @@
         <div>
             <!-- Logo -->
             <div class="p-6">
-                <a href="#" class="flex items-center gap-3">
-                    <div class="flex-1">
-                        <h1 class="font-bold text-xl leading-tight whitespace-nowrap">Voca Market <span class="text-accent">666</span></h1>
-                        <p class="text-[9px] uppercase tracking-wider text-white/70 whitespace-nowrap">Marketplace SMK Bakti Nusantara</p>
-                    </div>
+                <a href="{{ url('/admin/dashboard') }}" class="flex items-center justify-center bg-white rounded-lg p-2 shadow-sm">
+                    <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-10 md:h-12 w-auto object-contain">
                 </a>
             </div>
 
@@ -41,7 +38,7 @@
                     <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-r-md"></div>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-black/5 rounded-lg transition font-medium">
+                <a href="{{ route('users.index') }}" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-black/5 rounded-lg transition font-medium">
                     <span>Pengguna</span>
                 </a>
                 <a href="#" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-black/5 rounded-lg transition font-medium">
@@ -64,7 +61,7 @@
                 </a>
             </nav>
         </div>
-        
+
         <div class="p-6">
             <h3 class="font-bold text-xs">SMK BAKTI NUSANTARA 666</h3>
         </div>
@@ -72,7 +69,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col h-full overflow-hidden">
-        
+
         <!-- Header -->
         <header class="h-20 px-8 flex items-center justify-between shrink-0">
             <!-- Search -->
@@ -81,20 +78,35 @@
             </div>
 
             <!-- Right -->
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-6 relative group cursor-pointer">
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <p class="font-bold text-sm text-gray-800">Pak Andrew Wibowo</p>
-                        <p class="text-[11px] text-gray-500">Kepala Hubin / Admin</p>
+                        <p class="font-bold text-sm text-gray-800">{{ Auth::user()->name }}</p>
+                        <p class="text-[11px] text-gray-500 capitalize">{{ Auth::user()->role }}</p>
                     </div>
-                    <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-primary font-bold flex items-center justify-center text-sm shadow-sm border-2 border-white">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                    </div>
+                </div>
+                
+                <!-- Dropdown -->
+                <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[80]">
+                    <a href="{{ url('/') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition border-b border-gray-50 rounded-t-lg">
+                        <i class="ph-bold ph-house mr-2"></i> Home
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full text-left block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition rounded-b-lg">
+                            <i class="ph-bold ph-sign-out mr-2"></i> Keluar
+                        </button>
+                    </form>
                 </div>
             </div>
         </header>
 
         <!-- Content Scrollable -->
         <div class="flex-1 overflow-y-auto px-8 pb-8">
-            
+
             <!-- Stats Grid -->
             <div class="grid grid-cols-4 gap-6 mb-6">
                 <!-- Stat 1 -->
@@ -161,7 +173,7 @@
                             <div class="border-t border-gray-100 w-full"></div>
                             <div class="border-t border-gray-100 w-full"></div>
                         </div>
-                        
+
                         <!-- SVG Line Chart -->
                         <svg class="w-full h-[calc(100%-2rem)] absolute bottom-8 left-0 z-10 overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
                             <!-- Line -->
@@ -191,7 +203,7 @@
                 <div class="col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
                     <h2 class="font-bold text-gray-800 text-base mb-1">Produk & Jasa per Jurusan</h2>
                     <p class="text-[11px] text-gray-500 mb-6">Pembagian penawaran siswa tiap konsentrasi keahlian</p>
-                    
+
                     <div class="flex flex-col gap-4 flex-1 justify-center">
                         <!-- PPLG -->
                         <div>
@@ -268,7 +280,7 @@
                                 <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> 12 Jasa</span>
                             </div>
                         </div>
-                        
+
                         <!-- Akuntansi -->
                         <div>
                             <div class="flex justify-between items-center mb-2">
@@ -301,7 +313,7 @@
                     </div>
                     <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-700">Lihat Semua Transaksi</a>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-[13px] text-gray-600">
                         <thead class="bg-gray-100/70 text-[10px] font-bold text-gray-600 uppercase tracking-wider">
