@@ -15,6 +15,13 @@
                         accent: '#FFB900',  // Amazon-like Yellow requested
                         'primary-dark': '#0065a6',
                         'accent-hover': '#e6a600'
+                    },
+                    borderRadius: {
+                        'md': '0.25rem',  // 4px
+                        'lg': '0.375rem', // 6px
+                        'xl': '0.375rem', // 6px (less blunt than default 12px)
+                        '2xl': '0.5rem',  // 8px (less blunt than default 16px)
+                        '3xl': '0.5rem',  // 8px (less blunt than default 24px)
                     }
                 }
             }
