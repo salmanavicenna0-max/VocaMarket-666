@@ -9,6 +9,10 @@ Route::get('/cart', function () {
     return view('cart.index');
 });
 
+Route::get('/seller/dashboard', function () {
+    return view('seller.products');
+});
+
 Route::get('/seller/{id?}', function () {
     return view('profile.seller');
 });
