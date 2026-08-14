@@ -29,7 +29,7 @@
             <!-- Profil Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col items-center text-center">
                 <div class="relative mb-3">
-                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=007DCC&color=fff&size=128" alt="Profile" class="w-20 h-20 rounded-full border-4 border-white shadow-md object-cover">
+                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=0a84d4&color=fff&size=128" alt="Profile" class="w-20 h-20 rounded-full border-4 border-white shadow-md object-cover">
                     <button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition">
                         <i class="ph-bold ph-pencil-simple text-xs"></i>
                     </button>

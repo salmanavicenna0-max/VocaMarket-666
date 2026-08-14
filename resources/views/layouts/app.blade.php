@@ -85,9 +85,9 @@
             <svg class="w-full h-full opacity-90" preserveAspectRatio="none" viewBox="0 0 1000 144">
                 <!-- Top Line (Blue) -->
                 <!-- Slanting earlier (260 to 320) to stay clear of the Search Bar -->
-                <path d="M -10 112 L 260 112 L 320 55 L 1010 55" fill="none" stroke="#007DCC" stroke-width="4" stroke-linejoin="round" />
+                <path d="M -10 112 L 260 112 L 320 55 L 1010 55" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
                 <!-- Bottom Line (Yellow) -->
-                <path d="M -10 120 L 260 120 L 320 63 L 1010 63" fill="none" stroke="#FFB900" stroke-width="4" stroke-linejoin="round" />
+                <path d="M -10 120 L 260 120 L 320 63 L 1010 63" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
             </svg>
         </div>
 
