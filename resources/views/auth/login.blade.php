@@ -83,10 +83,7 @@
 
             <!-- Password -->
             <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label for="password" class="block text-sm font-semibold text-gray-700">Password</label>
-                    <a href="#" class="text-xs font-semibold text-primary hover:text-blue-800 transition">Lupa password?</a>
-                </div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                 <input 
                     type="password" 
                     id="password" 
@@ -97,17 +94,20 @@
                 >
             </div>
 
-            <!-- Remember Me -->
-            <div class="flex items-center">
-                <input 
-                    id="remember-me" 
-                    name="remember-me" 
-                    type="checkbox" 
-                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded-sm cursor-pointer"
-                >
-                <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
-                    Ingat Saya
-                </label>
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input 
+                        id="remember-me" 
+                        name="remember-me" 
+                        type="checkbox" 
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded-sm cursor-pointer"
+                    >
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
+                        Ingat Saya
+                    </label>
+                </div>
+                <a href="#" class="text-xs font-semibold text-primary hover:text-blue-800 transition">Lupa password?</a>
             </div>
 
             <!-- Submit Button -->
