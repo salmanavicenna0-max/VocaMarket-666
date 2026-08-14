@@ -143,19 +143,20 @@
 
             <!-- TAB: Daftar Transaksi -->
             <div id="tab-transaksi" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
-                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">Daftar Transaksi</h2>
-                        <p class="text-gray-500 text-sm mt-1">Pantau status pesanan dan riwayat belanja Anda</p>
-                    </div>
-                    <!-- Filter Status -->
-                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary">
-                        <option>Semua Status</option>
-                        <option>Menunggu Pembayaran</option>
-                        <option>Sedang Dikemas</option>
-                        <option>Sedang Dikirim</option>
-                        <option>Selesai</option>
-                    </select>
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Daftar Transaksi</h2>
+                    <p class="text-gray-500 text-sm mt-1">Pantau status pesanan dan riwayat belanja Anda</p>
+                </div>
+                
+                <!-- Horizontal Tabs for Status -->
+                <div class="flex overflow-x-auto border-b border-gray-200 whitespace-nowrap">
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-primary text-primary font-bold text-sm">All</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Belum Bayar</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dikemas</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dikirim</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Selesai</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dibatalkan</button>
+                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Pengembalian</button>
                 </div>
                 
                 <div class="p-6 flex flex-col gap-4">
