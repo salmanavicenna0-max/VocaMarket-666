@@ -144,7 +144,7 @@
                 Sudah punya akun? 
                 <a href="{{ route('login') }}" class="font-bold text-primary hover:text-blue-800 transition">Masuk di sini</a>
             </p>
-            <a href="{{ url('/') }}" class="inline-block text-xs font-bold text-gray-500 hover:text-primary transition border border-gray-200 rounded-md px-4 py-2 bg-gray-50 hover:bg-white shadow-sm">
+            <a href="{{ url('/') }}" class="inline-block text-xs font-bold text-gray-500 hover:text-primary transition">
                 Kembali ke Halaman Utama
             </a>
         </div>
