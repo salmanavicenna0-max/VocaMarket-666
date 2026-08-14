@@ -20,8 +20,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nis',
         'email',
         'password',
+        'role',
+        'verification_seller',
+        'verification_seller_at',
     ];
 
     /**
@@ -43,6 +47,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'verification_seller_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
