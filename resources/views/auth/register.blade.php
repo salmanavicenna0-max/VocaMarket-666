@@ -48,7 +48,7 @@
 <body class="bg-body antialiased min-h-screen flex items-center justify-center font-sans py-10">
 
     <!-- Register Container -->
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden p-8 border border-gray-100">
+    <div class="bg-white w-full max-w-md rounded-lg shadow-xl overflow-hidden p-8 border border-gray-100">
         
         <!-- Header -->
         <div class="text-center mb-8">
@@ -70,7 +70,7 @@
                     id="name" 
                     name="name" 
                     placeholder="Masukkan Nama Lengkap"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -83,7 +83,7 @@
                     id="email" 
                     name="email" 
                     placeholder="Masukkan Email Aktif"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -96,7 +96,7 @@
                     id="nis" 
                     name="nis" 
                     placeholder="Masukkan Nomor Induk Siswa"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                 >
             </div>
 
@@ -108,7 +108,7 @@
                     id="password" 
                     name="password" 
                     placeholder="Buat Password"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -121,7 +121,7 @@
                     id="password_confirmation" 
                     name="password_confirmation" 
                     placeholder="Ulangi Password"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -130,7 +130,7 @@
             <div class="pt-2">
                 <button 
                     type="submit" 
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
                 >
                     Daftar Akun
                 </button>

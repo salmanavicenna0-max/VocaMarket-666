@@ -48,7 +48,7 @@
 <body class="bg-body antialiased min-h-screen flex items-center justify-center font-sans">
 
     <!-- Login Container -->
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden p-8 border border-gray-100">
+    <div class="bg-white w-full max-w-md rounded-lg shadow-xl overflow-hidden p-8 border border-gray-100">
         
         <!-- Header -->
         <div class="text-center mb-10">
@@ -63,7 +63,7 @@
             @csrf
 
             @if ($errors->any())
-                <div class="bg-red-50 text-red-500 p-3 rounded-lg text-sm mb-4">
+                <div class="bg-red-50 text-red-500 p-3 rounded-md text-sm mb-4">
                     {{ $errors->first() }}
                 </div>
             @endif
@@ -76,7 +76,7 @@
                     id="username" 
                     name="username" 
                     placeholder="Masukkan Email atau NIS"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -92,7 +92,7 @@
                     id="password" 
                     name="password" 
                     placeholder="Masukkan Password"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
             </div>
@@ -103,7 +103,7 @@
                     id="remember-me" 
                     name="remember-me" 
                     type="checkbox" 
-                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
+                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded-sm cursor-pointer"
                 >
                 <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
                     Ingat Saya
@@ -114,7 +114,7 @@
             <div>
                 <button 
                     type="submit" 
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition"
                 >
                     Masuk
                 </button>
