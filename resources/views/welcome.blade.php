@@ -162,12 +162,13 @@
                     <h2 class="text-gray-500 font-medium text-sm md:text-base">KATEGORI</h2>
                 </div>
                 <!-- Grid 7 cols on desktop, 1 on mobile -->
-                <div class="grid grid-cols-1 lg:grid-cols-7 border-l border-t border-gray-100">
+                <!-- Added divide-y-4 for mobile and divide-x-4 for desktop to create a clear boundary -->
+                <div class="grid grid-cols-1 lg:grid-cols-7 border-l border-t border-gray-100 divide-y-4 lg:divide-y-0 lg:divide-x-4 divide-gray-100">
                     
                     <!-- ============================================== -->
                     <!-- PRODUK SEKOLAH (3 columns) -->
                     <!-- ============================================== -->
-                    <div class="lg:col-span-3 flex flex-col border-r border-gray-100">
+                    <div class="lg:col-span-3 flex flex-col">
                         <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                             <span class="text-[11px] md:text-xs font-bold text-gray-500 uppercase tracking-wider">Produk Sekolah</span>
                         </div>
