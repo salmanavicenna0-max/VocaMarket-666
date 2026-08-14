@@ -16,8 +16,8 @@
         <div class="container mx-auto px-4 h-36 relative z-30 flex items-center">
             <!-- Left Logo Area -->
             <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
-            <!-- Ditambahkan -ml-4 agar logo sedikit lebih ke kiri -->
-            <div class="w-[250px] shrink-0 h-full flex items-center justify-start pr-4 relative z-40 pb-4 -ml-4 lg:-ml-6">
+            <!-- Ditambahkan margin negatif lebih besar agar logo semakin ke kiri -->
+            <div class="w-[250px] shrink-0 h-full flex items-center justify-start pr-4 relative z-40 pb-4 -ml-8 lg:-ml-12">
                 <a href="{{ url('/') }}" class="flex items-center text-black w-full">
                     <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="w-full h-auto max-h-24 object-contain">
                 </a>
