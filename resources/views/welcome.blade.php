@@ -1,194 +1,59 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce Sekolah</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#007DCC', // Amazon-like Blue requested
-                        accent: '#FFB900',  // Amazon-like Yellow requested
-                        'primary-dark': '#0065a6',
-                        'accent-hover': '#e6a600'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Phosphor Icons for easy UI icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        body {
-            background-color: #E3E6E6; /* Light gray background like Amazon */
-        }
-        /* Utility to hide scrollbar for carousel */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .text-shadow {
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
-        }
-        .text-shadow-sm {
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
-        }
-    </style>
-</head>
-<body class="antialiased min-h-screen flex flex-col">
-
-    <!-- Top Header -->
-    <header class="bg-white shadow-sm relative z-50">
-        
-        <!-- Decorative Ribbon (Two parallel lines) -->
-        <!-- Placed in an exact 144px container (h-36) so coordinates map perfectly -->
-        <div class="absolute top-0 left-0 w-full h-36 z-0 pointer-events-none overflow-hidden">
-            <svg class="w-full h-full opacity-90" preserveAspectRatio="none" viewBox="0 0 1000 144">
-                <!-- Top Line (Blue) -->
-                <!-- Slanting earlier (260 to 320) to stay clear of the Search Bar -->
-                <path d="M -10 102 L 260 102 L 320 45 L 1010 45" fill="none" stroke="#007DCC" stroke-width="10" stroke-linejoin="round" />
-                <!-- Bottom Line (Yellow) -->
-                <path d="M -10 118 L 260 118 L 320 61 L 1010 61" fill="none" stroke="#FFB900" stroke-width="10" stroke-linejoin="round" />
-            </svg>
-        </div>
-
-        <div class="container mx-auto px-4 h-36 relative z-10 flex items-center">
-            <!-- Left Logo Area -->
-            <!-- Aligned to top so it sits above the y=110 ribbon on the left -->
-            <div class="w-auto lg:w-1/4 h-full flex items-start pt-6 pr-4 shrink-0">
-                <a href="#" class="flex items-center gap-2 text-black">
-                    <i class="ph-fill ph-graduation-cap text-4xl md:text-5xl text-primary"></i>
-                    <span class="font-bold text-xl md:text-2xl lg:text-3xl tracking-tight">Toko Sekolah</span>
-                </a>
-            </div>
-            
-            <!-- Right Area (Search & Navbars) -->
-            <div class="flex-1 h-full flex flex-col justify-between">
-
-                <!-- Top Bar Content -->
-                <div class="h-12 flex items-center justify-end text-gray-600 text-xs md:text-sm px-4 gap-5">
-                    <a href="#" class="hover:text-primary transition font-bold">Promo Hari Ini</a>
-                    <span class="text-gray-300">|</span>
-                    <a href="#" class="hover:text-primary transition font-bold">Bantuan</a>
-                    <span class="text-gray-300">|</span>
-                    <a href="#" class="flex items-center gap-1 hover:text-primary transition text-gray-800 font-bold">
-                        <i class="ph-fill ph-user text-lg"></i>
-                        Masuk / Daftar
-                    </a>
-                </div>
-
-                <!-- Bottom White Navbar Content (Search & Cart) -->
-                <!-- Pushed to the right (justify-end) and added padding (pl-24) to avoid the slanted line -->
-                <div class="h-24 flex items-center justify-end pl-12 lg:pl-24">
-                    
-                    <!-- Search Bar -->
-                    <div class="w-full max-w-2xl flex items-center h-12 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white">
-                        <select class="h-full bg-gray-50 text-gray-700 px-4 text-sm outline-none hover:bg-gray-100 cursor-pointer hidden md:block border-none font-medium">
-                            <option>Semua Kategori</option>
-                            <option>Seragam</option>
-                            <option>Alat Tulis</option>
-                        </select>
-                        <input type="text" placeholder="Cari kebutuhan sekolah..." class="h-full w-full px-5 text-black outline-none text-sm border-l border-gray-200">
-                        <button class="bg-accent hover:bg-accent-hover h-full px-8 text-gray-900 transition flex items-center justify-center">
-                            <i class="ph ph-magnifying-glass text-xl font-bold"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Orders & Cart -->
-                    <div class="flex items-center gap-6 ml-8 shrink-0 text-gray-700">
-                        <!-- Notifications (Removed) -->
-
-                        <!-- Cart -->
-                        <a href="#" class="flex items-center gap-2 hover:text-primary transition group">
-                            <div class="relative">
-                                <span class="absolute -top-1.5 -right-2 bg-accent text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded-full shadow-sm z-10">0</span>
-                                <i class="ph ph-shopping-cart text-3xl text-gray-700 group-hover:text-primary"></i>
-                            </div>
-                            <span class="font-bold text-sm hidden md:block text-gray-800 group-hover:text-primary ml-1">Keranjang</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Secondary Navbar (Categories) -->
-        <div class="bg-primary-dark text-white text-sm relative z-20">
-            <div class="container mx-auto px-4 py-2 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
-                <a href="#" class="flex items-center gap-1 hover:text-accent font-bold shrink-0">
-                    <i class="ph ph-list text-lg"></i> Kategori
-                </a>
-                <span class="text-white/30 mx-2 shrink-0">|</span>
-                <a href="#" class="hover:text-accent shrink-0">Seragam Sekolah</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Buku & Alat Tulis</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Atribut Pramuka</a>
-                <a href="#" class="hover:text-accent ml-4 shrink-0">Tas & Sepatu</a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-1 relative bg-gray-50">
-        
-        <!-- Carousel Section -->
+@extends('layouts.app')
+@section('title', 'Beranda - VocaMarket')
+@section('content')
+<!-- Carousel Section -->
         <div class="relative w-full overflow-hidden bg-white" id="main-carousel">
             <!-- Carousel Container -->
             <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth" id="carousel-track">
                 
                 <!-- Slide 1: Promo Seragam -->
                 <div class="w-full shrink-0 snap-center relative">
-                    <img src="{{ asset('images/banner_seragam_1786530000359.png') }}" alt="Promo Seragam Sekolah" class="w-full h-[300px] md:h-[450px] object-cover object-center">
+                    <img src="{{ asset('images/banner_seragam_1786530000359.png') }}" alt="Promo Produk Sekolah" class="w-full h-[300px] md:h-[450px] object-cover object-center">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
                         <div class="container mx-auto px-6 pb-12 md:pb-16 text-white">
-                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Special Promo</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Promo Seragam Sekolah</h2>
-                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Beli seragam baru dengan kualitas terbaik harga terjangkau untuk tahun ajaran baru.</p>
-                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Belanja Sekarang</button>
+                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Produk Esemka</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Koleksi Produk Sekolah</h2>
+                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Temukan Aksesoris, Merchandise, dan perlengkapan lainnya karya siswa Esemka.</p>
+                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Lihat Katalog</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Slide 2: Diskon Buku Tulis -->
                 <div class="w-full shrink-0 snap-center relative">
-                    <img src="{{ asset('images/banner_buku_1786530030265.png') }}" alt="Diskon Buku Tulis" class="w-full h-[300px] md:h-[450px] object-cover object-center">
+                    <img src="{{ asset('images/banner_buku_1786530030265.png') }}" alt="Jasa DKV dan Animasi" class="w-full h-[300px] md:h-[450px] object-cover object-center">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
                         <div class="container mx-auto px-6 pb-12 md:pb-16 text-white">
-                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Diskon Terbesar</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Gudang Alat Tulis</h2>
-                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Lengkapi kebutuhan alat tulis dan buku pelajaran kamu di sini.</p>
-                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Belanja Sekarang</button>
+                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Jasa Profesional</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Layanan DKV & Animasi</h2>
+                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Butuh Desain Grafis, Video Promosi, atau Motion Graphic? Serahkan pada ahlinya.</p>
+                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Pesan Jasa</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Slide 3: Atribut Pramuka -->
                 <div class="w-full shrink-0 snap-center relative">
-                    <img src="{{ asset('images/banner_pramuka_1786530042974.png') }}" alt="Atribut Pramuka Lengkap" class="w-full h-[300px] md:h-[450px] object-cover object-center">
+                    <img src="{{ asset('images/banner_pramuka_1786530042974.png') }}" alt="Jasa PPLG" class="w-full h-[300px] md:h-[450px] object-cover object-center">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
                         <div class="container mx-auto px-6 pb-12 md:pb-16 text-white">
-                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Pramuka Lengkap</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Koleksi Atribut Pramuka</h2>
-                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Dari topi hingga sabuk, temukan semua atribut pramuka dengan mudah.</p>
-                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Belanja Sekarang</button>
+                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Solusi IT</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Layanan Jasa PPLG</h2>
+                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Pembuatan Website, Aplikasi Mobile, Hosting, hingga Game Development.</p>
+                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Konsultasi Sekarang</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Slide 4: Tas & Sepatu -->
                 <div class="w-full shrink-0 snap-center relative">
-                    <img src="{{ asset('images/banner_tas_1786530062086.png') }}" alt="Tas & Sepatu Sekolah" class="w-full h-[300px] md:h-[450px] object-cover object-center">
+                    <img src="{{ asset('images/banner_tas_1786530062086.png') }}" alt="Jasa Pemasaran & Akuntansi" class="w-full h-[300px] md:h-[450px] object-cover object-center">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
                         <div class="container mx-auto px-6 pb-12 md:pb-16 text-white">
-                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Koleksi Baru</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Tas & Sepatu Sekolah</h2>
-                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Tampil lebih gaya di sekolah dengan koleksi sepatu dan tas terbaru kami.</p>
-                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Belanja Sekarang</button>
+                            <span class="bg-accent text-gray-900 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-3 inline-block">Bisnis & Finansial</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold mb-2 text-shadow">Pemasaran & Akuntansi</h2>
+                            <p class="text-sm md:text-lg font-medium text-gray-100 max-w-xl text-shadow-sm">Solusi Digital Marketing, Pembukuan, hingga Konsultasi Pajak untuk bisnis Anda.</p>
+                            <button class="mt-4 bg-primary text-white font-bold px-6 py-2.5 rounded shadow hover:bg-primary-dark transition">Pelajari Lebih Lanjut</button>
                         </div>
                     </div>
                 </div>
@@ -396,241 +261,37 @@
             </div>
             
             <!-- Product Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                
-                <!-- Product 1 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-8">
+                @foreach($products as $product)
+                <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
                     <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/seragam/300/300" alt="Product" class="w-full h-full object-cover">
+                        <img src="{{ $product->image_path }}" alt="Product" class="w-full h-full object-cover">
+                        @if($product->is_promo)
                         <!-- Top left badge -->
                         <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
                             <span>Promo</span>
                             <span>Extra</span>
                         </div>
+                        @endif
+                        @if($product->discount_percentage)
                         <!-- Top right badge -->
                         <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
-                            -15%
+                            -{{ $product->discount_percentage }}%
                         </div>
+                        @endif
                     </div>
                     <div class="p-2.5 flex flex-col flex-1">
                         <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star+</span>
-                            Seragam SD Merah Putih Lengan Pendek Berkualitas
+                            {{ $product->name }}
                         </h3>
                         <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp55.000</span>
-                            <span class="text-[11px] text-gray-500">10RB+ terjual</span>
+                            <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                            <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
                         </div>
                     </div>
                 </a>
-
-                <!-- Product 2 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/buku/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star</span>
-                            Buku Tulis Sinar Dunia 38 Lembar (Pack isi 10)
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp28.500</span>
-                            <span class="text-[11px] text-gray-500">5,4RB terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 3 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/sepatu/300/300" alt="Product" class="w-full h-full object-cover">
-                        <!-- Top left badge -->
-                        <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
-                            <span>Promo</span>
-                            <span>Extra</span>
-                        </div>
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            Sepatu Sekolah Hitam Polos Anti Slip PX Style
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp120.000</span>
-                            <span class="text-[11px] text-gray-500">2RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 4 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/tas/300/300" alt="Product" class="w-full h-full object-cover">
-                        <!-- Top right badge -->
-                        <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
-                            -30%
-                        </div>
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star+</span>
-                            Tas Ransel Sekolah Pria Wanita SMP SMA / Tas Backpack
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp85.000</span>
-                            <span class="text-[11px] text-gray-500">1RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 5 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/pensil/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            Pensil 2B Faber Castell Hitam Isi 12 pcs / 1 Lusin
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp18.500</span>
-                            <span class="text-[11px] text-gray-500">20RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 6 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/topi/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star</span>
-                            Topi Pramuka Penggalang SD SMP SMA Logo Bordir
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp12.000</span>
-                            <span class="text-[11px] text-gray-500">800 terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 7 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/smp/300/300" alt="Product" class="w-full h-full object-cover">
-                        <!-- Top right badge -->
-                        <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
-                            -10%
-                        </div>
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            Seragam SMP Putih Biru Setelan Lengkap Pria/Wanita
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp110.000</span>
-                            <span class="text-[11px] text-gray-500">1,5RB terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 8 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/penggaris/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star+</span>
-                            Penggaris Besi 30cm / Mistar Baja Stainless Steel
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp5.000</span>
-                            <span class="text-[11px] text-gray-500">10RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 9 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/bukugambar/300/300" alt="Product" class="w-full h-full object-cover">
-                        <!-- Top left badge -->
-                        <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
-                            <span>Promo</span>
-                            <span>Extra</span>
-                        </div>
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            Buku Gambar A3 Kiky Kertas Tebal Tidak Mudah Tembus
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp8.500</span>
-                            <span class="text-[11px] text-gray-500">3,2RB terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 10 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/kaoskaki/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            Kaos Kaki Putih Telapak Hitam SD SMP SMA Anti Kotor
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp10.000</span>
-                            <span class="text-[11px] text-gray-500">5RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-                
-                <!-- Product 11 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/ikatpinggang/300/300" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star</span>
-                            Ikat Pinggang Sabuk Sekolah Hitam Logo OSIS Standar
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp15.000</span>
-                            <span class="text-[11px] text-gray-500">4,1RB terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Product 12 -->
-                <a href="#" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="https://picsum.photos/seed/pena/300/300" alt="Product" class="w-full h-full object-cover">
-                        <!-- Top right badge -->
-                        <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
-                            -25%
-                        </div>
-                    </div>
-                    <div class="p-2.5 flex flex-col flex-1">
-                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                            <span class="bg-primary text-white text-[9px] font-bold px-1 py-0.5 rounded-sm mr-1 align-middle">Star+</span>
-                            Pena Ballpoint Hitam Standard AE-7 Isi 12 Pcs
-                        </h3>
-                        <div class="mt-2 flex items-center justify-between mt-auto">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp14.500</span>
-                            <span class="text-[11px] text-gray-500">15RB+ terjual</span>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
-            
-            <div class="flex justify-center mt-8">
+                @endforeach
+            </div><div class="flex justify-center mt-8">
                 <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-12 py-2 rounded-sm shadow-sm transition font-medium">Muat Lebih Banyak</button>
             </div>
         </div>
@@ -666,100 +327,7 @@
             </div>
         </div>
 
-    </main>
+    
+@endsection
 
-    <!-- Footer E-Commerce -->
-    <footer class="bg-[#f5f5f5] border-t-4 border-primary pt-12 pb-8 mt-auto text-gray-600 text-[13px]">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
-                
-                <!-- Layanan Pelanggan -->
-                <div class="lg:col-span-1">
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Layanan Pelanggan</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="hover:text-primary transition">Bantuan</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Metode Pembayaran</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Lacak Pesanan Pembeli</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Gratis Ongkir</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Pengembalian Barang</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Hubungi Kami</a></li>
-                    </ul>
-                </div>
 
-                <!-- Jelajahi -->
-                <div class="lg:col-span-1">
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Jelajahi E-Sekolah</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="hover:text-primary transition">Tentang Kami</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Karir</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Kebijakan Privasi</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Syarat & Ketentuan</a></li>
-                        <li><a href="#" class="hover:text-primary transition">Blog</a></li>
-                    </ul>
-                </div>
-
-                <!-- Pembayaran & Pengiriman -->
-                <div class="lg:col-span-2">
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Pembayaran</h4>
-                    <div class="flex flex-wrap gap-2 mb-8">
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-800 hover:shadow-md transition">BCA</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-600 hover:shadow-md transition">MANDIRI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-orange-500 hover:shadow-md transition">BNI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-900 hover:shadow-md transition">BRI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-green-500 hover:shadow-md transition">GOPAY</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-purple-600 hover:shadow-md transition">OVO</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-400 hover:shadow-md transition">DANA</div>
-                    </div>
-
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Pengiriman</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-600 hover:shadow-md transition">JNE</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-500 hover:shadow-md transition">J&T</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-500 hover:shadow-md transition">TIKI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-700 hover:shadow-md transition">SICEPAT</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-green-600 hover:shadow-md transition">GOSEND</div>
-                    </div>
-                </div>
-
-                <!-- Ikuti Kami & Download App -->
-                <div class="lg:col-span-1">
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Ikuti Kami</h4>
-                    <ul class="space-y-4 mb-8">
-                        <li><a href="#" class="flex items-center gap-3 hover:text-primary transition"><i class="ph-fill ph-facebook-logo text-xl text-blue-600"></i> Facebook</a></li>
-                        <li><a href="#" class="flex items-center gap-3 hover:text-primary transition"><i class="ph-fill ph-instagram-logo text-xl text-pink-600"></i> Instagram</a></li>
-                        <li><a href="#" class="flex items-center gap-3 hover:text-primary transition"><i class="ph-fill ph-twitter-logo text-xl text-blue-400"></i> Twitter</a></li>
-                    </ul>
-
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Download App E-Sekolah</h4>
-                    <div class="flex flex-col gap-2">
-                        <a href="#" class="w-32 h-10 bg-gray-800 text-white rounded flex items-center justify-center gap-2 hover:bg-gray-700 transition">
-                            <i class="ph-fill ph-google-play-logo text-lg"></i>
-                            <div class="flex flex-col items-start leading-none">
-                                <span class="text-[8px]">GET IT ON</span>
-                                <span class="text-[11px] font-bold">Google Play</span>
-                            </div>
-                        </a>
-                        <a href="#" class="w-32 h-10 bg-gray-800 text-white rounded flex items-center justify-center gap-2 hover:bg-gray-700 transition">
-                            <i class="ph-fill ph-apple-logo text-lg"></i>
-                            <div class="flex flex-col items-start leading-none">
-                                <span class="text-[8px]">Download on the</span>
-                                <span class="text-[11px] font-bold">App Store</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Copyright -->
-            <div class="border-t border-gray-300 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
-                <p>&copy; 2026 E-Commerce Sekolah. Hak Cipta Dilindungi.</p>
-                <div class="flex gap-4 mt-4 md:mt-0">
-                    <span>Negara: Indonesia</span>
-                    <span>Bahasa: Indonesia</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
