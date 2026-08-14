@@ -64,7 +64,7 @@
                 </a>
             </nav>
         </div>
-        
+
         <div class="p-6">
             <h3 class="font-bold text-xs">SMK BAKTI NUSANTARA 666</h3>
         </div>
@@ -72,7 +72,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col h-full overflow-hidden">
-        
+
         <!-- Header -->
         <header class="h-20 px-8 flex items-center justify-between shrink-0">
             <!-- Search -->
@@ -94,7 +94,7 @@
 
         <!-- Content Scrollable -->
         <div class="flex-1 overflow-y-auto px-8 pb-8">
-            
+
             <!-- Stats Grid -->
             <div class="grid grid-cols-4 gap-6 mb-6">
                 <!-- Stat 1 -->
@@ -161,7 +161,7 @@
                             <div class="border-t border-gray-100 w-full"></div>
                             <div class="border-t border-gray-100 w-full"></div>
                         </div>
-                        
+
                         <!-- SVG Line Chart -->
                         <svg class="w-full h-[calc(100%-2rem)] absolute bottom-8 left-0 z-10 overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
                             <!-- Line -->
@@ -191,7 +191,7 @@
                 <div class="col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
                     <h2 class="font-bold text-gray-800 text-base mb-1">Produk & Jasa per Jurusan</h2>
                     <p class="text-[11px] text-gray-500 mb-6">Pembagian penawaran siswa tiap konsentrasi keahlian</p>
-                    
+
                     <div class="flex flex-col gap-4 flex-1 justify-center">
                         <!-- PPLG -->
                         <div>
@@ -268,7 +268,7 @@
                                 <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> 12 Jasa</span>
                             </div>
                         </div>
-                        
+
                         <!-- Akuntansi -->
                         <div>
                             <div class="flex justify-between items-center mb-2">
@@ -301,7 +301,7 @@
                     </div>
                     <a href="#" class="text-xs font-bold text-blue-600 hover:text-blue-700">Lihat Semua Transaksi</a>
                 </div>
-                
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-[13px] text-gray-600">
                         <thead class="bg-gray-100/70 text-[10px] font-bold text-gray-600 uppercase tracking-wider">

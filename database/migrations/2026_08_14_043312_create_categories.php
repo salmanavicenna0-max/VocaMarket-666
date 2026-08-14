@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profiles', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('photo')->nullable();
-            $table->string('class')->nullable();
-            $table->integer('no_telp')->nullable();
+            $table->string('name_kategori');
+            $table->enum('type', ['produk', 'jasa']);
+            $table->text('description')->default('NULL');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('categories');
     }
 };
