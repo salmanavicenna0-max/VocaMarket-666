@@ -62,6 +62,11 @@
                         </button>
                     </li>
                     <li class="border-t border-gray-100">
+                        <button onclick="switchTab('bukatoko')" id="nav-bukatoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-green-600 font-bold hover:bg-green-50 transition border-l-4 border-transparent">
+                            <i class="ph-bold ph-storefront text-xl"></i> Buka Toko
+                        </button>
+                    </li>
+                    <li class="border-t border-gray-100">
                         <a href="{{ url('/') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-sign-out text-xl"></i> Keluar
                         </a>
@@ -288,6 +293,52 @@
                                 <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
                             </label>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Buka Toko -->
+            <div id="tab-bukatoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
+                    <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
+                        <i class="ph-fill ph-storefront"></i> Formulir Buka Toko
+                    </h2>
+                    <p class="text-green-700 text-sm mt-1">Verifikasi identitas siswa Anda untuk mulai berjualan di VocaMarket</p>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-6">
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex gap-3 text-sm text-blue-800">
+                        <i class="ph-fill ph-info text-xl shrink-0"></i>
+                        <p>Pastikan nama toko dan foto kartu pelajar yang Anda unggah terlihat jelas. Proses verifikasi biasanya memakan waktu 1x24 jam kerja.</p>
+                    </div>
+
+                    <div class="flex flex-col gap-4 max-w-lg">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko <span class="text-red-500">*</span></label>
+                            <input type="text" placeholder="Contoh: Toko Seragam Budi" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Kelas / Jurusan <span class="text-red-500">*</span></label>
+                            <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                                <option disabled selected>Pilih Kelas & Jurusan</option>
+                                <option>X PPLG</option>
+                                <option>XI PPLG</option>
+                                <option>XII PPLG</option>
+                                <option>Lainnya...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Upload Foto Kartu Pelajar <span class="text-red-500">*</span></label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
+                                <i class="ph-bold ph-upload-simple text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm font-bold text-primary">Klik untuk unggah gambar</p>
+                                <p class="text-xs text-gray-500 mt-1">Format JPG/PNG maksimal 2MB</p>
+                            </div>
+                        </div>
+                        
+                        <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg w-full mt-4 transition shadow-sm">
+                            Ajukan Verifikasi Toko
+                        </button>
                     </div>
                 </div>
             </div>
