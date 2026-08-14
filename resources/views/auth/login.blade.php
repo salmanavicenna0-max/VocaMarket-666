@@ -81,8 +81,9 @@
                 >
             </div>
 
-            <!-- Password -->
+            <!-- Password Section -->
             <div>
+                <!-- Password Input -->
                 <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                 <input 
                     type="password" 
@@ -92,22 +93,22 @@
                     class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >
-            </div>
 
-            <!-- Remember Me & Forgot Password -->
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input 
-                        id="remember-me" 
-                        name="remember-me" 
-                        type="checkbox" 
-                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded-sm cursor-pointer"
-                    >
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
-                        Ingat Saya
-                    </label>
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between mt-3">
+                    <div class="flex items-center">
+                        <input 
+                            id="remember-me" 
+                            name="remember-me" 
+                            type="checkbox" 
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded-sm cursor-pointer"
+                        >
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-600 cursor-pointer">
+                            Ingat Saya
+                        </label>
+                    </div>
+                    <a href="#" class="text-xs font-semibold text-primary hover:text-blue-800 transition">Lupa password?</a>
                 </div>
-                <a href="#" class="text-xs font-semibold text-primary hover:text-blue-800 transition">Lupa password?</a>
             </div>
 
             <!-- Submit Button -->
