@@ -15,19 +15,19 @@
         <div class="px-6 md:px-10 pb-6 -mt-16 relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6">
             <!-- Avatar -->
             <div class="w-32 h-32 rounded-full border-4 border-white bg-white shadow-md overflow-hidden shrink-0">
-                <img src="https://ui-avatars.com/api/?name=Siswa+Esemka&background=random&size=128" alt="Profile" class="w-full h-full object-cover">
+                <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=0a84d4&color=fff&size=128" alt="Profile" class="w-full h-full object-cover">
             </div>
             
             <!-- Info -->
             <div class="flex-grow text-center md:text-left pt-4 md:pt-0">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Toko Siswa Esemka</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Toko Budi Santoso</h1>
                 <p class="text-gray-500 mt-1 flex items-center justify-center md:justify-start gap-1">
-                    <i class="ph-fill ph-graduation-cap text-primary"></i> Siswa Kelas XII RPL 1
+                    <i class="ph-fill ph-graduation-cap text-primary"></i> Siswa Kelas X PPLG
                 </p>
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
                     <span class="flex items-center gap-1"><i class="ph-fill ph-star text-yellow-400 text-lg"></i> 4.9 (120 Ulasan)</span>
                     <span class="flex items-center gap-1"><i class="ph-fill ph-box-arrow-up text-green-500 text-lg"></i> 345 Terjual</span>
-                    <span class="flex items-center gap-1"><i class="ph-fill ph-map-pin text-red-500 text-lg"></i> SMK Esemka</span>
+                    <span class="flex items-center gap-1"><i class="ph-fill ph-map-pin text-red-500 text-lg"></i> SMK Bakti Nusantara 666</span>
                 </div>
             </div>
             
@@ -43,7 +43,7 @@
         <div class="px-6 md:px-10 py-6 border-t border-gray-100 bg-gray-50/50">
             <h3 class="font-bold text-gray-900 mb-2">Tentang Penjual</h3>
             <p class="text-gray-600 text-sm leading-relaxed">
-                Halo! Kami adalah toko resmi yang dikelola oleh siswa-siswi jurusan PPLG. Kami menyediakan berbagai macam produk mulai dari seragam sekolah, alat tulis, hingga jasa pembuatan website dan desain grafis. Seluruh keuntungan akan masuk ke kas kelas. Terima kasih sudah berbelanja!
+                Halo! Ini adalah toko resmi milik Budi Santoso, siswa kelas X PPLG. Di sini saya menyediakan berbagai macam karya dan jasa, mulai dari pembuatan website, desain grafis, hingga merchandise unik SMK. Mari dukung karya siswa!
             </p>
         </div>
     </div>
