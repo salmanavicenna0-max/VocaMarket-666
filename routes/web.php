@@ -33,7 +33,9 @@ Route::get('/seller/{id?}', function () {
 
 Route::get('/user', function () {
     return view('profile.user');
-});
+})->middleware('auth');
+
+Route::post('/user/request-seller', [UserController::class, 'requestSeller'])->name('user.request_seller')->middleware('auth');
 
 Route::get('/chat', function () {
     return view('chat.index');
@@ -48,3 +50,4 @@ Route::get('/admin/dashboard', function () {
 });
 
 Route::resource('admin/users', UserController::class)->names('users');
+Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');

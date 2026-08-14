@@ -29,13 +29,15 @@
             <!-- Profil Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col items-center text-center">
                 <div class="relative mb-3">
-                    <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=0a84d4&color=fff&size=128" alt="Profile" class="w-20 h-20 rounded-full border-4 border-white shadow-md object-cover">
+                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-blue-100 text-primary font-bold flex items-center justify-center text-3xl">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                    </div>
                     <button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition">
                         <i class="ph-bold ph-pencil-simple text-xs"></i>
                     </button>
                 </div>
-                <h3 class="font-bold text-gray-900 text-lg">Budi Santoso</h3>
-                <p class="text-gray-500 text-sm">budi.santoso@email.com</p>
+                <h3 class="font-bold text-gray-900 text-lg">{{ Auth::user()->name }}</h3>
+                <p class="text-gray-500 text-sm">{{ Auth::user()->email ?? Auth::user()->nis }}</p>
             </div>
 
             <!-- Menu Navigasi -->
@@ -307,35 +309,48 @@
                 </div>
                 
                 <div class="p-6 flex flex-col gap-6">
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex gap-3 text-sm text-blue-800">
-                        <i class="ph-fill ph-info text-xl shrink-0"></i>
-                        <p>Pastikan foto kartu pelajar yang Anda unggah terlihat jelas. Nama toko Anda akan secara otomatis disesuaikan dengan nama profil Anda. Proses verifikasi biasanya memakan waktu 1x24 jam kerja.</p>
-                    </div>
-
-                    <div class="flex flex-col gap-4 max-w-lg">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Kelas / Jurusan <span class="text-red-500">*</span></label>
-                            <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
-                                <option disabled selected>Pilih Kelas & Jurusan</option>
-                                <option>X PPLG</option>
-                                <option>XI PPLG</option>
-                                <option>XII PPLG</option>
-                                <option>Lainnya...</option>
-                            </select>
+                    @if(Auth::user()->seller_status === 'pending')
+                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-lg text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-clock text-4xl text-yellow-500 mb-3"></i>
+                            <h3 class="font-bold text-yellow-800 text-lg">Permintaan Sedang Diproses</h3>
+                            <p class="text-yellow-700 text-sm mt-2 max-w-md">Pengajuan buka toko Anda sedang diverifikasi oleh Administrator. Mohon tunggu 1x24 jam kerja. Kami akan memberi tahu Anda jika toko sudah disetujui.</p>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Upload Foto Kartu Pelajar <span class="text-red-500">*</span></label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition cursor-pointer">
-                                <i class="ph-bold ph-upload-simple text-3xl text-gray-400 mb-2"></i>
-                                <p class="text-sm font-bold text-primary">Klik untuk unggah gambar</p>
-                                <p class="text-xs text-gray-500 mt-1">Format JPG/PNG maksimal 2MB</p>
+                    @elseif(Auth::user()->seller_status === 'approved')
+                        <div class="bg-green-50 border border-green-200 p-6 rounded-lg text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-check-circle text-4xl text-green-500 mb-3"></i>
+                            <h3 class="font-bold text-green-800 text-lg">Toko Anda Sudah Aktif!</h3>
+                            <p class="text-green-700 text-sm mt-2 mb-4">Selamat! Pengajuan toko Anda telah disetujui. Anda sekarang dapat mulai mengelola produk dan berjualan.</p>
+                            <a href="{{ url('/seller/dashboard') }}" class="px-6 py-2 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition">Ke Dashboard Penjual</a>
+                        </div>
+                    @else
+                        @if(session('success'))
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                                <span class="block sm:inline">{{ session('success') }}</span>
                             </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <span class="block sm:inline">{{ session('error') }}</span>
+                            </div>
+                        @endif
+
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex gap-3 text-sm text-blue-800">
+                            <i class="ph-fill ph-info text-xl shrink-0"></i>
+                            <p>Pastikan data Anda sesuai. Proses verifikasi biasanya memakan waktu 1x24 jam kerja setelah Anda menekan tombol ajukan.</p>
                         </div>
-                        
-                        <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg w-full mt-4 transition shadow-sm">
-                            Ajukan Verifikasi Toko
-                        </button>
-                    </div>
+
+                        <form method="POST" action="{{ route('user.request_seller') }}" class="flex flex-col gap-4 max-w-lg">
+                            @csrf
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Akun <span class="text-red-500">*</span></label>
+                                <input type="text" value="{{ Auth::user()->name }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
+                            </div>
+                            
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg w-full mt-4 transition shadow-sm flex items-center justify-center gap-2">
+                                <i class="ph-bold ph-paper-plane-tilt"></i> Ajukan Verifikasi Toko Sekarang
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
             

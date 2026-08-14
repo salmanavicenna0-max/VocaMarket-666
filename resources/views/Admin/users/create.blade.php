@@ -262,47 +262,6 @@
                                 </div>
                             </div>
 
-                            <!-- Status Verifikasi Email -->
-                            <div class="col-span-2 md:col-span-1">
-                                <label for="email_verification" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Status Verifikasi Email
-                                </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                                        <i class="ph-bold ph-seal-check text-base"></i>
-                                    </div>
-                                    <select 
-                                        id="email_verification" 
-                                        name="email_verification" 
-                                        class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer"
-                                    >
-                                        <option value="verified" selected>Verified (Terverifikasi)</option>
-                                        <option value="unverified">Unverified (Belum Verifikasi)</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-gray-400">
-                                        <i class="ph-bold ph-caret-down text-sm"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Verifikasi Penjual (Verification Seller) -->
-                            <div class="col-span-2 bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-800">Verifikasi Penjual (Seller Status)</h4>
-                                    <p class="text-xs text-gray-500">Izinkan akun ini untuk menjual produk & jasa di Voca Market</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input 
-                                        type="checkbox" 
-                                        name="verification_seller" 
-                                        value="1" 
-                                        class="sr-only peer"
-                                        {{ old('verification_seller') ? 'checked' : '' }}
-                                    >
-                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
-                            </div>
-
                         </div>
 
                         <!-- Buttons -->
