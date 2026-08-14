@@ -62,11 +62,6 @@
                             <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-wallet text-xl"></i> Saldo Penjual
-                        </a>
-                    </li>
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-arrow-left text-xl"></i> Kembali ke Pembeli
