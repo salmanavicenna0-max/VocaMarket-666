@@ -28,14 +28,23 @@
         
         <!-- Header -->
         <div class="text-center mb-10">
-            <h1 class="font-bold text-3xl text-primary tracking-tight mb-1">
-                Voca Market <span class="text-accent">666</span>
-            </h1>
+            <a href="{{ url('/') }}" class="inline-block hover:opacity-90 transition">
+                <h1 class="font-bold text-3xl text-primary tracking-tight mb-1">
+                    Voca Market <span class="text-accent">666</span>
+                </h1>
+            </a>
             <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">SMK Bakti Nusantara</p>
         </div>
 
         <!-- Form -->
-        <form action="#" method="POST" class="space-y-6">
+        <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+            @csrf
+
+            @if ($errors->any())
+                <div class="bg-red-50 text-red-500 p-3 rounded-lg text-sm mb-4">
+                    {{ $errors->first() }}
+                </div>
+            @endif
             
             <!-- Email / NIS -->
             <div>

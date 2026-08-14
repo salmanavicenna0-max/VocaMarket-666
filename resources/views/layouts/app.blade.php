@@ -127,7 +127,7 @@
                             <i class="ph-bold ph-shopping-cart text-2xl group-hover:scale-110 transition-transform"></i>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">2</span>
                         </a>
-                        <a href="#" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
                             Masuk
                         </a>
                         <a href="#" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition shadow-sm whitespace-nowrap text-sm">
