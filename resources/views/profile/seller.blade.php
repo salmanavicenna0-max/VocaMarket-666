@@ -29,6 +29,10 @@
                     <span class="flex items-center gap-1"><i class="ph-fill ph-box-arrow-up text-green-500 text-lg"></i> 345 Terjual</span>
                     <span class="flex items-center gap-1"><i class="ph-fill ph-map-pin text-red-500 text-lg"></i> SMK Bakti Nusantara 666</span>
                 </div>
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-2 text-sm text-gray-600">
+                    <span class="flex items-center gap-1"><i class="ph-fill ph-envelope-simple text-blue-500 text-lg"></i> budi.santoso@email.com</span>
+                    <span class="flex items-center gap-1"><i class="ph-fill ph-phone text-green-500 text-lg"></i> +62 81234567890</span>
+                </div>
             </div>
             
             <!-- Actions -->
