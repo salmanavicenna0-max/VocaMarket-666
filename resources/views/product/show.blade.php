@@ -155,9 +155,9 @@
                     <button class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
                         + Keranjang
                     </button>
-                    <button class="w-full py-2.5 bg-white text-primary font-bold border border-primary rounded-xl hover:bg-blue-50 transition">
+                    <a href="{{ url('/checkout') }}" class="w-full py-2.5 bg-white text-primary font-bold border border-primary rounded-xl hover:bg-blue-50 transition flex items-center justify-center">
                         Beli Langsung
-                    </button>
+                    </a>
                 </div>
                 
                 <!-- Extras -->
