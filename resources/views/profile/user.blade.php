@@ -40,34 +40,29 @@
 
             <!-- Menu Navigasi -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <ul class="flex flex-col">
+                <ul class="flex flex-col" id="nav-tabs">
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary">
+                        <button onclick="switchTab('biodata')" id="nav-biodata" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
                             <i class="ph-fill ph-user text-xl"></i> Biodata Diri
-                        </a>
+                        </button>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                        <button onclick="switchTab('transaksi')" id="nav-transaksi" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-receipt text-xl"></i> Daftar Transaksi
-                        </a>
+                        </button>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                        <button onclick="switchTab('ulasan')" id="nav-ulasan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-star text-xl"></i> Ulasan Saya
-                        </a>
+                        </button>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-map-pin text-xl"></i> Buku Alamat
-                        </a>
-                    </li>
-                    <li class="border-t border-gray-100">
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                        <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-gear text-xl"></i> Pengaturan
-                        </a>
+                        </button>
                     </li>
                     <li class="border-t border-gray-100">
-                        <a href="#" class="flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
+                        <a href="{{ url('/') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-sign-out text-xl"></i> Keluar
                         </a>
                     </li>
@@ -78,37 +73,28 @@
 
         <!-- Konten Kanan -->
         <div class="lg:col-span-3">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            
+            <!-- TAB: Biodata Diri -->
+            <div id="tab-biodata" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content block">
                 <div class="p-6 border-b border-gray-200">
                     <h2 class="text-xl font-bold text-gray-900">Biodata Diri</h2>
                     <p class="text-gray-500 text-sm mt-1">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
                 </div>
-                
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        
-                        <!-- Form Data Diri -->
                         <div class="flex flex-col gap-5">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Lengkap</label>
                                 <input type="text" value="Budi Santoso" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
                             </div>
-                            
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Lahir</label>
                                 <div class="flex gap-2">
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
-                                        <option>15</option>
-                                    </select>
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
-                                        <option>Agustus</option>
-                                    </select>
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
-                                        <option>2005</option>
-                                    </select>
+                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>15</option></select>
+                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>Agustus</option></select>
+                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>2005</option></select>
                                 </div>
                             </div>
-                            
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Kelamin</label>
                                 <div class="flex items-center gap-6">
@@ -123,8 +109,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Form Kontak -->
                         <div class="flex flex-col gap-5">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5 flex justify-between items-center">
@@ -136,7 +120,6 @@
                                     <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded border border-green-200 shrink-0">Terverifikasi</span>
                                 </div>
                             </div>
-
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5 flex justify-between items-center">
                                     Nomor Telepon
@@ -152,11 +135,158 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="mt-8 pt-6 border-t border-gray-100">
-                        <button class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-sm transition">
-                            Simpan Perubahan
-                        </button>
+                        <button class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-sm transition">Simpan Perubahan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Daftar Transaksi -->
+            <div id="tab-transaksi" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Daftar Transaksi</h2>
+                        <p class="text-gray-500 text-sm mt-1">Pantau status pesanan dan riwayat belanja Anda</p>
+                    </div>
+                    <!-- Filter Status -->
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary">
+                        <option>Semua Status</option>
+                        <option>Menunggu Pembayaran</option>
+                        <option>Sedang Dikemas</option>
+                        <option>Sedang Dikirim</option>
+                        <option>Selesai</option>
+                    </select>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-4">
+                    <!-- Transaksi 1 -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition">
+                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-storefront text-gray-500 text-xl"></i>
+                                <span class="font-bold text-gray-900">Toko Seragam Esemka</span>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200">Sedang Dikemas</span>
+                        </div>
+                        <div class="p-4 flex gap-4">
+                            <img src="https://picsum.photos/seed/seragam/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900">Seragam SD Merah Putih Lengan Pendek Berkualitas</h4>
+                                <p class="text-xs text-gray-500 mt-1">1 barang x Rp55.000</p>
+                            </div>
+                            <div class="text-right flex flex-col justify-between">
+                                <div>
+                                    <p class="text-xs text-gray-500">Total Belanja</p>
+                                    <p class="font-bold text-primary text-lg">Rp55.000</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2">
+                            <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Lacak Pesanan</button>
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition">Hubungi Penjual</button>
+                        </div>
+                    </div>
+
+                    <!-- Transaksi 2 -->
+                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition">
+                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-storefront text-gray-500 text-xl"></i>
+                                <span class="font-bold text-gray-900">Studio Animasi 666</span>
+                            </div>
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200">Selesai</span>
+                        </div>
+                        <div class="p-4 flex gap-4">
+                            <img src="https://picsum.photos/seed/desain/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900">Jasa Pembuatan Logo Bisnis & E-Sports Profesional</h4>
+                                <p class="text-xs text-gray-500 mt-1">1 barang x Rp150.000</p>
+                            </div>
+                            <div class="text-right flex flex-col justify-between">
+                                <div>
+                                    <p class="text-xs text-gray-500">Total Belanja</p>
+                                    <p class="font-bold text-primary text-lg">Rp150.000</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2">
+                            <button class="px-4 py-2 bg-white border border-primary text-primary rounded-lg text-sm font-bold hover:bg-blue-50 transition">Beli Lagi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Ulasan Saya -->
+            <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Ulasan Saya</h2>
+                    <p class="text-gray-500 text-sm mt-1">Berikan ulasan untuk produk yang telah Anda beli</p>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-4">
+                    <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl flex justify-between items-center">
+                        <div class="flex gap-4">
+                            <img src="https://picsum.photos/seed/desain/150/150" class="w-16 h-16 rounded-lg object-cover border border-gray-100">
+                            <div>
+                                <h4 class="font-bold text-gray-900 text-sm">Jasa Pembuatan Logo Bisnis & E-Sports Profesional</h4>
+                                <p class="text-xs text-gray-500 mt-1">Studio Animasi 666</p>
+                                <div class="flex text-yellow-400 mt-2 text-sm">
+                                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition">Tulis Ulasan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Pengaturan -->
+            <div id="tab-pengaturan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Pengaturan Akun</h2>
+                    <p class="text-gray-500 text-sm mt-1">Atur preferensi notifikasi dan keamanan akun Anda</p>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-6">
+                    <!-- Ubah Password -->
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Ubah Kata Sandi</h3>
+                        <div class="flex flex-col gap-4 max-w-md">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Kata Sandi Saat Ini</label>
+                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Kata Sandi Baru</label>
+                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Konfirmasi Kata Sandi Baru</label>
+                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                            </div>
+                            <button class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifikasi -->
+                    <div class="mt-4">
+                        <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Notifikasi</h3>
+                        <div class="flex flex-col gap-3">
+                            <label class="flex items-center justify-between cursor-pointer">
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Promo & Diskon</p>
+                                    <p class="text-xs text-gray-500">Dapatkan info terbaru tentang diskon di VocaMarket</p>
+                                </div>
+                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer">
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Pembaruan Pesanan</p>
+                                    <p class="text-xs text-gray-500">Pemberitahuan setiap kali status pesanan Anda berubah</p>
+                                </div>
+                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,4 +294,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    function switchTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(el => {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+        });
+        
+        // Remove active state from all nav buttons
+        document.querySelectorAll('#nav-tabs button').forEach(el => {
+            el.classList.remove('text-primary', 'bg-blue-50', 'border-primary');
+            el.classList.add('text-gray-600', 'border-transparent');
+        });
+        
+        // Show target tab content
+        document.getElementById('tab-' + tabId).classList.remove('hidden');
+        document.getElementById('tab-' + tabId).classList.add('block');
+        
+        // Set active state on clicked nav button
+        const activeNav = document.getElementById('nav-' + tabId);
+        activeNav.classList.remove('text-gray-600', 'border-transparent');
+        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+    }
+</script>
 @endsection
