@@ -11,10 +11,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0a84d4', // Custom Blue requested
-                        accent: '#FFB900',  // Amazon-like Yellow requested
-                        'primary-dark': '#086ab0',
-                        'accent-hover': '#e6a600',
+                        primary: '#0a84d4', 
+                        accent: '#ffb900',  
+                        'primary-dark': '#0a84d4',
+                        'accent-hover': '#ffb900',
                         blue: {
                             50: '#eef8ff',
                             100: '#d9efff',
