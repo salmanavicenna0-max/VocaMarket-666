@@ -55,7 +55,7 @@
             <a href="{{ url('/') }}" class="inline-block hover:opacity-90 transition">
                 <img src="{{ asset('images/Logo_VocaMarket.png') }}" alt="VocaMarket Logo" class="h-24 w-auto mx-auto object-contain">
             </a>
-            <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">SMK Bakti Nusantara</p>
+            <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Selamat Datang Kembali</p>
         </div>
 
         <!-- Form -->
