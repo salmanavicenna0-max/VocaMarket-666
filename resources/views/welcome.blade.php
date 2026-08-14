@@ -179,9 +179,9 @@
                         <i class="ph-fill ph-t-shirt text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
                         <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Merchandise</span>
                     </a>
-                    <a href="{{ route('kategori', 'pepelege-produk') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
+                    <a href="{{ route('kategori', 'hardware') }}" class="flex flex-col items-center justify-center p-4 border-r border-b border-gray-100 bg-white hover:shadow-lg transition relative hover:-translate-y-0.5 hover:z-10 group">
                         <i class="ph-fill ph-cpu text-4xl text-gray-600 group-hover:text-primary mb-2 transition"></i>
-                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Pepelege Produk</span>
+                        <span class="text-[12px] md:text-[13px] text-gray-700 text-center leading-tight">Hardware</span>
                     </a>
 
                     <!-- ============================================== -->

@@ -25,7 +25,7 @@ class ProductController extends Controller
         $subcategories = [
             'aksesoris' => ['Ganci', 'Nametag', 'Pin', 'Kaos', 'Gelas Custom'],
             'merchandise' => ['Kaos Khusus Sekolah', 'Gelas BN', 'Pulpen BN'],
-            'pepelege-produk' => ['IoT (Hardware)'],
+            'hardware' => ['IoT (Hardware)'],
             'dkv-animasi' => ['Animasi (Logo gerak, iklan, dll)', 'Motion Graphic', 'Video Promosi', 'Desain Grafis'],
             'pemasaran' => ['Digital Marketing', 'Admin Medsos'],
             'pplg' => ['Website', 'Mobile', 'Server Hosting', 'Cloud', 'Game DEV', 'Excel', 'IoT (Software)'],
@@ -35,7 +35,7 @@ class ProductController extends Controller
         $categoryNames = [
             'aksesoris' => 'Aksesoris',
             'merchandise' => 'Merchandise',
-            'pepelege-produk' => 'Pepelege Produk (Hardware)',
+            'hardware' => 'Hardware',
             'dkv-animasi' => 'DKV & Animasi',
             'pemasaran' => 'Pemasaran',
             'pplg' => 'PPLG',
