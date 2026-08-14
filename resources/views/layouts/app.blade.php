@@ -14,7 +14,19 @@
                         primary: '#0a84d4', // Custom Blue requested
                         accent: '#FFB900',  // Amazon-like Yellow requested
                         'primary-dark': '#086ab0',
-                        'accent-hover': '#e6a600'
+                        'accent-hover': '#e6a600',
+                        blue: {
+                            50: '#eef8ff',
+                            100: '#d9efff',
+                            200: '#bce4ff',
+                            300: '#8ed4ff',
+                            400: '#59bcff',
+                            500: '#32a2ff',
+                            600: '#0a84d4', // The exact requested color
+                            700: '#0267ad',
+                            800: '#06578e',
+                            900: '#0b4875',
+                        }
                     },
                     borderRadius: {
                         'md': '0.25rem',  // 4px
