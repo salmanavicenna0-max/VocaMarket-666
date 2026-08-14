@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->char('nis', 12)->nullable()->unique();
+            $table->integer('nis')->nullable()->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'siswa', 'pembeli']);
+            $table->enum('role', ['admin', 'siswa', 'pembeli'])->default('pembeli');
             $table->enum('verification_seller', ['no', 'yes'])->default('no');
             $table->timestamp('verification_seller_at')->nullable();
             $table->rememberToken();

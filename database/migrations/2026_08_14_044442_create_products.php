@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profiles', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('photo')->nullable();
-            $table->string('class')->nullable();
-            $table->integer('no_telp')->nullable();
+            $table->foreignId('category_id')->constrained('categories');
+            $table->string('name_product');
+            $table->enum('type', ['barang', 'jasa']);
+            $table->text('description')->default('NULL');
+            $table->decimal('price');
+
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('products');
     }
 };

@@ -12,7 +12,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $users = User::latest()->get();
 
+        return view('admin.user.index', compact('users'));
     }
 
     /**
@@ -20,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.user.create');
     }
 
     /**
@@ -28,7 +30,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'nis' => ['nullable', 'integer', 'max:12', 'unique:users,nis'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'in:admin,siswa,pembeli'],
+        ]);
+
+        User::create([
+            'name' => $validated['name'],
+            'nis' => $validated['nis'] ?? null,
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => $validated['role'],
+            'verification_seller' => 'no',
+            'verification_seller_at' => null,
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     /**
