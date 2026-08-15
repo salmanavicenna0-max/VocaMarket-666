@@ -50,4 +50,24 @@ class ProductController extends Controller
 
         return view('product.category', compact('products', 'categoryName', 'slug', 'currentSubcategories'));
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+        
+        if (empty($query)) {
+            $products = collect();
+        } else {
+            $products = Product::where('is_active', true)
+                ->where(function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                      ->orWhere('description', 'like', "%{$query}%")
+                      ->orWhere('category', 'like', "%{$query}%")
+                      ->orWhere('type', 'like', "%{$query}%");
+                })
+                ->get();
+        }
+        
+        return view('product.search', compact('products', 'query'));
+    }
 }

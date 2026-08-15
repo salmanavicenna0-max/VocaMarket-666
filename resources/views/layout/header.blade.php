@@ -37,39 +37,45 @@
                 <div class="h-24 flex items-center justify-end pl-12 lg:pl-24 gap-6 pr-4">
                     
                     <!-- Search Bar Wrapper -->
-                    <div class="w-full max-w-2xl relative" id="search-container">
+                    <form action="{{ route('search') }}" method="GET" class="w-full max-w-2xl relative" id="search-container">
                         <!-- Search Bar -->
                         <div class="flex items-center h-12 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white relative z-[70]">
-                            <input type="text" id="search-input" placeholder="Cari kebutuhan sekolah..." class="h-full w-full px-5 text-black outline-none text-sm" autocomplete="off">
-                            <button class="bg-accent hover:bg-accent-hover h-full px-8 text-gray-900 transition flex items-center justify-center">
+                            <input type="text" name="q" value="{{ request('q') }}" id="search-input" placeholder="Cari kebutuhan sekolah..." class="h-full w-full px-5 text-black outline-none text-sm" autocomplete="off">
+                            <button type="submit" class="bg-accent hover:bg-accent-hover h-full px-8 text-gray-900 transition flex items-center justify-center">
                                 <i class="ph ph-magnifying-glass text-xl font-bold"></i>
                             </button>
                         </div>
                         
                         <!-- Search Suggestions Dropdown (Hidden by default) -->
                         <div id="search-dropdown" class="absolute top-[calc(100%-4px)] pt-4 left-0 w-full bg-white rounded-b-lg shadow-lg border border-gray-100 hidden z-[60] pb-2">
-                            <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                            <!-- All Categories Option -->
+                            <a href="#" onclick="event.preventDefault(); document.getElementById('search-container').submit();" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
+                                <span>Cari "<span class="search-keyword font-bold"></span>" di <span class="font-bold text-primary">Semua Kategori</span></span>
+                            </a>
+                            
+                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'merchandise') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>"<span class="search-keyword font-bold"></span>" di <span class="font-medium text-primary">Produk Sekolah</span></span>
                             </a>
-                            <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'dkv-animasi') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>"<span class="search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa DKV & Animasi</span></span>
                             </a>
-                            <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pemasaran') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>"<span class="search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Pemasaran</span></span>
                             </a>
-                            <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pplg') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>"<span class="search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa PPLG</span></span>
                             </a>
-                            <a href="#" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
+                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'akuntansi') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>"<span class="search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Akuntansi</span></span>
                             </a>
                         </div>
-                    </div>
+                    </form>
                     
                     <!-- Icons & Login / Register -->
                     <div class="shrink-0 flex items-center gap-3">
