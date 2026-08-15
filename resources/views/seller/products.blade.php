@@ -264,7 +264,7 @@
                                 </td>
                                 <td class="p-4">
                                     <div class="flex justify-center gap-2">
-                                        <button class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
+                                        <button onclick="openEditProductModal('Jasa Pembuatan Logo Bisnis & E-Sports', '150000', 'DKV & Animasi', 'Desain Grafis')" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
                                             <i class="ph-bold ph-pencil-simple text-lg"></i>
                                         </button>
                                         <button class="p-2 text-red-600 hover:bg-red-100 rounded transition tooltip" title="Hapus">
@@ -275,25 +275,25 @@
                             </tr>
 
                             <!-- Produk 2 -->
-                            <tr class="produk-row hover:bg-gray-50 transition" data-name="keripik kaca pedas level dewa (100gr)" data-category="makanan">
+                            <tr class="produk-row hover:bg-gray-50 transition" data-name="jasa pembukuan usaha kecil" data-category="akuntansi">
                                 <td class="p-4">
                                     <div class="flex gap-4 items-center">
-                                        <img src="https://picsum.photos/seed/makanan/100/100" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shrink-0">
+                                        <img src="https://picsum.photos/seed/akuntansi/100/100" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shrink-0">
                                         <div>
-                                            <h4 class="font-bold text-gray-900 text-sm line-clamp-2">Keripik Kaca Pedas Level Dewa (100gr)</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Kategori: Makanan</p>
+                                            <h4 class="font-bold text-gray-900 text-sm line-clamp-2">Jasa Pembukuan Usaha Kecil</h4>
+                                            <p class="text-xs text-gray-500 mt-1">Kategori: Akuntansi</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="p-4 text-center">
-                                    <span class="font-bold text-primary">Rp12.000</span>
+                                    <span class="font-bold text-primary">Rp50.000</span>
                                 </td>
                                 <td class="p-4 text-center">
-                                    <span class="text-gray-900 font-bold text-sm">45 <span class="text-xs text-gray-500 font-normal">pcs</span></span>
+                                    <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Tersedia</span>
                                 </td>
                                 <td class="p-4">
                                     <div class="flex justify-center gap-2">
-                                        <button class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
+                                        <button onclick="openEditProductModal('Jasa Pembukuan Usaha Kecil', '50000', 'Akuntansi', 'Pembukuan')" class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
                                             <i class="ph-bold ph-pencil-simple text-lg"></i>
                                         </button>
                                         <button class="p-2 text-red-600 hover:bg-red-100 rounded transition tooltip" title="Hapus">
@@ -538,8 +538,8 @@
 </div>
 
 <!-- Modal Tambah Produk -->
-<div id="addProductModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center overflow-y-auto pt-10 pb-10 opacity-0 transition-opacity duration-300">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl transform scale-95 transition-transform duration-300 relative my-auto">
+<div id="addProductModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
         
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
@@ -550,7 +550,7 @@
         </div>
 
         <!-- Body -->
-        <div class="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+        <div class="p-6">
             <form id="formTambahProduk" onsubmit="submitProduk(event)" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
                 <!-- Info Dasar -->
                 <div class="space-y-4">
@@ -567,13 +567,17 @@
                             <div class="relative">
                                 <select id="kategoriUtama" onchange="updateSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition">
                                     <option value="" disabled selected>Pilih Kategori</option>
-                                    <option value="PPLG">PPLG (Software)</option>
-                                    <option value="DKV & Animasi">DKV & Animasi</option>
-                                    <option value="Hardware">Hardware / TJKT</option>
-                                    <option value="Pemasaran">Pemasaran</option>
-                                    <option value="Aksesoris">Aksesoris</option>
-                                    <option value="Merchandise">Merchandise</option>
-                                    <option value="Makanan">Makanan & Minuman</option>
+                                    <optgroup label="Produk Sekolah">
+                                        <option value="Aksesoris">Aksesoris</option>
+                                        <option value="Merchandise">Merchandise</option>
+                                        <option value="Hardware">Hardware</option>
+                                    </optgroup>
+                                    <optgroup label="Jasa Setiap Jurusan">
+                                        <option value="DKV & Animasi">DKV & Animasi</option>
+                                        <option value="Pemasaran">Pemasaran</option>
+                                        <option value="PPLG">PPLG</option>
+                                        <option value="Akuntansi">Akuntansi</option>
+                                    </optgroup>
                                 </select>
                                 <i class="ph-bold ph-caret-down absolute right-4 top-3.5 text-gray-400 pointer-events-none"></i>
                             </div>
@@ -638,6 +642,94 @@
                 <i class="ph-bold ph-floppy-disk"></i> Simpan Produk
             </button>
         </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Produk -->
+<div id="editProductModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
+        
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 class="font-bold text-lg text-gray-900">Edit Produk</h3>
+            <button onclick="closeEditProductModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6">
+            <form id="formEditProduk" onsubmit="submitEditProduk(event)" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <!-- Info Dasar -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">1. Informasi Produk</h4>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Produk <span class="text-red-500">*</span></label>
+                        <input type="text" id="editProductName" placeholder="Contoh: Jasa Desain Logo Esport" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori / Jurusan <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select id="editProductCategory" onchange="updateEditSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition">
+                                    <option value="" disabled selected>Pilih Kategori</option>
+                                    <optgroup label="Produk Sekolah">
+                                        <option value="Aksesoris">Aksesoris</option>
+                                        <option value="Merchandise">Merchandise</option>
+                                        <option value="Hardware">Hardware</option>
+                                    </optgroup>
+                                    <optgroup label="Jasa Setiap Jurusan">
+                                        <option value="DKV & Animasi">DKV & Animasi</option>
+                                        <option value="Pemasaran">Pemasaran</option>
+                                        <option value="PPLG">PPLG</option>
+                                        <option value="Akuntansi">Akuntansi</option>
+                                    </optgroup>
+                                </select>
+                                <i class="ph-bold ph-caret-down absolute right-4 top-3.5 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sub/Isi Kategori <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select id="editProductSubCategory" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition disabled:bg-gray-100 disabled:cursor-not-allowed" disabled>
+                                    <option value="" disabled selected>Pilih Kategori Utama Dulu</option>
+                                </select>
+                                <i class="ph-bold ph-caret-down absolute right-4 top-3.5 text-gray-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Harga & Stok -->
+                <div class="space-y-4 pt-2">
+                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">2. Harga & Stok</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
+                                <input type="number" id="editProductPrice" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
+                            <input type="number" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
+            <button type="button" onclick="closeEditProductModal()" class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-100 transition focus:outline-none">Batal</button>
+            <button type="submit" form="formEditProduk" class="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-primary/50 flex items-center gap-2">
+                <i class="ph-bold ph-floppy-disk"></i> Simpan Perubahan
+            </button>
         </div>
     </div>
 </div>
@@ -747,15 +839,96 @@
 </style>
 
 <script>
+    // --- Edit Product Logic ---
+    function openEditProductModal(name, price, category, subCategory) {
+        const modal = document.getElementById('editProductModal');
+        
+        // Pre-fill data
+        document.getElementById('editProductName').value = name;
+        document.getElementById('editProductPrice').value = price;
+        
+        // Set category dropdown
+        const catSelect = document.getElementById('editProductCategory');
+        for(let i=0; i<catSelect.options.length; i++) {
+            if(catSelect.options[i].value === category) {
+                catSelect.selectedIndex = i;
+                break;
+            }
+        }
+        
+        // Trigger subcategory update
+        updateEditSubKategori();
+        
+        // Set subcategory dropdown if available
+        if (subCategory) {
+            const subCatSelect = document.getElementById('editProductSubCategory');
+            for(let i=0; i<subCatSelect.options.length; i++) {
+                if(subCatSelect.options[i].value === subCategory) {
+                    subCatSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        modal.classList.remove('hidden');
+        void modal.offsetWidth; // trigger reflow
+        
+        modal.classList.remove('opacity-0');
+        modal.querySelector('div.bg-white').classList.remove('scale-95');
+        modal.querySelector('div.bg-white').classList.add('scale-100');
+    }
+
+    function updateEditSubKategori() {
+        const kategoriSelect = document.getElementById('editProductCategory');
+        const subKategoriSelect = document.getElementById('editProductSubCategory');
+        const selectedKategori = kategoriSelect.value;
+        
+        // Reset sub kategori
+        subKategoriSelect.innerHTML = '<option value="" disabled selected>Pilih Sub Kategori</option>';
+        
+        if (selectedKategori && kategoriData[selectedKategori]) {
+            // Enable dropdown
+            subKategoriSelect.disabled = false;
+            
+            // Tambahkan option baru
+            kategoriData[selectedKategori].forEach(sub => {
+                const option = document.createElement('option');
+                option.value = sub;
+                option.textContent = sub;
+                subKategoriSelect.appendChild(option);
+            });
+        } else {
+            subKategoriSelect.disabled = true;
+        }
+    }
+
+    function closeEditProductModal() {
+        const modal = document.getElementById('editProductModal');
+        
+        modal.classList.add('opacity-0');
+        modal.querySelector('div.bg-white').classList.remove('scale-100');
+        modal.querySelector('div.bg-white').classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function submitEditProduk(e) {
+        e.preventDefault();
+        closeEditProductModal();
+        showDynamicToast('Berhasil Diperbarui', 'Data produk Anda berhasil disimpan.', 'success');
+    }
+
     // Data Kategori & Sub Kategori
     const kategoriData = {
-        'PPLG': ['Pembuatan Website', 'Aplikasi Mobile', 'Desain UI/UX', 'Jasa Ketik/Tugas', 'Lainnya di PPLG'],
-        'DKV & Animasi': ['Desain Logo', 'Video Promosi', 'Animasi 2D/3D', 'Poster/Banner', 'Lainnya di DKV'],
-        'Hardware': ['Service Laptop', 'Rakit PC', 'Modul IoT', 'Install OS', 'Lainnya di Hardware'],
-        'Pemasaran': ['Admin Sosmed', 'Digital Marketing', 'Copywriting', 'Lainnya di Pemasaran'],
-        'Aksesoris': ['Gantungan Kunci', 'Pin', 'Stiker Custom', 'Gelang', 'Lainnya Aksesoris'],
-        'Merchandise': ['Kaos Custom', 'Totebag', 'Mug', 'Topi', 'Lainnya Merchandise'],
-        'Makanan': ['Cemilan Kering', 'Minuman Dingin', 'Makanan Berat', 'Jajanan Pasar', 'Lainnya Makanan']
+        'Aksesoris': ['Ganci', 'Nametag', 'Pin', 'Kaos', 'Gelas Custom'],
+        'Merchandise': ['Kaos Khusus Sekolah', 'Gelas BN', 'Pulpen BN'],
+        'Hardware': ['IoT (Hardware)'],
+        'DKV & Animasi': ['Animasi (Logo gerak, iklan, dll)', 'Motion Graphic', 'Video Promosi', 'Desain Grafis'],
+        'Pemasaran': ['Digital Marketing', 'Admin Medsos'],
+        'PPLG': ['Website', 'Mobile', 'Server Hosting', 'Cloud', 'Game DEV', 'Excel', 'IoT (Software)'],
+        'Akuntansi': ['Pembukuan', 'Pembuatan Laporan', 'Konsul Pajak']
     };
 
     function updateSubKategori() {

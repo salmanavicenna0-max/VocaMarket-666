@@ -51,7 +51,7 @@
                             <!-- All Categories Option -->
                             <a href="#" onclick="event.preventDefault(); document.getElementById('search-container').submit();" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>Cari "<span class="search-keyword font-bold"></span>" di <span class="font-bold text-primary">Semua Kategori</span></span>
+                                <span>Cari "<span class="search-keyword font-bold"></span>"</span>
                             </a>
                             
                             <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'merchandise') }}?q=' + encodeURIComponent(document.getElementById('search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
