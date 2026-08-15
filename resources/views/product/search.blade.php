@@ -1,0 +1,61 @@
+@extends('layouts.app')
+@section('title', 'Pencarian: ' . $query . ' - VocaMarket')
+@section('content')
+<div class="container mx-auto px-4 py-8">
+    
+    <!-- Breadcrumb / Header -->
+    <div class="mb-6">
+        <nav class="flex text-sm text-gray-500 mb-2">
+            <a href="{{ url('/') }}" class="hover:text-primary transition">Beranda</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-800 font-medium">Pencarian</span>
+        </nav>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hasil Pencarian</h1>
+        <p class="text-gray-500 text-sm mt-1 mb-4">
+            @if($query)
+                Menampilkan produk untuk kata kunci <span class="font-bold text-primary">"{{ $query }}"</span>
+            @else
+                Silakan masukkan kata kunci pencarian di kolom pencarian.
+            @endif
+        </p>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
+        @forelse($products as $product)
+        <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
+            <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
+                <img src="{{ $product->image_path }}" alt="Product" class="w-full h-full object-cover">
+                @if($product->is_promo)
+                <!-- Top left badge -->
+                <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
+                    <span>Promo</span>
+                    <span>Extra</span>
+                </div>
+                @endif
+                @if($product->discount_percentage)
+                <!-- Top right badge -->
+                <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
+                    -{{ $product->discount_percentage }}%
+                </div>
+                @endif
+            </div>
+            <div class="p-2.5 flex flex-col flex-1">
+                <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
+                    {{ $product->name }}
+                </h3>
+                <div class="mt-2 flex items-center justify-between mt-auto">
+                    <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                    <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
+                </div>
+            </div>
+        </a>
+        @empty
+        <div class="col-span-full py-12 text-center text-gray-500">
+            <i class="ph-fill ph-magnifying-glass-minus text-4xl text-gray-300 mb-2"></i>
+            <p>Maaf, tidak ada produk yang sesuai dengan pencarian Anda.</p>
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection
