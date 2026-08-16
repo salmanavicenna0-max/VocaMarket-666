@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Payment;
 
 class AdminController extends Controller
 {

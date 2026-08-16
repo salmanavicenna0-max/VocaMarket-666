@@ -17,8 +17,6 @@ class CartController extends Controller
         $cartItems = collect();
 
         if (Auth::check()) {
-            // NOTE: tabel carts masih kosong (belum ada kolom user_id/product_id/quantity).
-            // Migration carts perlu di-update dulu sebelum fitur cart jalan penuh.
             $cartItems = Auth::user()->cart()->with('product.images')->get();
         }
 

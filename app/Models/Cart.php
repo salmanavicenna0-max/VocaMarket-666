@@ -10,9 +10,10 @@ class Cart extends Model
 {
     use HasFactory;
 
-    // NOTE: carts table masih kosong (cuma id + timestamps).
-    // Perlu migration tambahan: user_id, product_id, quantity, status
-    // Sementara model skeleton dulu.
+    protected $fillable = [
+        'user_id',
+        'status'
+    ];
 
     // -- Relationships --
 

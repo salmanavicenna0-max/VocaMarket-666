@@ -7,6 +7,9 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $products = Product::where('is_active', true)
@@ -18,6 +21,9 @@ class ProductController extends Controller
         return view('welcome', compact('products', 'starProducts'));
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show($id)
     {
         $product = Product::with(['images', 'reviews', 'jurusans'])->findOrFail($id);
@@ -25,6 +31,9 @@ class ProductController extends Controller
         return view('product.show', compact('product'));
     }
 
+    /**
+     * Display products by category slug.
+     */
     public function category($slug)
     {
         $subcategories = [
@@ -58,6 +67,9 @@ class ProductController extends Controller
         return view('product.category', compact('products', 'categoryName', 'slug', 'currentSubcategories'));
     }
 
+    /**
+     * Search products by query.
+     */
     public function search(Request $request)
     {
         $query = $request->input('q');
