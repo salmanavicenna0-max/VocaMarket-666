@@ -234,7 +234,7 @@
                 @foreach($products as $product)
                 <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
                     <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                        <img src="{{ $product->image_path }}" alt="Product" class="w-full h-full object-cover">
+                        <img src="{{ $product->thumbnail }}" alt="Product" class="w-full h-full object-cover">
                         @if($product->is_promo)
                         <!-- Top left badge -->
                         <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -17,18 +18,16 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Check if username is an email or NIS
         $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
-        
+
         $authData = [
             $loginType => $request->username,
-            'password' => $request->password
+            'password' => $request->password,
         ];
 
         if (Auth::attempt($authData, $request->boolean('remember-me'))) {
             $request->session()->regenerate();
 
-            // Semua role (termasuk admin) diarahkan ke halaman utama (home) terlebih dahulu
             return redirect()->intended('/');
         }
 
@@ -38,15 +37,41 @@ class AuthController extends Controller
     }
 
     /**
+     * Register a new user.
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'nis' => ['nullable', 'string', 'max:12', 'unique:users,nis'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'role' => ['nullable', 'in:admin,siswa,pembeli'],
+        ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+        $validated['role'] = $validated['role'] ?? 'pembeli';
+        $validated['email_verification'] = 'verified';
+        $validated['verification_seller'] = false;
+
+        $user = User::create($validated);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect('/');
+    }
+
+    /**
      * Log the user out of the application.
      */
     public function logout(Request $request)
     {
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/');
     }
 }

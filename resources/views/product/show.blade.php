@@ -23,7 +23,7 @@
             <div class="flex flex-col gap-3">
                 <!-- Main Image -->
                 <div class="w-full aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group">
-                    <img src="{{ $product->image_path }}" alt="Product Image" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-image">
+                    <img src="{{ $product->thumbnail }}" alt="Product Image" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-image">
                     @if($product->is_promo)
                     <div class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Promo Extra</div>
                     @endif
@@ -34,7 +34,7 @@
                 <!-- Thumbnails -->
                 <div class="grid grid-cols-4 gap-3">
                     <div class="aspect-square bg-gray-100 rounded-xl border-2 border-primary overflow-hidden cursor-pointer">
-                        <img src="{{ $product->image_path }}" class="w-full h-full object-cover">
+                        <img src="{{ $product->thumbnail }}" class="w-full h-full object-cover">
                     </div>
                     <div class="aspect-square bg-gray-50 rounded-xl border border-gray-200 hover:border-primary overflow-hidden cursor-pointer transition flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50">
                         <i class="ph ph-image text-2xl"></i>

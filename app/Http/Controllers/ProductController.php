@@ -9,19 +9,24 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('is_active', true)->get();
-        return view('welcome', compact('products'));
+        $products = Product::where('is_active', true)
+            ->with('images')
+            ->get();
+
+        $starProducts = $products->where('is_star', true)->take(8);
+
+        return view('welcome', compact('products', 'starProducts'));
     }
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with(['images', 'reviews', 'jurusans'])->findOrFail($id);
+
         return view('product.show', compact('product'));
     }
 
     public function category($slug)
     {
-        // Define subcategories mapping
         $subcategories = [
             'aksesoris' => ['Ganci', 'Nametag', 'Pin', 'Kaos', 'Gelas Custom'],
             'merchandise' => ['Kaos Khusus Sekolah', 'Gelas BN', 'Pulpen BN'],
@@ -29,7 +34,7 @@ class ProductController extends Controller
             'dkv-animasi' => ['Animasi (Logo gerak, iklan, dll)', 'Motion Graphic', 'Video Promosi', 'Desain Grafis'],
             'pemasaran' => ['Digital Marketing', 'Admin Medsos'],
             'pplg' => ['Website', 'Mobile', 'Server Hosting', 'Cloud', 'Game DEV', 'Excel', 'IoT (Software)'],
-            'akuntansi' => ['Pembukuan', 'Pembuatan Laporan', 'Konsul Pajak']
+            'akuntansi' => ['Pembukuan', 'Pembuatan Laporan', 'Konsul Pajak'],
         ];
 
         $categoryNames = [
@@ -39,12 +44,14 @@ class ProductController extends Controller
             'dkv-animasi' => 'DKV & Animasi',
             'pemasaran' => 'Pemasaran',
             'pplg' => 'PPLG',
-            'akuntansi' => 'Akuntansi'
+            'akuntansi' => 'Akuntansi',
         ];
 
-        // Fetch all active products as a dummy for now
-        $products = Product::where('is_active', true)->get();
-        
+        $products = Product::where('is_active', true)
+            ->with('images')
+            ->where('category', 'like', '%' . ($categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug))) . '%')
+            ->get();
+
         $categoryName = $categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug));
         $currentSubcategories = $subcategories[$slug] ?? [];
 
@@ -54,12 +61,13 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q');
-        
+
         if (empty($query)) {
             $products = collect();
         } else {
             $products = Product::where('is_active', true)
-                ->where(function($q) use ($query) {
+                ->with('images')
+                ->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")
                       ->orWhere('description', 'like', "%{$query}%")
                       ->orWhere('category', 'like', "%{$query}%")
@@ -67,7 +75,7 @@ class ProductController extends Controller
                 })
                 ->get();
         }
-        
+
         return view('product.search', compact('products', 'query'));
     }
 }
