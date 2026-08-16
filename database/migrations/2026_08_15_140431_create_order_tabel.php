@@ -20,7 +20,6 @@ return new class extends Migration
             $table->decimal('discount', 15, 2)->default(0);
             $table->decimal('total', 15, 2)->default(0);
             $table->text('note')->nullable();
-            $table->string('link_wa', 255)->nullable();
             $table->timestamps();
 
             $table->index('user_id', 'idx_orders_user');

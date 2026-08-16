@@ -18,13 +18,13 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('restrict');
-            $table->decimal('nominal', 15, 2);
-            $table->string('metode', 50)->default('transfer');
-            $table->string('bukti_pembayaran', 255);
+            $table->decimal('amount', 15, 2);
+            $table->string('method', 50)->default('transfer');
+            $table->string('payment_proof', 255);
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('verified_at')->nullable();
-            $table->text('catatan')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
 
             $table->index('order_id', 'idx_payments_order');
