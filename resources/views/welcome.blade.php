@@ -230,53 +230,51 @@
                 </div>
             </div>
 
-            <!-- REKOMENDASI SECTION -->
-            <div class="container mx-auto px-4 relative z-10 pt-8 pb-16">
-
-                <!-- Sticky/Tab Header -->
-                <div class="bg-white rounded-t-sm shadow-sm border-b border-gray-200 flex mb-2 sticky top-0 z-40">
-                    <div
-                        class="py-4 px-8 border-b-4 border-primary text-primary font-bold text-base md:text-lg text-center flex-1 md:flex-none uppercase tracking-wide">
-                        Rekomendasi Untuk Anda
-                    </div>
-                </div>
-
-                <!-- Product Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-8">
-                    @foreach($products as $product)
-                        <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
-                            <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
-                                <img src="{{ $product->image_path }}" alt="Product" class="w-full h-full object-cover">
-                                @if($product->is_promo)
-                                    <!-- Top left badge -->
-                                    <div
-                                        class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
-                                        <span>Promo</span>
-                                        <span>Extra</span>
-                                    </div>
-                                @endif
-                                @if($product->discount_percentage)
-                                    <!-- Top right badge -->
-                                    <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
-                                        -{{ $product->discount_percentage }}%
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="p-2.5 flex flex-col flex-1">
-                                <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
-                                    {{ $product->name }}
-                                </h3>
-                                <div class="mt-2 flex items-center justify-between mt-auto">
-                                    <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
-                                    <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
-                                </div>
-                            </div>
-                        </a>
-                    @endforeach
-                </div><div class="flex justify-center mt-8">
-                    <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-12 py-2 rounded-sm shadow-sm transition font-medium">Muat Lebih Banyak</button>
+        <!-- REKOMENDASI SECTION -->
+        <div class="container mx-auto px-4 relative z-10 pt-8 pb-16">
+            
+            <!-- Sticky/Tab Header -->
+            <div class="bg-white rounded-t-sm shadow-sm border-b border-gray-200 flex mb-2 sticky top-0 z-40">
+                <div class="py-4 px-8 border-b-4 border-primary text-primary font-bold text-base md:text-lg text-center flex-1 md:flex-none uppercase tracking-wide">
+                    Rekomendasi Untuk Anda
                 </div>
             </div>
+            
+            <!-- Product Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-8">
+                @foreach($products as $product)
+                <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
+                    <div class="w-full aspect-square bg-gray-100 relative flex items-center justify-center text-gray-300">
+                        <img src="{{ $product->thumbnail }}" alt="Product" class="w-full h-full object-cover">
+                        @if($product->is_promo)
+                        <!-- Top left badge -->
+                        <div class="absolute top-0 left-0 bg-accent text-gray-900 text-[9px] font-bold px-1.5 py-0.5 z-10 flex flex-col items-center uppercase shadow-sm">
+                            <span>Promo</span>
+                            <span>Extra</span>
+                        </div>
+                        @endif
+                        @if($product->discount_percentage)
+                        <!-- Top right badge -->
+                        <div class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-1 z-10 shadow-sm rounded-bl-sm">
+                            -{{ $product->discount_percentage }}%
+                        </div>
+                        @endif
+                    </div>
+                    <div class="p-2.5 flex flex-col flex-1">
+                        <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
+                            {{ $product->name }}
+                        </h3>
+                        <div class="mt-2 flex items-center justify-between mt-auto">
+                            <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                            <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div><div class="flex justify-center mt-8">
+                <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-12 py-2 rounded-sm shadow-sm transition font-medium">Muat Lebih Banyak</button>
+            </div>
+        </div>
 
             <!-- LOKASI TOKO SECTION -->
             <div class="container mx-auto px-4 relative z-10 pt-4 pb-12">

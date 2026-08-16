@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', $categoryName . ' - VocaMarket')
+@section('title', 'Pencarian: ' . $query . ' - VocaMarket')
 @section('content')
 <div class="container mx-auto px-4 py-8">
     
@@ -8,20 +8,16 @@
         <nav class="flex text-sm text-gray-500 mb-2">
             <a href="{{ url('/') }}" class="hover:text-primary transition">Beranda</a>
             <span class="mx-2">/</span>
-            <span class="text-gray-800 font-medium">{{ $categoryName }}</span>
+            <span class="text-gray-800 font-medium">Pencarian</span>
         </nav>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">{{ $categoryName }}</h1>
-        <p class="text-gray-500 text-sm mt-1 mb-4">Menampilkan produk untuk kategori {{ $categoryName }}</p>
-        
-        <!-- Filter Subkategori -->
-        @if(count($currentSubcategories) > 0)
-        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-            <a href="#" class="px-4 py-1.5 bg-primary text-white rounded-full text-sm font-medium whitespace-nowrap shadow-sm">Semua</a>
-            @foreach($currentSubcategories as $sub)
-            <a href="#" class="px-4 py-1.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 rounded-full text-sm font-medium whitespace-nowrap transition shadow-sm">{{ $sub }}</a>
-            @endforeach
-        </div>
-        @endif
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Hasil Pencarian</h1>
+        <p class="text-gray-500 text-sm mt-1 mb-4">
+            @if($query)
+                Menampilkan produk untuk kata kunci <span class="font-bold text-primary">"{{ $query }}"</span>
+            @else
+                Silakan masukkan kata kunci pencarian di kolom pencarian.
+            @endif
+        </p>
     </div>
 
     <!-- Product Grid -->
@@ -56,8 +52,8 @@
         </a>
         @empty
         <div class="col-span-full py-12 text-center text-gray-500">
-            <i class="ph-fill ph-package text-4xl text-gray-300 mb-2"></i>
-            <p>Belum ada produk di kategori ini.</p>
+            <i class="ph-fill ph-magnifying-glass-minus text-4xl text-gray-300 mb-2"></i>
+            <p>Maaf, tidak ada produk yang sesuai dengan pencarian Anda.</p>
         </div>
         @endforelse
     </div>
