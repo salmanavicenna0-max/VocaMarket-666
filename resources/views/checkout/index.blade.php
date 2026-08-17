@@ -3,8 +3,8 @@
 @section('content')
 
 <div class="container mx-auto px-4 py-8">
-    <div class="flex flex-col gap-6 max-w-3xl mx-auto">
-        
+    <form action="{{ route('checkout.store') }}" method="POST" class="flex flex-col gap-6 max-w-3xl mx-auto">
+        @csrf
         <!-- Breadcrumb & Header -->
         <div>
             <!-- Breadcrumb -->
@@ -36,6 +36,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Checkout</h1>
             </div>
         </div>
+
         <!-- 2. Pesanan Anda -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-200 bg-gray-50">
@@ -44,62 +45,41 @@
                 </h3>
             </div>
             
-            <!-- Toko 1 -->
-            <div class="p-5 border-b border-gray-200">
-                <div class="flex items-center gap-2 mb-4">
-                    <i class="ph-fill ph-storefront text-gray-700"></i>
-                    <span class="font-bold text-gray-900">Toko Seragam Esemka</span>
-                </div>
-                
-                <div class="flex gap-4">
-                    <img src="https://picsum.photos/seed/seragam/150/150" alt="Produk" class="w-16 h-16 rounded-lg object-cover border border-gray-100 shrink-0">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800">Seragam SD Merah Putih Lengan Pendek Berkualitas</h4>
-                        <p class="text-xs text-gray-500 mt-1">Variasi: Ukuran M</p>
-                        <div class="flex items-center justify-between mt-2">
-                            <span class="font-bold text-primary">Rp55.000</span>
-                            <span class="text-sm text-gray-600">x1</span>
+            @foreach($groupedItems as $sellerId => $items)
+                @php 
+                    $seller = $items->first()->product->seller; 
+                    $sellerName = $seller ? $seller->name : 'Toko VocaMarket';
+                @endphp
+                <!-- Toko -->
+                <div class="p-5 {{ !$loop->last ? 'border-b border-gray-200' : '' }}">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="ph-fill ph-storefront text-gray-700"></i>
+                        <span class="font-bold text-gray-900">{{ $sellerName }}</span>
+                    </div>
+                    
+                    @foreach($items as $item)
+                        <div class="flex gap-4 mb-4 last:mb-0">
+                            <img src="{{ $item->product->thumbnail }}" alt="Produk" class="w-16 h-16 rounded-lg object-cover border border-gray-100 shrink-0">
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-gray-800">{{ $item->product->name }}</h4>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="font-bold text-primary">Rp{{ number_format($item->product->price, 0, ',', '.') }}</span>
+                                    <span class="text-sm text-gray-600">x{{ $item->quantity }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                    
+                    <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="w-full md:w-1/2">
+                                <label class="text-xs font-bold text-gray-700 mb-1 block">Pesan untuk Penjual:</label>
+                                <input type="text" name="note" placeholder="Silakan tinggalkan pesan..." class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
-                    <div class="flex items-center justify-between gap-4">
-                        <div class="w-1/2">
-                            <label class="text-xs font-bold text-gray-700 mb-1 block">Pesan untuk Penjual:</label>
-                            <input type="text" placeholder="Silakan tinggalkan pesan..." class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Toko 2 -->
-            <div class="p-5">
-                <div class="flex items-center gap-2 mb-4">
-                    <i class="ph-fill ph-storefront text-gray-700"></i>
-                    <span class="font-bold text-gray-900">Studio Animasi 666</span>
-                </div>
-                
-                <div class="flex gap-4">
-                    <img src="https://picsum.photos/seed/desain/150/150" alt="Produk" class="w-16 h-16 rounded-lg object-cover border border-gray-100 shrink-0">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800">Jasa Pembuatan Logo Bisnis & E-Sports Profesional</h4>
-                        <div class="flex items-center justify-between mt-2">
-                            <span class="font-bold text-primary">Rp150.000</span>
-                            <span class="text-sm text-gray-600">x1</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
-                    <div class="flex items-center justify-between gap-4">
-                        <div class="w-1/2">
-                            <label class="text-xs font-bold text-gray-700 mb-1 block">Pesan untuk Penjual:</label>
-                            <input type="text" placeholder="Email untuk pengiriman file..." class="w-full text-sm border border-gray-300 rounded-lg p-2 outline-none focus:border-primary">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
         
         <!-- 3. Metode Pembayaran -->
@@ -110,16 +90,17 @@
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative opacity-50">
-                    <input type="radio" name="payment" class="absolute top-2 right-2">
+                    <input type="radio" name="payment" value="cod" class="absolute top-2 right-2" disabled>
                     <i class="ph-fill ph-truck text-3xl text-gray-500"></i>
                     <span class="text-xs font-bold text-center">COD</span>
                 </label>
-                 <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
-                    <input type="radio" name="payment" class="absolute top-2 right-2">
-                    <i class="ph-fill ph-bank text-3xl text-gray-500"></i>
-                    <span class="text-xs font-bold text-center">Transfer Bank/Qris</span>
+                 <label class="border border-primary bg-blue-50 p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
+                    <input type="radio" name="payment" value="transfer" class="absolute top-2 right-2" checked>
+                    <i class="ph-fill ph-bank text-3xl text-primary"></i>
+                    <span class="text-xs font-bold text-center text-primary">Transfer Bank/Qris</span>
                 </label>
             </div>
+            <p class="text-xs text-gray-500 mt-3">* Saat ini pembayaran hanya dapat dilakukan melalui Transfer Bank/Qris untuk verifikasi yang lebih aman.</p>
         </div>
 
         <!-- 4. Ringkasan Belanja -->
@@ -128,31 +109,19 @@
             
             <div class="flex flex-col gap-3 text-sm text-gray-600 mb-4 pb-4 border-b border-gray-100">
                 <div class="flex justify-between items-center">
-                    <span>Total Harga (2 barang)</span>
-                    <span class="text-gray-900 font-medium">Rp205.000</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span>Total Ongkos Kirim</span>
-                    <span class="text-gray-900 font-medium">Rp15.000</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span>Asuransi Pengiriman</span>
-                    <span class="text-gray-900 font-medium">Rp1.000</span>
-                </div>
-                <div class="flex justify-between items-center text-green-600">
-                    <span>Voucher Toko</span>
-                    <span class="font-medium">-Rp5.000</span>
+                    <span>Total Harga ({{ $cartItems->count() }} barang)</span>
+                    <span class="text-gray-900 font-medium">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
                 </div>
             </div>
             
             <div class="flex flex-col gap-1 mb-6">
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-gray-900 text-base">Total Tagihan</span>
-                    <span class="font-bold text-primary text-xl">Rp216.000</span>
+                    <span class="font-bold text-primary text-xl">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
             </div>
             
-            <button class="w-full py-4 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm transition text-lg">
+            <button type="submit" class="w-full py-4 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm transition text-lg">
                 Buat Pesanan
             </button>
             <p class="text-xs text-gray-500 text-center mt-4">
@@ -160,7 +129,7 @@
             </p>
         </div>
 
-    </div>
+    </form>
 </div>
 
 @endsection

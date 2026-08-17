@@ -15,14 +15,18 @@ class CartController extends Controller
     public function index()
     {
         $cartItems = collect();
+        $groupedItems = collect();
+        $total = 0;
 
         if (Auth::check()) {
-            $cartItems = Auth::user()->cart()->with('product.images')->get();
+            $cartItems = Auth::user()->cart()->with(['product.images', 'product.seller'])->get();
+            $groupedItems = $cartItems->groupBy(function ($item) {
+                return $item->product->user_id ?? 0;
+            });
+            $total = $cartItems->sum(fn ($item) => $item->product?->price * $item->quantity ?? 0);
         }
 
-        $total = $cartItems->sum(fn ($item) => $item->product?->price * $item->quantity ?? 0);
-
-        return view('cart.index', compact('cartItems', 'total'));
+        return view('cart.index', compact('groupedItems', 'cartItems', 'total'));
     }
 
     /**
@@ -42,15 +46,38 @@ class CartController extends Controller
 
         $quantity = $validated['quantity'] ?? 1;
 
-        $cartItem = Cart::updateOrCreate(
-            [
-                'user_id' => Auth::id(),
-                'product_id' => $product->id,
-            ],
-            ['quantity' => $quantity]
-        );
+        $cartItem = Cart::firstOrNew([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+        ]);
+
+        $cartItem->quantity = $cartItem->exists ? $cartItem->quantity + $quantity : $quantity;
+        $cartItem->status = 'aktif';
+        $cartItem->save();
 
         return back()->with('success', $product->name . ' masuk keranjang.');
+    }
+
+    /**
+     * Update quantity of product in cart.
+     */
+    public function update(Request $request, $id)
+    {
+        $cartItem = Cart::where('user_id', Auth::id())->with('product')->findOrFail($id);
+
+        if ($request->action === 'increase') {
+            if ($cartItem->quantity < $cartItem->product->stock) {
+                $cartItem->increment('quantity');
+            } else {
+                return back()->with('error', 'Stok maksimum tercapai.');
+            }
+        } elseif ($request->action === 'decrease') {
+            if ($cartItem->quantity > 1) {
+                $cartItem->decrement('quantity');
+            }
+        }
+
+        return back();
     }
 
     /**

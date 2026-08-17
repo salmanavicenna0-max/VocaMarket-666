@@ -20,16 +20,20 @@ class CheckoutController extends Controller
             return redirect()->route('login')->with('error', 'Login dulu untuk checkout.');
         }
 
-        $cartItems = Auth::user()->cart()->with('product')->get();
+        $cartItems = Auth::user()->cart()->with(['product.images', 'product.seller'])->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
         }
 
+        $groupedItems = $cartItems->groupBy(function ($item) {
+            return $item->product->user_id ?? 0;
+        });
+
         $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
         $total = $subtotal;
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'total'));
+        return view('checkout.index', compact('groupedItems', 'cartItems', 'subtotal', 'total'));
     }
 
     /**
@@ -52,40 +56,45 @@ class CheckoutController extends Controller
         }
 
         try {
-            $order = DB::transaction(function () use ($cartItems, $validated) {
-                $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->quantity);
+            DB::transaction(function () use ($cartItems, $validated) {
+                $groupedItems = $cartItems->groupBy(function ($item) {
+                    return $item->product->user_id;
+                });
 
-                $order = Order::create([
-                    'code_order' => Order::generateCode(),
-                    'user_id' => Auth::id(),
-                    'status' => Order::STATUS_MENUNGGU_PEMBAYARAN,
-                    'subtotal' => $subtotal,
-                    'discount' => 0,
-                    'total' => $subtotal,
-                    'note' => $validated['note'] ?? null,
-                ]);
+                foreach ($groupedItems as $sellerId => $items) {
+                    $subtotal = $items->sum(fn ($item) => $item->product->price * $item->quantity);
 
-                foreach ($cartItems as $item) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $item->product_id,
-                        'name_snapshot' => $item->product->name,
-                        'price_snapshot' => $item->product->price,
-                        'quantity' => $item->quantity,
-                        'subtotal' => $item->product->price * $item->quantity,
+                    $order = Order::create([
+                        'code_order' => Order::generateCode(),
+                        'user_id' => Auth::id(),
+                        'seller_id' => $sellerId,
+                        'status' => Order::STATUS_MENUNGGU_PEMBAYARAN,
+                        'subtotal' => $subtotal,
+                        'discount' => 0,
+                        'total' => $subtotal,
+                        'note' => $validated['note'] ?? null,
                     ]);
+
+                    foreach ($items as $item) {
+                        OrderItem::create([
+                            'order_id' => $order->id,
+                            'product_id' => $item->product_id,
+                            'name_snapshot' => $item->product->name,
+                            'price_snapshot' => $item->product->price,
+                            'quantity' => $item->quantity,
+                            'subtotal' => $item->product->price * $item->quantity,
+                        ]);
+                    }
                 }
 
                 // Kosongkan keranjang
                 Auth::user()->cart()->delete();
-
-                return $order;
             });
         } catch (\Throwable $e) {
             return back()->with('error', 'Gagal buat pesanan: ' . $e->getMessage());
         }
 
-        return redirect()->route('orders.show', $order->id)
-            ->with('success', 'Pesanan dibuat! Kode: ' . $order->code_order);
+        return redirect()->route('orders.index')
+            ->with('success', 'Pesanan berhasil dibuat!');
     }
 }

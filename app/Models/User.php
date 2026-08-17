@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function salesOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'seller_id');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

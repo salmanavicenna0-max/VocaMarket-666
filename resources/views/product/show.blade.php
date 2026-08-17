@@ -106,13 +106,13 @@
 
             <!-- Store Profile (Tokopedia Style inside middle column) -->
             <div class="flex items-center gap-4 py-2">
-                <a href="{{ url('/seller/1') }}" class="shrink-0 block">
-                    <img src="https://picsum.photos/seed/{{ Str::slug($product->store_name) }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="shrink-0 block">
+                    <img src="https://picsum.photos/seed/{{ Str::slug($product->seller ? $product->seller->name : 'Toko') }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
                 </a>
                 <div class="flex flex-col flex-1">
-                    <a href="{{ url('/seller/1') }}" class="font-bold text-gray-900 text-base flex items-center gap-1.5 hover:text-primary transition w-fit">
+                    <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="font-bold text-gray-900 text-base flex items-center gap-1.5 hover:text-primary transition w-fit">
                         <i class="ph-fill ph-check-circle text-primary"></i> 
-                        {{ $product->store_name ?: 'Toko Esemka' }}
+                        {{ $product->seller ? 'Toko ' . $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
                     </a>
                 </div>
                 <a href="#" onclick="openMiniChat(event)" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
@@ -124,15 +124,16 @@
 
         <!-- RIGHT COLUMN: Checkout Card -->
         <div class="md:col-span-3">
-            <div class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
+            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
+                @csrf
                 <h3 class="font-bold text-gray-900 mb-4">Atur jumlah dan catatan</h3>
                 
                 <!-- Quantity & Stock -->
                 <div class="flex items-center gap-3 mb-4">
                     <div class="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden w-28">
-                        <button class="w-1/3 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition"><i class="ph-bold ph-minus"></i></button>
-                        <input type="text" value="1" class="w-1/3 h-8 text-center border-x border-gray-300 outline-none text-gray-800 text-sm font-medium">
-                        <button class="w-1/3 h-8 flex items-center justify-center text-primary hover:bg-gray-100 transition"><i class="ph-bold ph-plus"></i></button>
+                        <button type="button" class="w-1/3 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition"><i class="ph-bold ph-minus"></i></button>
+                        <input type="number" name="quantity" value="1" min="1" max="{{ max(1, $product->stock) }}" class="w-1/3 h-8 text-center border-x border-gray-300 outline-none text-gray-800 text-sm font-medium">
+                        <button type="button" class="w-1/3 h-8 flex items-center justify-center text-primary hover:bg-gray-100 transition"><i class="ph-bold ph-plus"></i></button>
                     </div>
                     <span class="text-sm text-gray-500">
                         Stok <span class="font-bold text-gray-900">{{ number_format($product->stock, 0, ',', '.') }}</span>
@@ -140,7 +141,7 @@
                 </div>
                 
                 <!-- Notes -->
-                <button class="text-primary text-sm font-medium hover:underline flex items-center gap-1 mb-5">
+                <button type="button" class="text-primary text-sm font-medium hover:underline flex items-center gap-1 mb-5">
                     <i class="ph-bold ph-pencil-simple"></i> Tambah Catatan
                 </button>
                 
@@ -152,7 +153,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col gap-2">
-                    <button class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
+                    <button type="submit" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
                         + Keranjang
                     </button>
                     <a href="{{ url('/checkout') }}" class="w-full py-2.5 bg-white text-primary font-bold border border-primary rounded-xl hover:bg-blue-50 transition flex items-center justify-center">
@@ -162,11 +163,11 @@
                 
                 <!-- Extras -->
                 <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-                    <button class="flex items-center gap-1 hover:text-gray-800 transition">
+                    <button type="button" class="flex items-center gap-1 hover:text-gray-800 transition">
                         <i class="ph-bold ph-share-network"></i> Share
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
 
     </div>

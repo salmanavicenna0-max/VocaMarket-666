@@ -48,9 +48,15 @@
                 <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
                     {{ $product->name }}
                 </h3>
-                <div class="mt-2 flex items-center justify-between mt-auto">
+                <div class="mt-2 flex flex-col justify-end mt-auto gap-1">
                     <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
-                    <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-gray-500 flex items-center gap-1">
+                            <i class="ph-fill ph-storefront"></i> 
+                            {{ $product->seller ? $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
+                        </span>
+                        <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
+                    </div>
                 </div>
             </div>
         </a>

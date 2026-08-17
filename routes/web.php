@@ -10,6 +10,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SellerDashboardController;
+use App\Http\Controllers\SellerOrderController;
+use App\Http\Controllers\SellerProfileController;
+use App\Http\Controllers\UserProfileController;
 
 Route::get('/', [ProductController::class, 'index']);
 Route::get('/search', [ProductController::class, 'search'])->name('search');
@@ -19,6 +23,7 @@ Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.s
 // Cart
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+Route::patch('/cart/{id}/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy')->middleware('auth');
 
 // Checkout
@@ -51,19 +56,23 @@ Route::get('/register', function () {
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
 // User / Seller
-Route::get('/user', function () {
-    return view('profile.user');
-})->middleware('auth');
-
-Route::post('/user/request-seller', [UserController::class, 'requestSeller'])->name('user.request_seller')->middleware('auth');
-
-Route::get('/seller/dashboard', function () {
-    return view('seller.products');
+Route::prefix('user')->middleware('auth')->group(function () {
+    Route::get('/', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::post('/profile', [UserProfileController::class, 'updateProfile'])->name('user.profile.update');
+    Route::post('/password', [UserProfileController::class, 'updatePassword'])->name('user.password.update');
+    Route::post('/request-seller', [UserController::class, 'requestSeller'])->name('user.request_seller');
 });
 
-Route::get('/seller/{id?}', function () {
-    return view('profile.seller');
+Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () {
+    Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/product', [SellerDashboardController::class, 'storeProduct'])->name('product.store');
+    Route::put('/product/{id}', [SellerDashboardController::class, 'updateProduct'])->name('product.update');
+    Route::delete('/product/{id}', [SellerDashboardController::class, 'destroyProduct'])->name('product.destroy');
+    
+    Route::post('/order/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('order.status');
 });
+
+Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');
 
 // Chat (placeholder view)
 Route::get('/chat', function () {

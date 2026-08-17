@@ -10,10 +10,7 @@ use App\Models\Payment;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+
 
     /**
      * Admin dashboard with real stats.
@@ -21,8 +18,8 @@ class AdminController extends Controller
     public function dashboard()
     {
         $totalUsers = User::count();
-        $totalProducts = Product::where('type', 'produk')->count();
-        $totalServices = Product::where('type', 'jasa')->count();
+        $totalProducts = Product::whereIn('category', ['Aksesoris', 'Merchandise', 'Hardware'])->count();
+        $totalServices = Product::whereIn('category', ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'])->count();
 
         $revenueMonth = Order::where('status', Order::STATUS_SELESAI)
             ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])

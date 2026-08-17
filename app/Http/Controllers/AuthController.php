@@ -18,7 +18,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
+        $loginType = str_contains($request->username, '@') ? 'email' : 'nis';
 
         $authData = [
             $loginType => $request->username,
@@ -27,6 +27,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($authData, $request->boolean('remember-me'))) {
             $request->session()->regenerate();
+
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
 
             return redirect()->intended('/');
         }

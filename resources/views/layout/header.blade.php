@@ -83,12 +83,46 @@
                             <i class="ph-bold ph-shopping-cart text-2xl group-hover:scale-110 transition-transform"></i>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">2</span>
                         </a>
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
-                            Masuk
-                        </a>
-                        <a href="{{ route('register') }}" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-sm whitespace-nowrap text-sm">
-                            Daftar
-                        </a>
+                        @guest
+                            <a href="{{ route('login') }}" class="px-4 py-2 text-primary font-bold border border-primary rounded-lg hover:bg-blue-50 transition whitespace-nowrap text-sm">
+                                Masuk
+                            </a>
+                            <a href="{{ route('register') }}" class="px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition shadow-sm whitespace-nowrap text-sm">
+                                Daftar
+                            </a>
+                        @else
+                            <div class="relative group cursor-pointer">
+                                <div class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition">
+                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
+                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700 hidden md:block">{{ explode(' ', Auth::user()->name)[0] }}</span>
+                                    <i class="ph-bold ph-caret-down text-gray-500 text-xs hidden md:block"></i>
+                                </div>
+                                
+                                <!-- Dropdown -->
+                                <div class="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                    @if(Auth::user()->isAdmin())
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
+                                    @elseif(Auth::user()->isSeller())
+                                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-storefront mr-2"></i>Toko Saya</a>
+                                    @else
+                                        <a href="{{ url('/user') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-user mr-2"></i>Profil Saya</a>
+                                    @endif
+                                    
+                                    <a href="{{ route('orders.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-receipt mr-2"></i>Pesanan Saya</a>
+                                    
+                                    <div class="border-t border-gray-100 my-1"></div>
+                                    
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition rounded-b-lg">
+                                            <i class="ph-bold ph-sign-out mr-2"></i>Keluar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endguest
                     </div>
                     
                 </div>

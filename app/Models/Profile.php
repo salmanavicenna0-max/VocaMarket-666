@@ -15,6 +15,8 @@ class Profile extends Model
         'photo',
         'class',
         'no_telp',
+        'tanggal_lahir',
+        'jenis_kelamin',
     ];
 
     // -- Relationships --

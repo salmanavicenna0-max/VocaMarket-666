@@ -81,36 +81,80 @@
         <!-- Konten Kanan -->
         <div class="lg:col-span-3">
             
+                        @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <!-- TAB: Biodata Diri -->
             <div id="tab-biodata" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content block">
                 <div class="p-6 border-b border-gray-200">
                     <h2 class="text-xl font-bold text-gray-900">Biodata Diri</h2>
                     <p class="text-gray-500 text-sm mt-1">Kelola informasi profil Anda untuk mengontrol, melindungi dan mengamankan akun</p>
                 </div>
-                <div class="p-6">
+                <form action="{{ route('user.profile.update') }}" method="POST" class="p-6">
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="flex flex-col gap-5">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Lengkap</label>
-                                <input type="text" value="Budi Santoso" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                                <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Lahir</label>
                                 <div class="flex gap-2">
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>15</option></select>
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>Agustus</option></select>
-                                    <select class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1"><option>2005</option></select>
+                                    @php
+                                        $tgl = $bln = $thn = '';
+                                        if ($profile && $profile->tanggal_lahir) {
+                                            $parts = explode('-', $profile->tanggal_lahir); // YYYY-MM-DD
+                                            if (count($parts) == 3) {
+                                                $thn = $parts[0];
+                                                $m = (int)$parts[1];
+                                                $tgl = (int)$parts[2];
+                                                $months = [1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'];
+                                                $bln = $months[$m] ?? '';
+                                            }
+                                        }
+                                    @endphp
+                                    <select name="tanggal_lahir_tgl" class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
+                                        <option value="">Tgl</option>
+                                        @for($i=1; $i<=31; $i++)
+                                            <option value="{{ $i }}" {{ $tgl == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                    <select name="tanggal_lahir_bln" class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
+                                        <option value="">Bulan</option>
+                                        @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $m)
+                                            <option value="{{ $m }}" {{ $bln == $m ? 'selected' : '' }}>{{ $m }}</option>
+                                        @endforeach
+                                    </select>
+                                    <select name="tanggal_lahir_thn" class="border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:border-primary flex-1">
+                                        <option value="">Tahun</option>
+                                        @for($i=date('Y'); $i>=1970; $i--)
+                                            <option value="{{ $i }}" {{ $thn == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Jenis Kelamin</label>
                                 <div class="flex items-center gap-6">
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="gender" class="w-4 h-4 text-primary focus:ring-primary" checked>
+                                        <input type="radio" name="jenis_kelamin" value="Laki-laki" class="w-4 h-4 text-primary focus:ring-primary" {{ ($profile && $profile->jenis_kelamin == 'Laki-laki') ? 'checked' : '' }}>
                                         <span class="text-gray-700 text-sm">Laki-laki</span>
                                     </label>
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="radio" name="gender" class="w-4 h-4 text-primary focus:ring-primary">
+                                        <input type="radio" name="jenis_kelamin" value="Perempuan" class="w-4 h-4 text-primary focus:ring-primary" {{ ($profile && $profile->jenis_kelamin == 'Perempuan') ? 'checked' : '' }}>
                                         <span class="text-gray-700 text-sm">Perempuan</span>
                                     </label>
                                 </div>
@@ -119,33 +163,29 @@
                         <div class="flex flex-col gap-5">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5 flex justify-between items-center">
-                                    Email
-                                    <a href="#" class="text-primary text-xs hover:underline">Ubah</a>
+                                    Email / NIS
                                 </label>
                                 <div class="flex items-center gap-3">
-                                    <input type="email" value="budi.santoso@email.com" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
+                                    <input type="text" value="{{ $user->email ?? $user->nis }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
                                     <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded border border-green-200 shrink-0">Terverifikasi</span>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5 flex justify-between items-center">
                                     Nomor Telepon
-                                    <a href="#" class="text-primary text-xs hover:underline">Ubah</a>
                                 </label>
                                 <div class="flex items-center gap-3">
                                     <div class="relative w-full">
-                                        <span class="absolute left-4 top-2.5 text-gray-500 font-medium">+62</span>
-                                        <input type="tel" value="81234567890" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
+                                        <input type="tel" name="no_telp" value="{{ old('no_telp', $profile->no_telp ?? '') }}" placeholder="Contoh: 08123456789" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
                                     </div>
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded border border-green-200 shrink-0">Terverifikasi</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-8 pt-6 border-t border-gray-100">
-                        <button class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-sm transition">Simpan Perubahan</button>
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-sm transition">Simpan Perubahan</button>
                     </div>
-                </div>
+                </form>
             </div>
 
             <!-- TAB: Daftar Transaksi -->
@@ -167,84 +207,32 @@
                 </div>
                 
                 <div class="p-6 flex flex-col gap-4">
-                    <!-- Transaksi 1 -->
-                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition">
-                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-storefront text-gray-500 text-xl"></i>
-                                <span class="font-bold text-gray-900">Toko Seragam Esemka</span>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200">Sedang Dikemas</span>
-                        </div>
-                        <div class="p-4 flex gap-4">
-                            <img src="https://picsum.photos/seed/seragam/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-gray-900">Seragam SD Merah Putih Lengan Pendek Berkualitas</h4>
-                                <p class="text-xs text-gray-500 mt-1">1 barang x Rp55.000</p>
-                            </div>
-                            <div class="text-right flex flex-col justify-between">
+                    @forelse($reviews as $review)
+                        <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl flex justify-between items-center">
+                            <div class="flex gap-4">
+                                <img src="{{ $review->product->thumbnail ? Storage::url($review->product->thumbnail) : 'https://picsum.photos/seed/'.$review->product->id.'/150/150' }}" class="w-16 h-16 rounded-lg object-cover border border-gray-100">
                                 <div>
-                                    <p class="text-xs text-gray-500">Total Belanja</p>
-                                    <p class="font-bold text-primary text-lg">Rp55.000</p>
+                                    <h4 class="font-bold text-gray-900 text-sm">{{ $review->product->title }}</h4>
+                                    <div class="flex text-yellow-400 mt-2 text-sm">
+                                        @for($i=1; $i<=5; $i++)
+                                            @if($i <= $review->rating)
+                                                <i class="ph-fill ph-star"></i>
+                                            @else
+                                                <i class="ph ph-star text-gray-300"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <p class="text-sm text-gray-700 mt-1">{{ $review->comment }}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2">
-                            <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Lacak Pesanan</button>
-                            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition">Hubungi Penjual</button>
+                    @empty
+                        <div class="text-center py-10">
+                            <i class="ph-fill ph-star text-6xl text-gray-300 mb-3"></i>
+                            <h3 class="font-bold text-gray-700">Belum ada ulasan</h3>
+                            <p class="text-sm text-gray-500 mt-1">Anda belum pernah memberikan ulasan.</p>
                         </div>
-                    </div>
-
-                    <!-- Transaksi 2 -->
-                    <div class="border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition">
-                        <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-storefront text-gray-500 text-xl"></i>
-                                <span class="font-bold text-gray-900">Studio Animasi 666</span>
-                            </div>
-                            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200">Selesai</span>
-                        </div>
-                        <div class="p-4 flex gap-4">
-                            <img src="https://picsum.photos/seed/desain/150/150" class="w-20 h-20 rounded-lg object-cover border border-gray-100">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-gray-900">Jasa Pembuatan Logo Bisnis & E-Sports Profesional</h4>
-                                <p class="text-xs text-gray-500 mt-1">1 barang x Rp150.000</p>
-                            </div>
-                            <div class="text-right flex flex-col justify-between">
-                                <div>
-                                    <p class="text-xs text-gray-500">Total Belanja</p>
-                                    <p class="font-bold text-primary text-lg">Rp150.000</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2">
-                            <button class="px-4 py-2 bg-white border border-primary text-primary rounded-lg text-sm font-bold hover:bg-blue-50 transition">Beli Lagi</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: Ulasan Saya -->
-            <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
-                <div class="p-6 border-b border-gray-200">
-                    <h2 class="text-xl font-bold text-gray-900">Ulasan Saya</h2>
-                    <p class="text-gray-500 text-sm mt-1">Berikan ulasan untuk produk yang telah Anda beli</p>
-                </div>
-                
-                <div class="p-6 flex flex-col gap-4">
-                    <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl flex justify-between items-center">
-                        <div class="flex gap-4">
-                            <img src="https://picsum.photos/seed/desain/150/150" class="w-16 h-16 rounded-lg object-cover border border-gray-100">
-                            <div>
-                                <h4 class="font-bold text-gray-900 text-sm">Jasa Pembuatan Logo Bisnis & E-Sports Profesional</h4>
-                                <p class="text-xs text-gray-500 mt-1">Studio Animasi 666</p>
-                                <div class="flex text-yellow-400 mt-2 text-sm">
-                                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition">Tulis Ulasan</button>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -257,24 +245,25 @@
                 
                 <div class="p-6 flex flex-col gap-6">
                     <!-- Ubah Password -->
-                    <div>
+                    <form action="{{ route('user.password.update') }}" method="POST">
+                        @csrf
                         <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Ubah Kata Sandi</h3>
                         <div class="flex flex-col gap-4 max-w-md">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Kata Sandi Saat Ini</label>
-                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                                <input type="password" name="current_password" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Kata Sandi Baru</label>
-                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                                <input type="password" name="new_password" required minlength="6" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Konfirmasi Kata Sandi Baru</label>
-                                <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
+                                <input type="password" name="new_password_confirmation" required minlength="6" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-primary">
                             </div>
-                            <button class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
+                            <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
                         </div>
-                    </div>
+                    </form>
                     
                     <!-- Notifikasi -->
                     <div class="mt-4">

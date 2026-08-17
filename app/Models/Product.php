@@ -14,6 +14,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'department_id',
         'type',
         'category',
@@ -61,8 +62,7 @@ class Product extends Model
 
     public function jurusans(): BelongsToMany
     {
-        return $this->belongsToMany(Jurusan::class, 'product_jurusan')
-            ->withTimestamps();
+        return $this->belongsToMany(Jurusan::class, 'product_jurusan');
     }
 
     public function reviews(): HasMany
@@ -73,6 +73,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
