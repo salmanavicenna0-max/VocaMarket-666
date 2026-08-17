@@ -78,6 +78,30 @@
 
     @include('layout.header')
 
+        @if(session('success'))
+            <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-md px-4" id="global-alert">
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-check-circle text-2xl"></i>
+                        <p class="font-medium text-sm">{{ session('success') }}</p>
+                    </div>
+                    <button onclick="document.getElementById('global-alert').remove()" class="text-green-700 hover:text-green-900 ml-4">
+                        <i class="ph-bold ph-x text-lg"></i>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const alert = document.getElementById('global-alert');
+                        if (alert) {
+                            alert.style.transition = 'opacity 0.5s ease';
+                            alert.style.opacity = '0';
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
+            </div>
+        @endif
+
         @yield('content')
         
     </main>

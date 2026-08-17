@@ -53,4 +53,30 @@ class AdminController extends Controller
             'recentOrders'
         ));
     }
+
+    public function transactions()
+    {
+        $orders = Order::with(['user', 'seller', 'items.product'])->latest()->paginate(20);
+        return view('Admin.transactions.index', compact('orders'));
+    }
+
+    public function approveRefund($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status === Order::STATUS_MENUNGGU_PENGEMBALIAN) {
+            $order->update(['status' => Order::STATUS_PENGEMBALIAN]);
+            return back()->with('success', 'Pengembalian dana disetujui.');
+        }
+        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+    }
+
+    public function rejectRefund($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status === Order::STATUS_MENUNGGU_PENGEMBALIAN) {
+            $order->update(['status' => Order::STATUS_SELESAI]);
+            return back()->with('success', 'Komplain ditolak, pesanan dikembalikan ke status selesai.');
+        }
+        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+    }
 }

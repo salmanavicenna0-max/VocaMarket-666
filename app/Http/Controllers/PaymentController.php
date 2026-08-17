@@ -42,7 +42,7 @@ class PaymentController extends Controller
 
         $order->update(['status' => Order::STATUS_MENUNGGU_VERIFIKASI]);
 
-        return back()->with('success', 'Bukti pembayaran terkirim, menunggu verifikasi admin.');
+        return back()->with('success', 'Bukti pembayaran terkirim, menunggu verifikasi penjual.');
     }
 
     /**

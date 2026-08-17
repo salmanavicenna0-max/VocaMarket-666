@@ -59,7 +59,19 @@
                             <div class="flex items-center gap-3">
                                 <i class="ph-fill ph-shopping-bag text-xl"></i> Pesanan Masuk
                             </div>
-                            <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+                            @if($pendingOrdersCount > 0)
+                                <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pendingOrdersCount }}</span>
+                            @endif
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="switchTab('ulasan')" id="nav-ulasan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-star text-xl"></i> Ulasan Pembeli
+                            </div>
+                            @if($totalReviewsCount > 0)
+                                <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalReviewsCount }}</span>
+                            @endif
                         </button>
                     </li>
                     <li class="border-t border-gray-100">
@@ -181,11 +193,13 @@
                             <h4 class="font-bold text-gray-900 mb-2">Tugas Menunggu</h4>
                             
                             <div onclick="switchTab('pesanan')" class="flex items-center justify-between p-3 bg-red-50 text-red-700 rounded-lg border border-red-100 cursor-pointer hover:bg-red-100 transition">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2">
                                     <i class="ph-bold ph-warning-circle text-xl"></i>
                                     <span class="font-bold text-sm">Pesanan Baru</span>
                                 </div>
-                                <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+                                @if($pendingOrdersCount > 0)
+                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $pendingOrdersCount }}</span>
+                                @endif
                             </div>
 
                             <div onclick="switchTab('pesanan')" class="flex items-center justify-between p-3 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-100 cursor-pointer hover:bg-yellow-100 transition">
@@ -311,9 +325,10 @@
                     <button onclick="filterPesanan('Semua', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-primary text-primary font-bold text-sm transition">Semua</button>
                     <button onclick="filterPesanan('Perlu Diproses', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition relative">
                         Perlu Diproses
-                        <span id="badge-diproses" class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">1</span>
+                        @if($pendingOrdersCount > 0)
+                            <span id="badge-diproses" class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{{ $pendingOrdersCount }}</span>
+                        @endif
                     </button>
-                    <button onclick="filterPesanan('Sedang Dikirim', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Sedang Dikirim</button>
                     <button onclick="filterPesanan('Selesai', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Selesai</button>
                     <button onclick="filterPesanan('Dibatalkan', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dibatalkan</button>
                     <button onclick="filterPesanan('Pengembalian', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Pengembalian</button>
@@ -321,7 +336,7 @@
                 
                 <div class="p-6 flex flex-col gap-4">
                     @forelse($orders as $order)
-                    <div class="pesanan-item border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition border-l-4 {{ $order->status == 'menunggu_pembayaran' ? 'border-l-yellow-400' : 'border-l-blue-400' }}">
+                    <div class="pesanan-item border border-gray-200 rounded-xl overflow-hidden hover:border-primary transition border-l-4 {{ $order->status == 'menunggu_pembayaran' ? 'border-l-yellow-400' : 'border-l-blue-400' }}" data-status="{{ $order->status_label }}">
                         <div class="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
                             <div class="flex items-center gap-3">
                                 <i class="ph-fill ph-user-circle text-gray-500 text-xl"></i>
@@ -349,29 +364,41 @@
                             </div>
                         </div>
                         
-                        <div class="p-4 border-t border-gray-100 flex justify-end gap-2 bg-gray-50">
-                            @if($order->status == 'menunggu_pembayaran' || $order->status == 'menunggu_verifikasi' || $order->status == 'diproses')
-                                <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="status" value="dibatalkan">
-                                    <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak / Batalkan</button>
-                                </form>
-                            @endif
+                          <div class="p-4 border-t border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-gray-50">
+                              
+                              <!-- Lihat Bukti Bayar -->
+                              <div>
+                                  @if($order->payments && $order->payments->count() > 0)
+                                      <a href="{{ asset('storage/' . $order->payments->last()->payment_proof) }}" target="_blank" class="text-primary text-sm font-bold hover:underline flex items-center gap-1">
+                                          <i class="ph-bold ph-image"></i> Lihat Bukti Pembayaran
+                                      </a>
+                                  @endif
+                              </div>
 
-                            @if($order->status == 'menunggu_pembayaran' || $order->status == 'menunggu_verifikasi')
-                                <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="status" value="diproses">
-                                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-sm focus:outline-none">Terima & Proses</button>
-                                </form>
-                            @elseif($order->status == 'diproses')
-                                <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="status" value="selesai">
-                                    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600 transition shadow-sm focus:outline-none">Tandai Selesai</button>
-                                </form>
-                            @endif
-                        </div>
+                              <div class="flex justify-end gap-2">
+                                  @if($order->status == 'menunggu_verifikasi' || $order->status == 'diproses')
+                                      <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
+                                          @csrf
+                                          <input type="hidden" name="status" value="dibatalkan">
+                                          <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak / Batalkan</button>
+                                      </form>
+                                  @endif
+      
+                                  @if($order->status == 'menunggu_verifikasi')
+                                      <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
+                                          @csrf
+                                          <input type="hidden" name="status" value="diproses">
+                                          <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-sm focus:outline-none">Konfirmasi Pembayaran</button>
+                                      </form>
+                                  @elseif($order->status == 'diproses')
+                                      <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
+                                          @csrf
+                                          <input type="hidden" name="status" value="selesai">
+                                          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600 transition shadow-sm focus:outline-none">Tandai Selesai</button>
+                                      </form>
+                                  @endif
+                              </div>
+                          </div>
                     </div>
                     @empty
                     <div class="text-center p-8 text-gray-500">Belum ada pesanan.</div>
@@ -379,6 +406,43 @@
 </div>
             </div>
             
+            <!-- TAB: Ulasan -->
+            <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Ulasan Pembeli</h2>
+                    <p class="text-gray-500 text-sm mt-1">Lihat umpan balik dari pembeli terhadap produk Anda</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex flex-col gap-4">
+                        @forelse($reviews as $review)
+                        <div class="border border-gray-200 rounded-lg p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="font-bold text-gray-800">{{ $review->product->name }}</h4>
+                                    <p class="text-xs text-gray-500">Oleh: {{ $review->user->name }} - {{ $review->created_at->diffForHumans() }}</p>
+                                </div>
+                                <div class="flex text-yellow-500">
+                                    @for($i=1; $i<=5; $i++)
+                                        @if($i <= $review->rating)
+                                            <i class="ph-fill ph-star"></i>
+                                        @else
+                                            <i class="ph ph-star"></i>
+                                        @endif
+                                    @endfor
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700">
+                                "{{ $review->comment ?: 'Tidak ada komentar tertulis.' }}"
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center p-8 text-gray-500">Belum ada ulasan untuk produk Anda.</div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -861,6 +925,34 @@
         const activeNav = document.getElementById('nav-' + tabId);
         activeNav.classList.remove('text-gray-600', 'border-transparent');
         activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        
+        if (tabId === 'pesanan') {
+            fetch('{{ route("seller.mark_orders_read") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(() => {
+                document.querySelectorAll('#nav-pesanan .bg-red-500').forEach(el => el.remove());
+                document.querySelectorAll('.bg-red-500').forEach(el => {
+                    if (el.parentElement.textContent.includes('Pesanan Baru')) el.remove();
+                });
+                document.querySelectorAll('#badge-diproses').forEach(el => el.remove());
+            });
+        } else if (tabId === 'ulasan') {
+            fetch('{{ route("seller.mark_reviews_read") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(() => {
+                document.querySelectorAll('#nav-ulasan .bg-blue-500').forEach(el => el.remove());
+            });
+        }
     }
 
     // Interactive Functions

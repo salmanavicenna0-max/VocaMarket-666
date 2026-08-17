@@ -63,11 +63,13 @@
                             <i class="ph-fill ph-gear text-xl"></i> Pengaturan
                         </button>
                     </li>
+                    @if(Auth::user()->isSiswa())
                     <li class="border-t border-gray-100">
                         <button onclick="switchTab('bukatoko')" id="nav-bukatoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-green-600 font-bold hover:bg-green-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-storefront text-xl"></i> Buka Toko
                         </button>
                     </li>
+                    @endif
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-sign-out text-xl"></i> Keluar
@@ -197,13 +199,79 @@
                 
                 <!-- Horizontal Tabs for Status -->
                 <div class="flex overflow-x-auto border-b border-gray-200 whitespace-nowrap">
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-primary text-primary font-bold text-sm">All</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Belum Bayar</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dikemas</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dikirim</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Selesai</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dibatalkan</button>
-                    <button class="flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Pengembalian</button>
+                    <button onclick="filterPesananUser('Semua', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-primary text-primary font-bold text-sm">Semua</button>
+                    <button onclick="filterPesananUser('Menunggu Pembayaran', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Belum Bayar</button>
+                    <button onclick="filterPesananUser('Menunggu Verifikasi', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Menunggu Penjual</button>
+                    <button onclick="filterPesananUser('Diproses', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Diproses</button>
+                    <button onclick="filterPesananUser('Selesai', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Selesai</button>
+                    <button onclick="filterPesananUser('Dibatalkan', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Dibatalkan</button>
+                    <button onclick="filterPesananUser('Pengembalian', this)" class="order-tab-btn flex-1 py-3 px-4 text-center border-b-2 border-transparent text-gray-600 hover:text-primary font-medium text-sm transition">Pengembalian</button>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-4">
+                    @forelse($orders as $order)
+                        <div class="pesanan-user-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition" data-status="{{ $order->status_label }}">
+                            <!-- Order Header -->
+                            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex flex-wrap gap-4 items-center justify-between">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1">Tanggal Pesanan</p>
+                                    <p class="text-sm font-semibold text-gray-800">{{ $order->created_at->format('d M Y, H:i') }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1">ID Pesanan</p>
+                                    <p class="text-sm font-semibold text-gray-800 uppercase">#{{ substr($order->id, 0, 8) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1">Status</p>
+                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{{ $order->status_label }}</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500 mb-1">Total Belanja</p>
+                                    <p class="text-lg font-bold text-primary">Rp {{ number_format($order->total, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Order Items -->
+                            <div class="p-6">
+                                @foreach($order->items as $item)
+                                    <div class="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100 last:mb-0 last:pb-0 last:border-0">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                                            @if($item->product->images && $item->product->images->count() > 0)
+                                                <img src="{{ asset('storage/' . $item->product->images->where('is_primary', true)->first()->path) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
+                                            @else
+                                                <i class="ph-fill ph-package text-2xl text-gray-400"></i>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="font-bold text-gray-800 line-clamp-1">{{ $item->product->name }}</h3>
+                                            <p class="text-sm text-gray-500">{{ $item->quantity }} x Rp {{ number_format($item->price_snapshot, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <!-- Action -->
+                            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end">
+                                <a href="{{ route('orders.show', $order->id) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">
+                                    Lihat Detail Pesanan
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-10">
+                            <i class="ph-fill ph-receipt text-6xl text-gray-300 mb-3"></i>
+                            <h3 class="font-bold text-gray-700">Belum ada transaksi</h3>
+                            <p class="text-sm text-gray-500 mt-1">Anda belum pernah melakukan transaksi apa pun.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- TAB: Ulasan Saya -->
+            <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Ulasan Saya</h2>
+                    <p class="text-gray-500 text-sm mt-1">Daftar ulasan yang pernah Anda berikan</p>
                 </div>
                 
                 <div class="p-6 flex flex-col gap-4">
@@ -288,7 +356,8 @@
                 </div>
             </div>
 
-            <!-- TAB: Buka Toko -->
+            <!-- TAB: Buka Toko (Hanya Siswa) -->
+            @if(Auth::user()->isSiswa())
             <div id="tab-bukatoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
                     <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
@@ -342,6 +411,7 @@
                     @endif
                 </div>
             </div>
+            @endif
             
         </div>
     </div>
@@ -369,6 +439,36 @@
         const activeNav = document.getElementById('nav-' + tabId);
         activeNav.classList.remove('text-gray-600', 'border-transparent');
         activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+    }
+
+    function filterPesananUser(status, btnElement) {
+        // Update tab styling
+        const tabs = document.querySelectorAll('.order-tab-btn');
+        tabs.forEach(tab => {
+            tab.classList.remove('border-primary', 'text-primary', 'border-b-2');
+            tab.classList.add('border-transparent', 'text-gray-600');
+        });
+        btnElement.classList.remove('border-transparent', 'text-gray-600');
+        btnElement.classList.add('border-primary', 'text-primary', 'border-b-2');
+
+        // Filter elements
+        const orders = document.querySelectorAll('.pesanan-user-item');
+        orders.forEach(order => {
+            if (status === 'Semua') {
+                order.style.display = '';
+            } else if (status === 'Pengembalian') {
+                // If filtering by pengembalian, include both menunggu_pengembalian and pengembalian
+                if (order.getAttribute('data-status') === 'Menunggu Pengembalian' || order.getAttribute('data-status') === 'Pengembalian') {
+                    order.style.display = '';
+                } else {
+                    order.style.display = 'none';
+                }
+            } else if (order.getAttribute('data-status') === status) {
+                order.style.display = '';
+            } else {
+                order.style.display = 'none';
+            }
+        });
     }
 </script>
 @endsection

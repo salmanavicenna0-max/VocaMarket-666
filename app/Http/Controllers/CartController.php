@@ -24,6 +24,9 @@ class CartController extends Controller
                 return $item->product->user_id ?? 0;
             });
             $total = $cartItems->sum(fn ($item) => $item->product?->price * $item->quantity ?? 0);
+            
+            // Mark items as read
+            Auth::user()->cart()->where('is_read', false)->update(['is_read' => true]);
         }
 
         return view('cart.index', compact('groupedItems', 'cartItems', 'total'));
@@ -53,6 +56,7 @@ class CartController extends Controller
 
         $cartItem->quantity = $cartItem->exists ? $cartItem->quantity + $quantity : $quantity;
         $cartItem->status = 'aktif';
+        $cartItem->is_read = false;
         $cartItem->save();
 
         return back()->with('success', $product->name . ' masuk keranjang.');

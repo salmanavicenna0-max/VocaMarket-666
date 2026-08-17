@@ -89,18 +89,17 @@
             </h3>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <label class="border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative opacity-50">
-                    <input type="radio" name="payment" value="cod" class="absolute top-2 right-2" disabled>
-                    <i class="ph-fill ph-truck text-3xl text-gray-500"></i>
-                    <span class="text-xs font-bold text-center">COD</span>
+                <label class="payment-method-label border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative" onclick="selectPayment(this)">
+                    <input type="radio" name="payment" value="cod" class="absolute top-2 right-2">
+                    <i class="payment-icon ph-fill ph-truck text-3xl text-gray-500"></i>
+                    <span class="payment-text text-xs font-bold text-center text-gray-500">COD</span>
                 </label>
-                 <label class="border border-primary bg-blue-50 p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative">
+                 <label class="payment-method-label border border-primary bg-blue-50 p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative" onclick="selectPayment(this)">
                     <input type="radio" name="payment" value="transfer" class="absolute top-2 right-2" checked>
-                    <i class="ph-fill ph-bank text-3xl text-primary"></i>
-                    <span class="text-xs font-bold text-center text-primary">Transfer Bank/Qris</span>
+                    <i class="payment-icon ph-fill ph-bank text-3xl text-primary"></i>
+                    <span class="payment-text text-xs font-bold text-center text-primary">Transfer Bank/Qris</span>
                 </label>
             </div>
-            <p class="text-xs text-gray-500 mt-3">* Saat ini pembayaran hanya dapat dilakukan melalui Transfer Bank/Qris untuk verifikasi yang lebih aman.</p>
         </div>
 
         <!-- 4. Ringkasan Belanja -->
@@ -132,4 +131,33 @@
     </form>
 </div>
 
+<script>
+function selectPayment(selectedLabel) {
+    // Reset all labels
+    document.querySelectorAll('.payment-method-label').forEach(label => {
+        label.classList.remove('border-primary', 'bg-blue-50');
+        label.classList.add('border-gray-200');
+        
+        const icon = label.querySelector('.payment-icon');
+        icon.classList.remove('text-primary');
+        icon.classList.add('text-gray-500');
+        
+        const text = label.querySelector('.payment-text');
+        text.classList.remove('text-primary');
+        text.classList.add('text-gray-500');
+    });
+
+    // Set active styles to selected label
+    selectedLabel.classList.add('border-primary', 'bg-blue-50');
+    selectedLabel.classList.remove('border-gray-200');
+    
+    const selectedIcon = selectedLabel.querySelector('.payment-icon');
+    selectedIcon.classList.add('text-primary');
+    selectedIcon.classList.remove('text-gray-500');
+    
+    const selectedText = selectedLabel.querySelector('.payment-text');
+    selectedText.classList.add('text-primary');
+    selectedText.classList.remove('text-gray-500');
+}
+</script>
 @endsection

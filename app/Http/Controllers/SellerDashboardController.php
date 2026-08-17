@@ -13,13 +13,24 @@ class SellerDashboardController extends Controller
     {
         $user = Auth::user();
         $products = $user->products()->with('images')->latest()->get();
-        $orders = $user->salesOrders()->with(['items.product', 'user'])->latest()->get();
+        $orders = $user->salesOrders()
+            ->where('status', '!=', 'menunggu_pembayaran')
+            ->with(['items.product', 'user', 'payments'])
+            ->latest()
+            ->get();
+        
+        $reviews = \App\Models\Review::whereHas('product', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->with(['user', 'product'])->latest()->get();
+        
+        $pendingOrdersCount = $orders->where('is_read_by_seller', false)->whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
+        $totalReviewsCount = $reviews->where('is_read_by_seller', false)->count();
         
         $totalRevenue = $orders->where('status', 'selesai')->sum('total');
         $completedOrders = $orders->where('status', 'selesai')->count();
         $totalProducts = $products->count();
 
-        return view('seller.products', compact('products', 'orders', 'totalRevenue', 'completedOrders', 'totalProducts', 'user'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'pendingOrdersCount', 'totalReviewsCount'));
     }
 
     public function storeProduct(Request $request)
@@ -82,5 +93,24 @@ class SellerDashboardController extends Controller
         $product->delete();
         
         return back()->with('success', 'Produk dihapus!');
+    }
+    public function markOrdersRead()
+    {
+        $user = Auth::user();
+        \App\Models\Order::where('seller_id', $user->id)
+            ->where('is_read_by_seller', false)
+            ->update(['is_read_by_seller' => true]);
+            
+        return response()->json(['success' => true]);
+    }
+
+    public function markReviewsRead()
+    {
+        $user = Auth::user();
+        \App\Models\Review::whereHas('product', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->where('is_read_by_seller', false)->update(['is_read_by_seller' => true]);
+        
+        return response()->json(['success' => true]);
     }
 }

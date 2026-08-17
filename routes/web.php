@@ -34,6 +34,7 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
 Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->middleware('auth');
+Route::post('/orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund')->middleware('auth');
 
 // Payments
 Route::post('/orders/{orderId}/payment', [PaymentController::class, 'store'])->name('payments.store')->middleware('auth');
@@ -70,6 +71,9 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
     Route::delete('/product/{id}', [SellerDashboardController::class, 'destroyProduct'])->name('product.destroy');
     
     Route::post('/order/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('order.status');
+    
+    Route::post('/mark-orders-read', [SellerDashboardController::class, 'markOrdersRead'])->name('mark_orders_read');
+    Route::post('/mark-reviews-read', [SellerDashboardController::class, 'markReviewsRead'])->name('mark_reviews_read');
 });
 
 Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');
@@ -80,7 +84,12 @@ Route::get('/chat', function () {
 });
 
 // Admin
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
+    Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
+    Route::resource('admin/users', UserController::class);
+});
 
-Route::resource('admin/users', UserController::class)->names('users');
 Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');

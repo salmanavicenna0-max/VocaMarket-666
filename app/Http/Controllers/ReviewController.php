@@ -9,10 +9,6 @@ use App\Models\Order;
 
 class ReviewController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Store a review for a product.
@@ -41,13 +37,13 @@ class ReviewController extends Controller
                     'order_id' => $orderId ?? null,
                     'rating' => $validated['rating'],
                     'comment' => $validated['comment'] ?? null,
-                    'status' => Review::STATUS_PENDING,
+                    'status' => Review::STATUS_APPROVED,
                 ]
             );
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->with('error', 'Kamu sudah pernah mengulas produk ini.');
         }
 
-        return back()->with('success', 'Ulasan terkirim, menunggu moderasi admin.');
+        return back()->with('success', 'Ulasan terkirim.');
     }
 }

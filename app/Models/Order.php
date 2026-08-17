@@ -18,10 +18,13 @@ class Order extends Model
     const STATUS_SELESAI = 'selesai';
     const STATUS_DIBATALKAN = 'dibatalkan';
     const STATUS_DITOLAK = 'ditolak';
+    const STATUS_MENUNGGU_PENGEMBALIAN = 'menunggu_pengembalian';
+    const STATUS_PENGEMBALIAN = 'pengembalian';
 
     protected $fillable = [
         'code_order',
         'user_id',
+        'seller_id',
         'status',
         'subtotal',
         'discount',
@@ -40,6 +43,21 @@ class Order extends Model
     }
 
     // -- Relationships --
+
+    public function getStatusLabelAttribute()
+    {
+        return match ($this->status) {
+            self::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
+            self::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
+            self::STATUS_DIPROSES => 'Perlu Diproses',
+            self::STATUS_SELESAI => 'Selesai',
+            self::STATUS_DIBATALKAN => 'Dibatalkan',
+            self::STATUS_DITOLAK => 'Ditolak',
+            self::STATUS_MENUNGGU_PENGEMBALIAN => 'Menunggu Pengembalian',
+            self::STATUS_PENGEMBALIAN => 'Pengembalian',
+            default => 'Tidak Diketahui',
+        };
+    }
 
     public function user(): BelongsTo
     {
@@ -90,16 +108,4 @@ class Order extends Model
         return $prefix . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
 
-    public function getStatusLabelAttribute(): string
-    {
-        return match ($this->status) {
-            self::STATUS_MENUNGGU_PEMBAYARAN => 'Menunggu Pembayaran',
-            self::STATUS_MENUNGGU_VERIFIKASI => 'Menunggu Verifikasi',
-            self::STATUS_DIPROSES => 'Diproses',
-            self::STATUS_SELESAI => 'Selesai',
-            self::STATUS_DIBATALKAN => 'Dibatalkan',
-            self::STATUS_DITOLAK => 'Ditolak',
-            default => ucfirst($this->status),
-        };
-    }
 }

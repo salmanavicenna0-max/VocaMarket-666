@@ -42,9 +42,11 @@
                     <i class="ph-bold ph-users text-xl"></i>
                     Pengguna
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition font-medium">
-                    <i class="ph-bold ph-package text-xl"></i>
-                    Produk
+                <a href="#" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-black/5 rounded-lg transition font-medium">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-bold ph-receipt text-lg"></i>
+                        <span>Transaksi</span>
+                    </div>
                 </a>
             </nav>
         </div>

@@ -271,7 +271,7 @@
                                     <i class="ph-fill ph-storefront"></i> 
                                     {{ $product->seller ? $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
                                 </span>
-                                <span class="text-[11px] text-gray-500">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : $product->sales_count }} terjual</span>
+                                <span class="text-[11px] font-medium text-primary bg-blue-50 px-2 py-0.5 rounded">{{ ucfirst($product->type ?? 'Produk') }}</span>
                             </div>
                         </div>
                     </div>

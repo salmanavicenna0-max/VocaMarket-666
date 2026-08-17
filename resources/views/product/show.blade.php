@@ -53,14 +53,20 @@
             
             <!-- Rating & Sales -->
             <div class="flex flex-wrap items-center gap-4 text-sm mb-4 text-gray-600">
+                @if($product->sales_count > 0)
                 <div class="flex items-center gap-1 font-bold">
                     Terjual <span class="text-gray-900 ml-1">{{ $product->sales_count >= 10000 ? floor($product->sales_count / 1000) . 'RB+' : number_format($product->sales_count, 0, ',', '.') }}</span>
                 </div>
                 <div class="w-1.5 h-1.5 rounded-full bg-gray-300 hidden md:block"></div>
+                @endif
                 <div class="flex items-center gap-1.5">
+                    @php
+                        $avgRating = $product->reviews->avg('rating') ?? 0;
+                        $totalReviews = $product->reviews->count();
+                    @endphp
                     <i class="ph-fill ph-star text-accent text-lg"></i>
-                    <span class="font-bold text-gray-900">{{ $product->rating }}</span> 
-                    <span class="text-gray-500">({{ number_format($product->reviews_count, 0, ',', '.') }} rating)</span>
+                    <span class="font-bold text-gray-900">{{ number_format($avgRating, 1) }}</span> 
+                    <span class="text-gray-500">({{ number_format($totalReviews, 0, ',', '.') }} rating)</span>
                 </div>
             </div>
 
@@ -89,6 +95,10 @@
                 <div class="flex items-center">
                     <span class="w-32 text-gray-500">Min. Pemesanan</span>
                     <span class="font-medium text-gray-900">1 Buah</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-32 text-gray-500">Stok</span>
+                    <span class="font-medium text-gray-900">{{ number_format($product->stock, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex items-center">
                     <span class="w-32 text-gray-500">Etalase</span>
@@ -126,24 +136,7 @@
         <div class="md:col-span-3">
             <form action="{{ route('cart.add', $product->id) }}" method="POST" class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
                 @csrf
-                <h3 class="font-bold text-gray-900 mb-4">Atur jumlah dan catatan</h3>
-                
-                <!-- Quantity & Stock -->
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden w-28">
-                        <button type="button" class="w-1/3 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition"><i class="ph-bold ph-minus"></i></button>
-                        <input type="number" name="quantity" value="1" min="1" max="{{ max(1, $product->stock) }}" class="w-1/3 h-8 text-center border-x border-gray-300 outline-none text-gray-800 text-sm font-medium">
-                        <button type="button" class="w-1/3 h-8 flex items-center justify-center text-primary hover:bg-gray-100 transition"><i class="ph-bold ph-plus"></i></button>
-                    </div>
-                    <span class="text-sm text-gray-500">
-                        Stok <span class="font-bold text-gray-900">{{ number_format($product->stock, 0, ',', '.') }}</span>
-                    </span>
-                </div>
-                
-                <!-- Notes -->
-                <button type="button" class="text-primary text-sm font-medium hover:underline flex items-center gap-1 mb-5">
-                    <i class="ph-bold ph-pencil-simple"></i> Tambah Catatan
-                </button>
+                <input type="hidden" name="quantity" value="1">
                 
                 <!-- Subtotal -->
                 <div class="flex items-center justify-between mb-5">
