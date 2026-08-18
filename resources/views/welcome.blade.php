@@ -269,7 +269,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] text-gray-500 flex items-center gap-1">
                                     <i class="ph-fill ph-storefront"></i> 
-                                    {{ $product->seller ? $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
+                                    {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
                                 </span>
                                 <span class="text-[11px] font-medium text-primary bg-blue-50 px-2 py-0.5 rounded">{{ ucfirst($product->type ?? 'Produk') }}</span>
                             </div>

@@ -18,28 +18,41 @@
     <!-- 3-Column Modern Grid Layout -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 relative">
         
-        <!-- LEFT COLUMN: Image Gallery (Sticky) -->
+        <!-- LEFT COLUMN: Image & Video Gallery (Sticky) -->
         <div class="md:col-span-4">
             <div class="flex flex-col gap-3">
-                <!-- Main Image -->
-                <div class="w-full aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group">
-                    <img src="{{ $product->thumbnail }}" alt="Product Image" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-image">
+                <!-- Main Media Box -->
+                <div class="w-full aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group flex items-center justify-center" id="main-media-container">
+                    @if($product->primaryImage() && $product->primaryImage()->is_video)
+                        <video controls src="{{ asset('storage/' . $product->primaryImage()->path) }}" class="w-full h-full object-cover" id="main-product-media"></video>
+                    @else
+                        <img src="{{ $product->thumbnail }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-media">
+                    @endif
                     @if($product->is_promo)
-                    <div class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Promo Extra</div>
+                    <div class="absolute top-2 left-2 bg-accent text-gray-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">Promo Extra</div>
                     @endif
                     @if($product->discount_percentage)
-                    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">{{ $product->discount_percentage }}% OFF</div>
+                    <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm z-10">{{ $product->discount_percentage }}% OFF</div>
                     @endif
                 </div>
-                <!-- Thumbnails -->
-                <div class="grid grid-cols-4 gap-3">
-                    <div class="aspect-square bg-gray-100 rounded-xl border-2 border-primary overflow-hidden cursor-pointer">
-                        <img src="{{ $product->thumbnail }}" class="w-full h-full object-cover">
+
+                <!-- Thumbnails Gallery (Max 6 Media) -->
+                @if($product->images->count() > 0)
+                <div class="grid grid-cols-6 gap-2" id="thumb-gallery-container">
+                    @foreach($product->images->take(6) as $index => $img)
+                    <div class="aspect-square bg-gray-100 rounded-xl border-2 {{ $index === 0 ? 'border-primary' : 'border-gray-200 hover:border-primary' }} overflow-hidden cursor-pointer relative group transition flex items-center justify-center thumb-media-item" onclick="changeMainMedia('{{ asset('storage/' . $img->path) }}', {{ $img->is_video ? 'true' : 'false' }}, this)">
+                        @if($img->is_video)
+                            <video src="{{ asset('storage/' . $img->path) }}" class="w-full h-full object-cover pointer-events-none"></video>
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                                <i class="ph-fill ph-play-circle text-white text-lg"></i>
+                            </div>
+                        @else
+                            <img src="{{ asset('storage/' . $img->path) }}" class="w-full h-full object-cover">
+                        @endif
                     </div>
-                    <div class="aspect-square bg-gray-50 rounded-xl border border-gray-200 hover:border-primary overflow-hidden cursor-pointer transition flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50">
-                        <i class="ph ph-image text-2xl"></i>
-                    </div>
+                    @endforeach
                 </div>
+                @endif
             </div>
         </div>
 
@@ -117,12 +130,16 @@
             <!-- Store Profile (Tokopedia Style inside middle column) -->
             <div class="flex items-center gap-4 py-2">
                 <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="shrink-0 block">
-                    <img src="https://picsum.photos/seed/{{ Str::slug($product->seller ? $product->seller->name : 'Toko') }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @if($product->seller && $product->seller->profile && ($product->seller->profile->foto || $product->seller->profile->photo))
+                        <img src="{{ asset('storage/' . ($product->seller->profile->foto ?? $product->seller->profile->photo)) }}" alt="{{ $product->seller->name }}" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($product->seller->name ?? 'Toko') }}&background=0a84d4&color=fff&size=128" alt="{{ $product->seller->name ?? 'Toko' }}" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @endif
                 </a>
                 <div class="flex flex-col flex-1">
                     <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="font-bold text-gray-900 text-base flex items-center gap-1.5 hover:text-primary transition w-fit">
                         <i class="ph-fill ph-check-circle text-primary"></i> 
-                        {{ $product->seller ? 'Toko ' . $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
+                        {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
                     </a>
                 </div>
                 <a href="#" onclick="openMiniChat(event)" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
@@ -165,4 +182,32 @@
 
     </div>
 </div>
+
+<script>
+function changeMainMedia(mediaUrl, isVideo, thumbEl) {
+    const container = document.getElementById('main-media-container');
+    
+    // Reset borders on all thumbnails
+    document.querySelectorAll('.thumb-media-item').forEach(el => {
+        el.classList.remove('border-primary');
+        el.classList.add('border-gray-200');
+    });
+    
+    // Highlight clicked thumbnail
+    if (thumbEl) {
+        thumbEl.classList.remove('border-gray-200');
+        thumbEl.classList.add('border-primary');
+    }
+
+    if (isVideo) {
+        container.innerHTML = `
+            <video controls autoplay src="${mediaUrl}" class="w-full h-full object-cover" id="main-product-media"></video>
+        `;
+    } else {
+        container.innerHTML = `
+            <img src="${mediaUrl}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" id="main-product-media">
+        `;
+    }
+}
+</script>
 @endsection

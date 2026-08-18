@@ -95,4 +95,71 @@ class UserProfileController extends Controller
 
         return back()->with('success', 'Kata sandi berhasil diperbarui.');
     }
+
+    /**
+     * Perbarui Foto Profil
+     */
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
+
+        $user = Auth::user();
+        $profile = Profile::firstOrCreate(['user_id' => $user->id]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('profiles', 'public');
+            if (\Illuminate\Support\Facades\Schema::hasColumn('profiles', 'foto')) {
+                $profile->foto = $path;
+            }
+            if (\Illuminate\Support\Facades\Schema::hasColumn('profiles', 'photo')) {
+                $profile->photo = $path;
+            }
+            $profile->save();
+        }
+
+        return back()->with('success', 'Foto profil berhasil diperbarui!');
+    }
+
+    /**
+     * Perbarui Konfigurasi Toko (Khusus Siswa/Penjual)
+     */
+    public function updateStore(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!($user->isSiswa() || $user->isSeller() || $user->seller_status === 'approved' || $user->role === 'siswa' || $user->role === 'seller')) {
+            return back()->with('error', 'Hanya siswa/penjual yang dapat mengonfigurasi toko.');
+        }
+
+        $validated = $request->validate([
+            'nama_toko' => 'nullable|string|max:255',
+            'deskripsi_toko' => 'nullable|string|max:1000',
+            'alamat' => 'nullable|string|max:255',
+            'no_telp' => 'nullable|string|max:20',
+            'banner_toko' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
+            'warna_judul_toko' => 'nullable|string|max:20',
+        ]);
+
+        $profileData = [
+            'nama_toko' => $validated['nama_toko'] ?? null,
+            'deskripsi_toko' => $validated['deskripsi_toko'] ?? null,
+            'alamat' => $validated['alamat'] ?? null,
+            'no_telp' => $validated['no_telp'] ?? null,
+            'warna_judul_toko' => $validated['warna_judul_toko'] ?? '#111827',
+        ];
+
+        if ($request->hasFile('banner_toko')) {
+            $bannerPath = $request->file('banner_toko')->store('banners', 'public');
+            $profileData['banner_toko'] = $bannerPath;
+        }
+
+        Profile::updateOrCreate(
+            ['user_id' => $user->id],
+            $profileData
+        );
+
+        return back()->with('success', 'Konfigurasi profil toko berhasil disimpan!');
+    }
 }

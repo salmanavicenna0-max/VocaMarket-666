@@ -74,6 +74,16 @@
                             @endif
                         </button>
                     </li>
+                    <li>
+                        <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
+                        </button>
+                    </li>
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-arrow-left text-xl"></i> Kembali ke Pembeli
@@ -287,6 +297,9 @@
                                 </td>
                                 <td class="p-4">
                                     <div class="flex justify-center gap-2">
+                                        <button type="button" onclick='openEditProductModal({{ $product->id }}, @json($product->name), {{ $product->price }}, @json($product->category), @json($product->type), @json($product->description), {{ $product->stock }})' class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
+                                            <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                        </button>
                                         <form action="{{ route('seller.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Yakin hapus?');">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="p-2 text-red-600 hover:bg-red-100 rounded transition tooltip" title="Hapus">
@@ -443,6 +456,121 @@
                 </div>
             </div>
 
+            <!-- TAB: Konfigurasi Toko -->
+            <div id="tab-konfigurasitoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-sliders text-primary"></i> Konfigurasi Profil Toko
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Atur banner sampul, nama, dan informasi toko Anda agar terlihat menarik bagi calon pembeli</p>
+                    </div>
+                    <a href="{{ route('seller.profile', Auth::id()) }}" target="_blank" class="px-4 py-2 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition text-sm flex items-center gap-1.5 shrink-0">
+                        <i class="ph-bold ph-arrow-square-out"></i> Lihat Halaman Toko
+                    </a>
+                </div>
+                
+                <form action="{{ route('user.store.update') }}" method="POST" enctype="multipart/form-data" class="p-6 flex flex-col gap-6">
+                    @csrf
+                    
+                    <!-- Banner Toko Field -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Banner Sampul Toko</label>
+                        <div class="relative w-full h-44 rounded-xl overflow-hidden border border-gray-300 bg-gray-100 flex items-center justify-center mb-2 shadow-inner">
+                            @if($profile && $profile->banner_toko)
+                                <img src="{{ asset('storage/' . $profile->banner_toko) }}" alt="Banner Toko" id="banner-preview-seller" class="w-full h-full object-cover">
+                            @else
+                                <div id="banner-placeholder-seller" class="text-center text-gray-400 flex flex-col items-center">
+                                    <i class="ph-fill ph-image text-5xl mb-1 text-gray-300"></i>
+                                    <span class="text-xs font-medium">Belum ada banner khusus (menggunakan tampilan default)</span>
+                                </div>
+                                <img id="banner-preview-seller" class="w-full h-full object-cover hidden">
+                            @endif
+                        </div>
+                        <input type="file" name="banner_toko" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 transition cursor-pointer" onchange="previewSellerBanner(event)">
+                        <p class="text-xs text-gray-500 mt-1">Rekomendasi banner: Rasio lanskap (contoh: 1200 x 400 pixel, Maks: 3MB).</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko</label>
+                        <input type="text" name="nama_toko" value="{{ old('nama_toko', $profile->nama_toko ?? ('Toko ' . $user->name)) }}" placeholder="Masukkan nama toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" required>
+                        <p class="text-xs text-gray-500 mt-1">Nama ini akan menjadi judul utama di halaman profil toko Anda.</p>
+                    </div>
+
+                    <!-- Color Picker Warna Judul Toko -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Warna Teks Judul Toko</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" id="warna_judul_toko" name="warna_judul_toko" value="{{ old('warna_judul_toko', $profile->warna_judul_toko ?? '#111827') }}" oninput="document.getElementById('hex_judul_toko').value = this.value" class="w-12 h-10 border border-gray-300 rounded-lg p-1 cursor-pointer bg-white">
+                            <input type="text" id="hex_judul_toko" value="{{ old('warna_judul_toko', $profile->warna_judul_toko ?? '#111827') }}" readonly class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700 font-mono text-center">
+                            <span class="text-xs text-gray-500">Pilih warna teks agar judul toko Anda kontras dan terlihat jelas di atas banner.</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Tentang Penjual / Deskripsi Toko</label>
+                        <textarea name="deskripsi_toko" rows="4" placeholder="Tuliskan deskripsi singkat mengenai produk, jasa, atau toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">{{ old('deskripsi_toko', $profile->deskripsi_toko) }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Deskripsi ini akan ditampilkan pada bagian "Tentang Penjual" di halaman profil toko.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Lokasi Toko / Alamat Sekolah</label>
+                            <input type="text" name="alamat" value="{{ old('alamat', $profile->alamat ?? 'SMK Bakti Nusantara 666') }}" placeholder="Contoh: SMK Bakti Nusantara 666" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Nomor HP / WhatsApp Toko</label>
+                            <input type="text" name="no_telp" value="{{ old('no_telp', $profile->no_telp) }}" placeholder="Contoh: 085156699111" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2">
+                            <i class="ph-bold ph-floppy-disk"></i> Simpan Konfigurasi Toko
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB: Status Toko -->
+            <div id="tab-statustoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
+                    <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
+                        <i class="ph-fill ph-check-circle text-green-600"></i> Status Verifikasi Toko
+                    </h2>
+                    <p class="text-green-700 text-sm mt-1">Informasi status pendaftaran dan verifikasi akun penjual Anda</p>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-6">
+                    @if(Auth::user()->seller_status === 'approved')
+                        <div class="bg-green-50 border border-green-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-seal-check text-5xl text-green-500 mb-3"></i>
+                            <h3 class="font-bold text-green-800 text-xl">Toko Anda Resmi & Aktif!</h3>
+                            <p class="text-green-700 text-sm mt-2 max-w-md">Akun Anda telah terverifikasi sebagai Penjual Resmi VocaMarket SMK Bakti Nusantara 666. Anda memiliki akses penuh untuk mengunggah produk dan memproses pesanan.</p>
+                        </div>
+                    @elseif(Auth::user()->seller_status === 'pending')
+                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-clock text-5xl text-yellow-500 mb-3"></i>
+                            <h3 class="font-bold text-yellow-800 text-xl">Pengajuan Sedang Diverifikasi</h3>
+                            <p class="text-yellow-700 text-sm mt-2 max-w-md">Permintaan verifikasi penjual Anda sedang ditinjau oleh Administrator. Mohon tunggu proses persetujuan.</p>
+                        </div>
+                    @else
+                        <div class="bg-blue-50 border border-blue-200 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+                            <i class="ph-fill ph-info text-5xl text-blue-500 mb-3"></i>
+                            <h3 class="font-bold text-blue-900 text-xl">Ajukan Verifikasi Toko</h3>
+                            <p class="text-blue-700 text-sm mt-2 max-w-md mb-4">Mulai jualan produk dan jasa kreatif karya siswa SMK Bakti Nusantara 666.</p>
+                            <form method="POST" action="{{ route('user.request_seller') }}">
+                                @csrf
+                                <button type="submit" class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
+                                    <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Permintaan Verifikasi
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -519,7 +647,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
-                                <input type="number" name="price" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                                <input type="text" name="price" id="addProductPrice" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
                         <div>
@@ -529,17 +657,17 @@
                     </div>
                 </div>
 
-                <!-- Foto Produk -->
+                <!-- Foto & Video Produk -->
                 <div class="space-y-4 pt-2">
-                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto Produk</h4>
+                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto & Video Produk (Maks. 6 File)</h4>
                     
                     <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition group cursor-pointer bg-gray-50 hover:bg-blue-50/50" onclick="document.getElementById('imageUpload').click()">
                         <i class="ph-bold ph-upload-simple text-3xl text-gray-400 group-hover:text-primary transition mb-2"></i>
-                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto ke sini</p>
-                        <p class="text-xs text-gray-500 mt-1">Maks. 3 foto (JPG, PNG). Ukuran maks 2MB per foto.</p>
-                        <input type="file" name="images[]" id="imageUpload" onchange="previewImages(event)" multiple accept="image/*" class="hidden">
+                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto/video ke sini</p>
+                        <p class="text-xs text-gray-500 mt-1">Maks. 6 file (Foto JPG, PNG, WEBP & Video MP4, WEBM). Maks 50MB per file.</p>
+                        <input type="file" name="images[]" id="imageUpload" onchange="handleMediaSelect(event)" multiple accept="image/*,video/*" class="hidden">
                     </div>
-                    <!-- Image Previews -->
+                    <!-- Media Previews -->
                     <div id="imagePreviewContainer" class="flex gap-4 mt-4 hidden overflow-x-auto pb-2"></div>
                 </div>
 
@@ -571,8 +699,9 @@
 
         <!-- Body -->
         <div class="p-6">
-            <form id="formEditProduk" onsubmit="submitEditProduk(event)" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form id="formEditProduk" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
+                @method('PUT')
                 <!-- Info Dasar -->
                 <div class="space-y-4">
                     <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">1. Informasi Produk</h4>
@@ -586,7 +715,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kategori / Jurusan <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <select id="editProductCategory" onchange="updateEditSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition">
+                                <select id="editProductCategory" name="category" onchange="updateEditSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition" required>
                                     <option value="" disabled selected>Pilih Kategori</option>
                                     <optgroup label="Produk Sekolah">
                                         <option value="Aksesoris">Aksesoris</option>
@@ -606,7 +735,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Sub/Isi Kategori <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <select id="editProductSubCategory" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition disabled:bg-gray-100 disabled:cursor-not-allowed" disabled>
+                                <select id="editProductSubCategory" name="sub_category" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition disabled:bg-gray-100 disabled:cursor-not-allowed" disabled>
                                     <option value="" disabled selected>Pilih Kategori Utama Dulu</option>
                                 </select>
                                 <i class="ph-bold ph-caret-down absolute right-4 top-3.5 text-gray-400 pointer-events-none"></i>
@@ -624,13 +753,18 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
-                                <input type="number" id="editProductPrice" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                                <input type="text" id="editProductPrice" name="price" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
-                            <input type="number" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok <span class="text-red-500">*</span></label>
+                            <input type="number" id="editProductStock" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                         </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Deskripsi Produk <span class="text-red-500">*</span></label>
+                        <textarea id="editProductDescription" rows="4" name="description" placeholder="Jelaskan detail layanan atau produk yang Anda jual..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required></textarea>
                     </div>
                 </div>
             </form>
@@ -752,12 +886,22 @@
 
 <script>
     // --- Edit Product Logic ---
-    function openEditProductModal(name, price, category, subCategory) {
+    function openEditProductModal(id, name, price, category, subCategory, description, stock) {
         const modal = document.getElementById('editProductModal');
+        
+        // Set form action dynamic
+        document.getElementById('formEditProduk').action = `/seller/product/${id}`;
         
         // Pre-fill data
         document.getElementById('editProductName').value = name;
-        document.getElementById('editProductPrice').value = price;
+        
+        // Format price logic
+        const priceInput = document.getElementById('editProductPrice');
+        priceInput.value = price;
+        formatRupiahInput(priceInput);
+        
+        document.getElementById('editProductDescription').value = description;
+        document.getElementById('editProductStock').value = stock;
         
         // Set category dropdown
         const catSelect = document.getElementById('editProductCategory');
@@ -893,6 +1037,8 @@
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            selectedMediaFiles = [];
+            updateFileInputAndPreview();
         }, 300); // match duration-300
     }
 
@@ -918,13 +1064,18 @@
         });
         
         // Show target tab content
-        document.getElementById('tab-' + tabId).classList.remove('hidden');
-        document.getElementById('tab-' + tabId).classList.add('block');
+        const targetTab = document.getElementById('tab-' + tabId);
+        if (targetTab) {
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('block');
+        }
         
         // Set active state on clicked nav button
         const activeNav = document.getElementById('nav-' + tabId);
-        activeNav.classList.remove('text-gray-600', 'border-transparent');
-        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        if (activeNav) {
+            activeNav.classList.remove('text-gray-600', 'border-transparent');
+            activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        }
         
         if (tabId === 'pesanan') {
             fetch('{{ route("seller.mark_orders_read") }}', {
@@ -1013,33 +1164,83 @@
         });
     }
 
-    // 3. Image Upload Preview
-    function previewImages(event) {
-        const files = event.target.files;
-        const container = document.getElementById('imagePreviewContainer');
+    function formatRupiahInput(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value) {
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        } else {
+            input.value = '';
+        }
+    }
+
+    // 3. Media Upload Accumulation & Preview (Max 6 Photos/Videos)
+    let selectedMediaFiles = [];
+
+    function handleMediaSelect(event) {
+        const newFiles = Array.from(event.target.files);
         
-        if (files.length > 0) {
+        // Append new files up to max 6 total
+        for (let file of newFiles) {
+            if (selectedMediaFiles.length < 6) {
+                selectedMediaFiles.push(file);
+            }
+        }
+        
+        updateFileInputAndPreview();
+    }
+
+    function removeMediaFile(index) {
+        selectedMediaFiles.splice(index, 1);
+        updateFileInputAndPreview();
+    }
+
+    function updateFileInputAndPreview() {
+        const input = document.getElementById('imageUpload');
+        const container = document.getElementById('imagePreviewContainer');
+        if (!input || !container) return;
+        
+        // Sync files array to input via DataTransfer
+        try {
+            const dt = new DataTransfer();
+            selectedMediaFiles.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+        } catch (err) {
+            console.error("DataTransfer error:", err);
+        }
+        
+        // Render preview cards
+        if (selectedMediaFiles.length > 0) {
             container.classList.remove('hidden');
-            container.innerHTML = ''; // clear old previews
+            container.innerHTML = '';
             
-            // Limit to 3 files
-            const maxFiles = Math.min(files.length, 3);
-            
-            for (let i = 0; i < maxFiles; i++) {
+            selectedMediaFiles.forEach((file, idx) => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const imgDiv = document.createElement('div');
-                    imgDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group";
-                    imgDiv.innerHTML = `
-                        <img src="${e.target.result}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition cursor-pointer">
-                            <i class="ph-bold ph-trash text-white"></i>
-                        </div>
+                    const mediaDiv = document.createElement('div');
+                    mediaDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group bg-black/5 shadow-sm";
+                    
+                    const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i);
+                    
+                    mediaDiv.innerHTML = `
+                        ${isVideo ? `
+                            <video src="${e.target.result}" class="w-full h-full object-cover"></video>
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                                <i class="ph-fill ph-video-camera text-white text-xl"></i>
+                            </div>
+                        ` : `
+                            <img src="${e.target.result}" class="w-full h-full object-cover">
+                        `}
+                        <button type="button" onclick="removeMediaFile(${idx})" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md transition z-10" title="Hapus File Ini">
+                            <i class="ph-bold ph-x text-[10px]"></i>
+                        </button>
                     `;
-                    container.appendChild(imgDiv);
-                }
-                reader.readAsDataURL(files[i]);
-            }
+                    container.appendChild(mediaDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        } else {
+            container.classList.add('hidden');
+            container.innerHTML = '';
         }
     }
 
@@ -1202,11 +1403,41 @@
     }
 
     // Close tracking modal when clicking outside
-    document.getElementById('trackingModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeTrackingModal();
+    const trackingModal = document.getElementById('trackingModal');
+    if (trackingModal) {
+        trackingModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTrackingModal();
+            }
+        });
+    }
+
+    function previewSellerBanner(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('banner-preview-seller');
+                const placeholder = document.getElementById('banner-placeholder-seller');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            const tabId = window.location.hash.substring(1);
+            if (document.getElementById('tab-' + tabId)) {
+                switchTab(tabId);
+            }
         }
     });
-
 </script>
 @endsection

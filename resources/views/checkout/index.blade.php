@@ -48,7 +48,7 @@
             @foreach($groupedItems as $sellerId => $items)
                 @php 
                     $seller = $items->first()->product->seller; 
-                    $sellerName = $seller ? $seller->name : 'Toko VocaMarket';
+                    $sellerName = ($seller && $seller->profile && $seller->profile->nama_toko) ? $seller->profile->nama_toko : ($seller ? ('Toko ' . $seller->name) : 'Toko VocaMarket');
                 @endphp
                 <!-- Toko -->
                 <div class="p-5 {{ !$loop->last ? 'border-b border-gray-200' : '' }}">

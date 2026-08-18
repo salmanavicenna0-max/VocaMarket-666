@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->boolean('is_read')->default(false)->after('status');
+            if (!Schema::hasColumn('carts', 'is_read')) {
+                if (Schema::hasColumn('carts', 'status')) {
+                    $table->boolean('is_read')->default(false)->after('status');
+                } else {
+                    $table->boolean('is_read')->default(false);
+                }
+            }
         });
     }
 

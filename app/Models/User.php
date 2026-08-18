@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'nis',
         'email',
+        'email_verification',
         'password',
         'role',
         'verification_seller',
