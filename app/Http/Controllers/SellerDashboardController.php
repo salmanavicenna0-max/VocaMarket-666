@@ -90,12 +90,28 @@ class SellerDashboardController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'sub_category' => 'nullable|string|max:255',
+            'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
-        $product->update($request->only('name', 'price', 'stock', 'is_active'));
+        $data = [
+            'name' => $request->name,
+            'category' => $request->category,
+            'type' => $request->sub_category,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+        ];
+        
+        if ($request->has('is_active')) {
+            $data['is_active'] = $request->is_active;
+        }
+
+        $product->update($data);
 
         return back()->with('success', 'Produk diperbarui!');
     }

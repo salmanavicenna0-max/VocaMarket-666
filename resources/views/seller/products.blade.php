@@ -297,6 +297,9 @@
                                 </td>
                                 <td class="p-4">
                                     <div class="flex justify-center gap-2">
+                                        <button type="button" onclick='openEditProductModal({{ $product->id }}, @json($product->name), {{ $product->price }}, @json($product->category), @json($product->type), @json($product->description), {{ $product->stock }})' class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
+                                            <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                        </button>
                                         <form action="{{ route('seller.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Yakin hapus?');">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="p-2 text-red-600 hover:bg-red-100 rounded transition tooltip" title="Hapus">
@@ -696,8 +699,9 @@
 
         <!-- Body -->
         <div class="p-6">
-            <form id="formEditProduk" onsubmit="submitEditProduk(event)" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form id="formEditProduk" action="" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
+                @method('PUT')
                 <!-- Info Dasar -->
                 <div class="space-y-4">
                     <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">1. Informasi Produk</h4>
@@ -711,7 +715,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kategori / Jurusan <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <select id="editProductCategory" onchange="updateEditSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition">
+                                <select id="editProductCategory" name="category" onchange="updateEditSubKategori()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition" required>
                                     <option value="" disabled selected>Pilih Kategori</option>
                                     <optgroup label="Produk Sekolah">
                                         <option value="Aksesoris">Aksesoris</option>
@@ -731,7 +735,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Sub/Isi Kategori <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <select id="editProductSubCategory" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition disabled:bg-gray-100 disabled:cursor-not-allowed" disabled>
+                                <select id="editProductSubCategory" name="sub_category" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white transition disabled:bg-gray-100 disabled:cursor-not-allowed" disabled>
                                     <option value="" disabled selected>Pilih Kategori Utama Dulu</option>
                                 </select>
                                 <i class="ph-bold ph-caret-down absolute right-4 top-3.5 text-gray-400 pointer-events-none"></i>
@@ -753,9 +757,14 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
-                            <input type="number" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok <span class="text-red-500">*</span></label>
+                            <input type="number" id="editProductStock" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                         </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Deskripsi Produk <span class="text-red-500">*</span></label>
+                        <textarea id="editProductDescription" rows="4" name="description" placeholder="Jelaskan detail layanan atau produk yang Anda jual..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required></textarea>
                     </div>
                 </div>
             </form>
@@ -877,12 +886,22 @@
 
 <script>
     // --- Edit Product Logic ---
-    function openEditProductModal(name, price, category, subCategory) {
+    function openEditProductModal(id, name, price, category, subCategory, description, stock) {
         const modal = document.getElementById('editProductModal');
+        
+        // Set form action dynamic
+        document.getElementById('formEditProduk').action = `/seller/product/${id}`;
         
         // Pre-fill data
         document.getElementById('editProductName').value = name;
-        document.getElementById('editProductPrice').value = price;
+        
+        // Format price logic
+        const priceInput = document.getElementById('editProductPrice');
+        priceInput.value = price;
+        formatRupiahInput(priceInput);
+        
+        document.getElementById('editProductDescription').value = description;
+        document.getElementById('editProductStock').value = stock;
         
         // Set category dropdown
         const catSelect = document.getElementById('editProductCategory');
