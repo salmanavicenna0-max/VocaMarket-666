@@ -29,8 +29,9 @@ class SellerDashboardController extends Controller
         $totalRevenue = $orders->where('status', 'selesai')->sum('total');
         $completedOrders = $orders->where('status', 'selesai')->count();
         $totalProducts = $products->count();
+        $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'pendingOrdersCount', 'totalReviewsCount'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount'));
     }
 
     public function storeProduct(Request $request)

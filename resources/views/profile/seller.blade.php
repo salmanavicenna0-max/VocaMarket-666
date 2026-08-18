@@ -47,7 +47,7 @@
             <!-- Actions -->
             <div class="flex items-center gap-3 w-full md:w-auto">
                 @if(Auth::check() && Auth::id() == $seller->id)
-                    <a href="{{ url('/user#konfigurasitoko') }}" class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-white font-bold rounded-lg shadow-sm hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                    <a href="{{ url('/seller/dashboard#konfigurasitoko') }}" class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-white font-bold rounded-lg shadow-sm hover:bg-blue-700 transition flex items-center justify-center gap-2">
                         <i class="ph-bold ph-pencil-simple"></i> Edit Konfigurasi Toko
                     </a>
                 @else

@@ -73,6 +73,15 @@
                                 <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalReviewsCount }}</span>
                             @endif
                         </button>
+                    <li>
+                        <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
+                        </button>
                     </li>
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
@@ -440,6 +449,112 @@
                         <div class="text-center p-8 text-gray-500">Belum ada ulasan untuk produk Anda.</div>
                         @endforelse
                     </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Konfigurasi Toko -->
+            <div id="tab-konfigurasitoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-sliders text-primary"></i> Konfigurasi Profil Toko
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Atur banner sampul, nama, dan informasi toko Anda agar terlihat menarik bagi calon pembeli</p>
+                    </div>
+                    <a href="{{ route('seller.profile', Auth::id()) }}" target="_blank" class="px-4 py-2 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition text-sm flex items-center gap-1.5 shrink-0">
+                        <i class="ph-bold ph-arrow-square-out"></i> Lihat Halaman Toko
+                    </a>
+                </div>
+                
+                <form action="{{ route('user.store.update') }}" method="POST" enctype="multipart/form-data" class="p-6 flex flex-col gap-6">
+                    @csrf
+                    
+                    <!-- Banner Toko Field -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Banner Sampul Toko</label>
+                        <div class="relative w-full h-44 rounded-xl overflow-hidden border border-gray-300 bg-gray-100 flex items-center justify-center mb-2 shadow-inner">
+                            @if($profile && $profile->banner_toko)
+                                <img src="{{ asset('storage/' . $profile->banner_toko) }}" alt="Banner Toko" id="banner-preview-seller" class="w-full h-full object-cover">
+                            @else
+                                <div id="banner-placeholder-seller" class="text-center text-gray-400 flex flex-col items-center">
+                                    <i class="ph-fill ph-image text-5xl mb-1 text-gray-300"></i>
+                                    <span class="text-xs font-medium">Belum ada banner khusus (menggunakan tampilan default)</span>
+                                </div>
+                                <img id="banner-preview-seller" class="w-full h-full object-cover hidden">
+                            @endif
+                        </div>
+                        <input type="file" name="banner_toko" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 transition cursor-pointer" onchange="previewSellerBanner(event)">
+                        <p class="text-xs text-gray-500 mt-1">Rekomendasi banner: Rasio lanskap (contoh: 1200 x 400 pixel, Maks: 3MB).</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko</label>
+                        <input type="text" name="nama_toko" value="{{ old('nama_toko', $profile->nama_toko ?? ('Toko ' . $user->name)) }}" placeholder="Masukkan nama toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" required>
+                        <p class="text-xs text-gray-500 mt-1">Nama ini akan menjadi judul utama di halaman profil toko Anda.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Tentang Penjual / Deskripsi Toko</label>
+                        <textarea name="deskripsi_toko" rows="4" placeholder="Tuliskan deskripsi singkat mengenai produk, jasa, atau toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">{{ old('deskripsi_toko', $profile->deskripsi_toko) }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Deskripsi ini akan ditampilkan pada bagian "Tentang Penjual" di halaman profil toko.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Lokasi Toko / Alamat Sekolah</label>
+                            <input type="text" name="alamat" value="{{ old('alamat', $profile->alamat ?? 'SMK Bakti Nusantara 666') }}" placeholder="Contoh: SMK Bakti Nusantara 666" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Nomor HP / WhatsApp Toko</label>
+                            <input type="text" name="no_telp" value="{{ old('no_telp', $profile->no_telp) }}" placeholder="Contoh: 085156699111" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2">
+                            <i class="ph-bold ph-floppy-disk"></i> Simpan Konfigurasi Toko
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TAB: Status Toko -->
+            <div id="tab-statustoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
+                    <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
+                        <i class="ph-fill ph-check-circle text-green-600"></i> Status Verifikasi Toko
+                    </h2>
+                    <p class="text-green-700 text-sm mt-1">Informasi status pendaftaran dan verifikasi akun penjual Anda</p>
+                </div>
+                
+                <div class="p-6 flex flex-col gap-6">
+                    @if(Auth::user()->seller_status === 'approved')
+                        <div class="bg-green-50 border border-green-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-seal-check text-5xl text-green-500 mb-3"></i>
+                            <h3 class="font-bold text-green-800 text-xl">Toko Anda Resmi & Aktif!</h3>
+                            <p class="text-green-700 text-sm mt-2 max-w-md">Akun Anda telah terverifikasi sebagai Penjual Resmi VocaMarket SMK Bakti Nusantara 666. Anda memiliki akses penuh untuk mengunggah produk dan memproses pesanan.</p>
+                        </div>
+                    @elseif(Auth::user()->seller_status === 'pending')
+                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
+                            <i class="ph-fill ph-clock text-5xl text-yellow-500 mb-3"></i>
+                            <h3 class="font-bold text-yellow-800 text-xl">Pengajuan Sedang Diverifikasi</h3>
+                            <p class="text-yellow-700 text-sm mt-2 max-w-md">Permintaan verifikasi penjual Anda sedang ditinjau oleh Administrator. Mohon tunggu proses persetujuan.</p>
+                        </div>
+                    @else
+                        <div class="bg-blue-50 border border-blue-200 p-6 rounded-xl flex flex-col items-center justify-center text-center">
+                            <i class="ph-fill ph-info text-5xl text-blue-500 mb-3"></i>
+                            <h3 class="font-bold text-blue-900 text-xl">Ajukan Verifikasi Toko</h3>
+                            <p class="text-blue-700 text-sm mt-2 max-w-md mb-4">Mulai jualan produk dan jasa kreatif karya siswa SMK Bakti Nusantara 666.</p>
+                            <form method="POST" action="{{ route('user.request_seller') }}">
+                                @csrf
+                                <button type="submit" class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
+                                    <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Permintaan Verifikasi
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -1206,7 +1321,32 @@
         if (e.target === this) {
             closeTrackingModal();
         }
-    });
+    function previewSellerBanner(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('banner-preview-seller');
+                const placeholder = document.getElementById('banner-placeholder-seller');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            const tabId = window.location.hash.substring(1);
+            if (document.getElementById('tab-' + tabId)) {
+                switchTab(tabId);
+            }
+        }
+    });
 </script>
 @endsection

@@ -119,6 +119,7 @@
 
                                     @if(Auth::user()->isSeller())
                                         <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-storefront mr-2"></i>Dashboard Penjual</a>
+                                        <a href="{{ url('/seller/dashboard#konfigurasitoko') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-sliders mr-2"></i>Konfigurasi Toko</a>
                                         <a href="{{ route('seller.profile', Auth::id()) }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-shop-window mr-2"></i>Toko Saya</a>
                                     @endif
                                     
