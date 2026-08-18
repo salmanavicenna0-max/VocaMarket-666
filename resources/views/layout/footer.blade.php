@@ -28,26 +28,16 @@
                     </ul>
                 </div>
 
-                <!-- Pembayaran & Pengiriman -->
+                <!-- Pembayaran -->
                 <div class="lg:col-span-2">
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Pembayaran</h4>
+                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Metode Pembayaran</h4>
                     <div class="flex flex-wrap gap-2 mb-8">
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-800 hover:shadow-md transition">BCA</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-600 hover:shadow-md transition">MANDIRI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-orange-500 hover:shadow-md transition">BNI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-900 hover:shadow-md transition">BRI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-green-500 hover:shadow-md transition">GOPAY</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-purple-600 hover:shadow-md transition">OVO</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-400 hover:shadow-md transition">DANA</div>
-                    </div>
-
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Pengiriman</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-600 hover:shadow-md transition">JNE</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-500 hover:shadow-md transition">J&T</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-blue-500 hover:shadow-md transition">TIKI</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-red-700 hover:shadow-md transition">SICEPAT</div>
-                        <div class="w-14 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-green-600 hover:shadow-md transition">GOSEND</div>
+                        <div class="px-3 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-gray-700 hover:shadow-md hover:border-primary transition gap-1">
+                            <i class="ph-fill ph-truck text-sm text-gray-500"></i> COD
+                        </div>
+                        <div class="px-3 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-gray-700 hover:shadow-md hover:border-primary transition gap-1">
+                            <i class="ph-fill ph-bank text-sm text-primary"></i> Transfer Bank / QRIS
+                        </div>
                     </div>
                 </div>
 
@@ -60,23 +50,6 @@
                         <li><a href="#" class="flex items-center gap-3 hover:text-primary transition"><i class="ph-fill ph-twitter-logo text-xl text-blue-400"></i> Twitter</a></li>
                     </ul>
 
-                    <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Download App E-Sekolah</h4>
-                    <div class="flex flex-col gap-2">
-                        <a href="#" class="w-32 h-10 bg-gray-800 text-white rounded flex items-center justify-center gap-2 hover:bg-gray-700 transition">
-                            <i class="ph-fill ph-google-play-logo text-lg"></i>
-                            <div class="flex flex-col items-start leading-none">
-                                <span class="text-[8px]">GET IT ON</span>
-                                <span class="text-[11px] font-bold">Google Play</span>
-                            </div>
-                        </a>
-                        <a href="#" class="w-32 h-10 bg-gray-800 text-white rounded flex items-center justify-center gap-2 hover:bg-gray-700 transition">
-                            <i class="ph-fill ph-apple-logo text-lg"></i>
-                            <div class="flex flex-col items-start leading-none">
-                                <span class="text-[8px]">Download on the</span>
-                                <span class="text-[11px] font-bold">App Store</span>
-                            </div>
-                        </a>
-                    </div>
                 </div>
             </div>
 

@@ -17,8 +17,9 @@ class ProductController extends Controller
             ->get();
 
         $starProducts = $products->where('is_star', true)->take(8);
+        $homepageBanners = \App\Models\HomepageBanner::where('is_active', true)->latest()->take(5)->get();
 
-        return view('welcome', compact('products', 'starProducts'));
+        return view('welcome', compact('products', 'starProducts', 'homepageBanners'));
     }
 
     /**

@@ -76,6 +76,8 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
 
     Route::post('/mark-orders-read', [SellerDashboardController::class, 'markOrdersRead'])->name('mark_orders_read');
     Route::post('/mark-reviews-read', [SellerDashboardController::class, 'markReviewsRead'])->name('mark_reviews_read');
+    Route::post('/homepage-banner', [SellerDashboardController::class, 'storeHomepageBanner'])->name('homepage_banner.store');
+    Route::delete('/homepage-banner/{id}', [SellerDashboardController::class, 'destroyHomepageBanner'])->name('homepage_banner.destroy');
 });
 
 Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');
@@ -91,6 +93,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
+    Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
+    Route::delete('/admin/banners/{id}', [AdminController::class, 'destroyBanner'])->name('admin.banners.destroy');
     Route::resource('admin/users', UserController::class);
 });
 
