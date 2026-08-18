@@ -73,6 +73,7 @@
                                 <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalReviewsCount }}</span>
                             @endif
                         </button>
+                    </li>
                     <li>
                         <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
@@ -448,7 +449,6 @@
                         @empty
                         <div class="text-center p-8 text-gray-500">Belum ada ulasan untuk produk Anda.</div>
                         @endforelse
-                    </div>
                     </div>
                 </div>
             </div>
@@ -1033,13 +1033,18 @@
         });
         
         // Show target tab content
-        document.getElementById('tab-' + tabId).classList.remove('hidden');
-        document.getElementById('tab-' + tabId).classList.add('block');
+        const targetTab = document.getElementById('tab-' + tabId);
+        if (targetTab) {
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('block');
+        }
         
         // Set active state on clicked nav button
         const activeNav = document.getElementById('nav-' + tabId);
-        activeNav.classList.remove('text-gray-600', 'border-transparent');
-        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        if (activeNav) {
+            activeNav.classList.remove('text-gray-600', 'border-transparent');
+            activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        }
         
         if (tabId === 'pesanan') {
             fetch('{{ route("seller.mark_orders_read") }}', {
@@ -1317,10 +1322,15 @@
     }
 
     // Close tracking modal when clicking outside
-    document.getElementById('trackingModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeTrackingModal();
-        }
+    const trackingModal = document.getElementById('trackingModal');
+    if (trackingModal) {
+        trackingModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTrackingModal();
+            }
+        });
+    }
+
     function previewSellerBanner(event) {
         const file = event.target.files[0];
         if (file) {
