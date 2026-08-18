@@ -42,7 +42,7 @@
         @forelse($groupedItems as $sellerId => $items)
             @php 
                 $seller = $items->first()->product->seller; 
-                $sellerName = $seller ? $seller->name : 'Toko VocaMarket';
+                $sellerName = ($seller && $seller->profile && $seller->profile->nama_toko) ? $seller->profile->nama_toko : ($seller ? ('Toko ' . $seller->name) : 'Toko VocaMarket');
             @endphp
             <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col">
                 <!-- Nama Toko -->

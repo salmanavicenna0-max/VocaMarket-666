@@ -117,12 +117,16 @@
             <!-- Store Profile (Tokopedia Style inside middle column) -->
             <div class="flex items-center gap-4 py-2">
                 <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="shrink-0 block">
-                    <img src="https://picsum.photos/seed/{{ Str::slug($product->seller ? $product->seller->name : 'Toko') }}/100/100" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @if($product->seller && $product->seller->profile && ($product->seller->profile->foto || $product->seller->profile->photo))
+                        <img src="{{ asset('storage/' . ($product->seller->profile->foto ?? $product->seller->profile->photo)) }}" alt="{{ $product->seller->name }}" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($product->seller->name ?? 'Toko') }}&background=0a84d4&color=fff&size=128" alt="{{ $product->seller->name ?? 'Toko' }}" class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm hover:opacity-80 transition">
+                    @endif
                 </a>
                 <div class="flex flex-col flex-1">
                     <a href="{{ route('seller.profile', $product->user_id ?? 1) }}" class="font-bold text-gray-900 text-base flex items-center gap-1.5 hover:text-primary transition w-fit">
                         <i class="ph-fill ph-check-circle text-primary"></i> 
-                        {{ $product->seller ? 'Toko ' . $product->seller->name : ($product->store_name ?: 'Toko Esemka') }}
+                        {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
                     </a>
                 </div>
                 <a href="#" onclick="openMiniChat(event)" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
