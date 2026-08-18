@@ -29,6 +29,72 @@ class UserProfileController extends Controller
     }
 
     /**
+     * Dashboard Pengajuan Produk & Grafik Penjualan Siswa (Read-Only)
+     */
+    public function submissions()
+    {
+        $user = Auth::user();
+
+        if ($user->role === 'pembeli') {
+            return redirect()->route('orders.index')->with('error', 'Role pembeli khusus untuk melakukan pembelian barang dan jasa.');
+        }
+
+        // Ambil produk yang diajukan oleh siswa ini
+        $products = \App\Models\Product::where('user_id', $user->id)
+            ->with(['images'])
+            ->latest()
+            ->get();
+
+        // Pesanan selesai untuk produk milik siswa ini
+        $orders = Order::whereHas('items.product', function($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->where('status', Order::STATUS_SELESAI)->get();
+
+        $totalRevenue = $orders->sum('total');
+        $completedOrdersCount = $orders->count();
+        $pendingProductsCount = $products->where('approval_status', 'pending')->count();
+        $approvedProductsCount = $products->where('approval_status', 'approved')->count();
+
+        // Data Grafik Penjualan (6 bulan terakhir)
+        $salesData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthName = now()->subMonths($i)->format('M Y');
+            $start = now()->subMonths($i)->startOfMonth();
+            $end = now()->subMonths($i)->endOfMonth();
+
+            $monthlySum = Order::whereHas('items.product', function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->where('status', Order::STATUS_SELESAI)
+            ->whereBetween('created_at', [$start, $end])
+            ->sum('total');
+
+            $salesData[] = [
+                'month' => $monthName,
+                'total' => $monthlySum
+            ];
+        }
+
+        $refundRequests = Order::whereHas('items.product', function($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->where('status', Order::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL)
+        ->with(['items.product', 'user'])
+        ->latest()
+        ->get();
+
+        return view('user.submissions', compact(
+            'user',
+            'products',
+            'totalRevenue',
+            'completedOrdersCount',
+            'pendingProductsCount',
+            'approvedProductsCount',
+            'salesData',
+            'refundRequests'
+        ));
+    }
+
+    /**
      * Perbarui Biodata Diri
      */
     public function updateProfile(Request $request)
@@ -128,10 +194,6 @@ class UserProfileController extends Controller
     public function updateStore(Request $request)
     {
         $user = Auth::user();
-
-        if (!($user->isSiswa() || $user->isSeller() || $user->seller_status === 'approved' || $user->role === 'siswa' || $user->role === 'seller')) {
-            return back()->with('error', 'Hanya siswa/penjual yang dapat mengonfigurasi toko.');
-        }
 
         $validated = $request->validate([
             'nama_toko' => 'nullable|string|max:255',

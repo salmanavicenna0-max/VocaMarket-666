@@ -23,6 +23,7 @@ class Product extends Model
         'price',
         'image_path',
         'is_active',
+        'approval_status',
         'original_price',
         'discount_percentage',
         'sales_count',
@@ -60,10 +61,7 @@ class Product extends Model
             ?? $this->images()->orderBy('sort_order')->first();
     }
 
-    public function jurusans(): BelongsToMany
-    {
-        return $this->belongsToMany(Jurusan::class, 'product_jurusan');
-    }
+
 
     public function reviews(): HasMany
     {

@@ -101,6 +101,41 @@
                 </script>
             </div>
         @endif
+        
+        @if(session('error') || $errors->any())
+            <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-md px-4" id="global-error-alert">
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-warning-circle text-2xl"></i>
+                        <div class="text-sm font-medium">
+                            @if(session('error'))
+                                <p>{{ session('error') }}</p>
+                            @endif
+                            @if($errors->any())
+                                <ul class="list-disc list-inside">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('global-error-alert').remove()" class="text-red-700 hover:text-red-900 ml-4 shrink-0">
+                        <i class="ph-bold ph-x text-lg"></i>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const alert = document.getElementById('global-error-alert');
+                        if (alert) {
+                            alert.style.transition = 'opacity 0.5s ease';
+                            alert.style.opacity = '0';
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 5000);
+                </script>
+            </div>
+        @endif
 
         @yield('content')
         

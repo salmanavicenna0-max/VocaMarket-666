@@ -114,11 +114,9 @@
                                     <a href="{{ url('/user') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-user mr-2"></i>Profil Saya</a>
                                     
                                     @if(Auth::user()->isAdmin())
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
-                                    @endif
-
-                                    @if(Auth::user()->isSeller())
-                                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-storefront mr-2"></i>Dashboard Penjual</a>
+                                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
+                                    @elseif(Auth::user()->role === 'siswa')
+                                        <a href="{{ route('user.submissions') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard</a>
                                     @endif
                                     
                                     <a href="{{ route('orders.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-receipt mr-2"></i>Pesanan Saya</a>

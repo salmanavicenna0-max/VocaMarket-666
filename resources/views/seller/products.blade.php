@@ -74,14 +74,21 @@
                             @endif
                         </button>
                     </li>
+                    @if(Auth::user()->isAdmin())
+                    <li>
+                        <button onclick="switchTab('pengajuanproduk')" id="nav-pengajuanproduk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="ph-fill ph-package text-xl text-yellow-500"></i> Pengajuan Produk Siswa
+                            </div>
+                            @if(isset($pendingProducts) && $pendingProducts->count() > 0)
+                                <span class="bg-yellow-500 text-gray-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingProducts->count() }}</span>
+                            @endif
+                        </button>
+                    </li>
+                    @endif
                     <li>
                         <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
                         </button>
                     </li>
                     <li class="border-t border-gray-100">
@@ -262,11 +269,25 @@
                                     <span class="font-bold text-primary">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                 </td>
                                 <td class="p-4 text-center">
-                                    @if($product->stock > 0)
-                                        <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Stok: {{ $product->stock }}</span>
-                                    @else
-                                        <span class="bg-gray-100 text-gray-500 text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200">Habis</span>
-                                    @endif
+                                    <div class="flex flex-col items-center gap-1">
+                                        @if($product->approval_status === 'pending' || (!$product->is_active && $product->approval_status !== 'rejected'))
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full border border-yellow-200 inline-flex items-center">
+                                                <i class="ph-bold ph-clock mr-1"></i> Menunggu Admin
+                                            </span>
+                                        @elseif($product->approval_status === 'rejected')
+                                            <span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full border border-red-200 inline-flex items-center">
+                                                <i class="ph-bold ph-x-circle mr-1"></i> Ditolak
+                                            </span>
+                                        @else
+                                            @if($product->stock > 0)
+                                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center">
+                                                    <i class="ph-bold ph-check-circle mr-1"></i> Aktif (Stok: {{ $product->stock }})
+                                                </span>
+                                            @else
+                                                <span class="bg-gray-100 text-gray-500 text-xs font-bold px-2.5 py-1 rounded-full border border-gray-200">Habis</span>
+                                            @endif
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="p-4">
                                     <div class="flex justify-center gap-2">
@@ -370,7 +391,29 @@
                                       </form>
                                   @endif
 
-                                  @if($order->status == 'menunggu_verifikasi')
+                                   @if($order->status == 'menunggu_pengembalian')
+                                       <form action="{{ route('admin.refund.approve', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Setujui refund ini dan teruskan ke penjual?');">
+                                           @csrf
+                                           <button type="submit" class="px-4 py-2 bg-yellow-500 text-gray-900 rounded-lg text-sm font-extrabold hover:bg-yellow-400 transition shadow-sm focus:outline-none flex items-center gap-1">
+                                               <i class="ph-bold ph-check"></i> Setujui Refund (Teruskan ke Penjual)
+                                           </button>
+                                       </form>
+                                       <form action="{{ route('admin.refund.reject', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Tolak refund ini?');">
+                                           @csrf
+                                           <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak Refund</button>
+                                       </form>
+                                   @endif
+                                   @if($order->status == 'menunggu_pengembalian_penjual')
+                                       <form action="{{ route('seller.refund.approve', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Setujui refund ini?');">
+                                           @csrf
+                                           <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm focus:outline-none">Konfirmasi Refund Penjual</button>
+                                       </form>
+                                       <form action="{{ route('seller.refund.reject', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Tolak refund?');">
+                                           @csrf
+                                           <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak Refund</button>
+                                       </form>
+                                   @endif
+                                   @if($order->status == 'menunggu_verifikasi')
                                       <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
                                           @csrf
                                           <input type="hidden" name="status" value="diproses">
@@ -506,43 +549,101 @@
                 </form>
             </div>
 
-            <!-- TAB: Status Toko -->
-            <div id="tab-statustoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
-                <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
-                    <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
-                        <i class="ph-fill ph-check-circle text-green-600"></i> Status Verifikasi Toko
-                    </h2>
-                    <p class="text-green-700 text-sm mt-1">Informasi status pendaftaran dan verifikasi akun penjual Anda</p>
+            @if(Auth::user()->isAdmin())
+            <!-- TAB: Pengajuan Produk Siswa (Admin Moderasi) -->
+            <div id="tab-pengajuanproduk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden overflow-hidden">
+                <div class="p-6 border-b border-gray-200 bg-yellow-50/60 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-package text-yellow-600"></i> Moderasi Pengajuan Produk & Jasa Siswa
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">Tinjau, setujui, atau tolak pengajuan titip barang/jasa dari siswa sebelum diterbitkan ke toko publik.</p>
+                    </div>
+                    <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-200">
+                        {{ isset($pendingProducts) ? $pendingProducts->count() : 0 }} Pengajuan Pending
+                    </span>
                 </div>
 
-                <div class="p-6 flex flex-col gap-6">
-                    @if(Auth::user()->seller_status === 'approved')
-                        <div class="bg-green-50 border border-green-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
-                            <i class="ph-fill ph-seal-check text-5xl text-green-500 mb-3"></i>
-                            <h3 class="font-bold text-green-800 text-xl">Toko Anda Resmi & Aktif!</h3>
-                            <p class="text-green-700 text-sm mt-2 max-w-md">Akun Anda telah terverifikasi sebagai Penjual Resmi VocaMarket SMK Bakti Nusantara 666. Anda memiliki akses penuh untuk mengunggah produk dan memproses pesanan.</p>
-                        </div>
-                    @elseif(Auth::user()->seller_status === 'pending')
-                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl text-center flex flex-col items-center justify-center">
-                            <i class="ph-fill ph-clock text-5xl text-yellow-500 mb-3"></i>
-                            <h3 class="font-bold text-yellow-800 text-xl">Pengajuan Sedang Diverifikasi</h3>
-                            <p class="text-yellow-700 text-sm mt-2 max-w-md">Permintaan verifikasi penjual Anda sedang ditinjau oleh Administrator. Mohon tunggu proses persetujuan.</p>
-                        </div>
-                    @else
-                        <div class="bg-blue-50 border border-blue-200 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-                            <i class="ph-fill ph-info text-5xl text-blue-500 mb-3"></i>
-                            <h3 class="font-bold text-blue-900 text-xl">Ajukan Verifikasi Toko</h3>
-                            <p class="text-blue-700 text-sm mt-2 max-w-md mb-4">Mulai jualan produk dan jasa kreatif karya siswa SMK Bakti Nusantara 666.</p>
-                            <form method="POST" action="{{ route('user.request_seller') }}">
-                                @csrf
-                                <button type="submit" class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
-                                    <i class="ph-bold ph-paper-plane-tilt"></i> Kirim Permintaan Verifikasi
-                                </button>
-                            </form>
-                        </div>
-                    @endif
+                <div class="p-6 space-y-6">
+                    <div class="overflow-x-auto border border-gray-200 rounded-xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-xs font-bold uppercase border-b border-gray-200">
+                                    <th class="p-4">Produk / Jasa</th>
+                                    <th class="p-4">Siswa / Penjual</th>
+                                    <th class="p-4">Kategori & Tipe</th>
+                                    <th class="p-4 text-center">Harga</th>
+                                    <th class="p-4 text-center">Stok</th>
+                                    <th class="p-4 text-center">Aksi Moderasi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm">
+                                @forelse($pendingProducts ?? [] as $product)
+                                <tr class="hover:bg-yellow-50/30 transition">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden shrink-0 relative">
+                                                @if($product->images->isNotEmpty())
+                                                    <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                                        <i class="ph-fill ph-image text-lg"></i>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $product->name }}</h4>
+                                                <p class="text-xs text-gray-500 line-clamp-1">{{ $product->description }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 font-semibold text-gray-800">
+                                        {{ $product->seller->name ?? 'Siswa' }}
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-0.5 rounded border border-blue-100">
+                                            {{ $product->category }}
+                                        </span>
+                                    </td>
+                                    <td class="p-4 text-center font-bold text-primary">
+                                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                                    </td>
+                                    <td class="p-4 text-center font-bold text-gray-700">
+                                        {{ $product->stock }}
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <form action="{{ route('admin.products.approve', $product->id) }}" method="POST" onsubmit="return confirm('Setujui dan publikasikan produk ini ke toko?');">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition shadow-sm flex items-center gap-1">
+                                                    <i class="ph-bold ph-check"></i> Setujui
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.products.reject', $product->id) }}" method="POST" onsubmit="return confirm('Tolak pengajuan produk ini?');">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                                    <i class="ph-bold ph-x"></i> Tolak
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="p-8 text-center text-gray-500">
+                                        <i class="ph-fill ph-check-circle text-3xl text-green-500 mb-1 block"></i>
+                                        <p class="font-bold text-gray-700 text-sm">Tidak ada pengajuan produk baru dari siswa.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            @endif
+
+
 
         </div>
     </div>
@@ -1281,7 +1382,12 @@
         // Filter elements
         const orders = document.querySelectorAll('.pesanan-item');
         orders.forEach(order => {
-            if (status === 'Semua' || order.getAttribute('data-status') === status) {
+            const itemStatus = order.getAttribute('data-status') || '';
+            if (status === 'Semua') {
+                order.style.display = '';
+            } else if (status === 'Pengembalian' && (itemStatus.includes('Refund') || itemStatus.includes('Pengembalian'))) {
+                order.style.display = '';
+            } else if (itemStatus === status) {
                 order.style.display = '';
             } else {
                 order.style.display = 'none';
