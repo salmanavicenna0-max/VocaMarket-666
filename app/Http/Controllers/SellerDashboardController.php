@@ -63,6 +63,8 @@ class SellerDashboardController extends Controller
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,ogg,m4v|max:51200'
         ]);
 
+        $isAdmin = Auth::user()->isAdmin();
+
         $product = Product::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
@@ -71,8 +73,8 @@ class SellerDashboardController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
-            'is_active' => false,
-            'approval_status' => 'pending',
+            'is_active' => $isAdmin ? true : false,
+            'approval_status' => $isAdmin ? 'approved' : 'pending',
         ]);
 
         if ($request->hasFile('images')) {
@@ -88,7 +90,11 @@ class SellerDashboardController extends Controller
             }
         }
 
-        return back()->with('success', 'Pengajuan produk berhasil dikirim! Menunggu konfirmasi admin.');
+        if ($isAdmin) {
+            return back()->with('success', 'Produk berhasil ditambahkan dan langsung aktif!');
+        } else {
+            return back()->with('success', 'Pengajuan produk berhasil dikirim! Menunggu konfirmasi admin.');
+        }
     }
 
     public function updateProduct(Request $request, $id)

@@ -71,11 +71,6 @@
                             <i class="ph-fill ph-gear text-xl"></i> Pengaturan
                         </button>
                     </li>
-                    <li class="border-t border-gray-100">
-                        <a href="{{ url('/') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
-                            <i class="ph-bold ph-sign-out text-xl"></i> Keluar
-                        </a>
-                    </li>
                 </ul>
             </div>
             

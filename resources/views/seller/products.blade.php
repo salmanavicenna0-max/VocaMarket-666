@@ -116,11 +116,6 @@
                         </button>
                     </li>
                     @endif
-                    <li class="border-t border-gray-100">
-                        <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
-                            <i class="ph-bold ph-arrow-left text-xl"></i> Kembali ke Pembeli
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -577,18 +572,6 @@
             @if(Auth::user()->isAdmin())
             <!-- TAB: Pengajuan Produk Siswa (Admin Moderasi) -->
             <div id="tab-pengajuanproduk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden overflow-hidden">
-                <div class="p-6 border-b border-gray-200 bg-yellow-50/60 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <i class="ph-fill ph-package text-yellow-600"></i> Moderasi Pengajuan Produk & Jasa Siswa
-                        </h2>
-                        <p class="text-xs text-gray-500 mt-1">Tinjau, setujui, atau tolak pengajuan titip barang/jasa dari siswa sebelum diterbitkan ke toko publik.</p>
-                    </div>
-                    <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-200">
-                        0 Pengajuan Pending
-                    </span>
-                </div>
-
                 <div class="p-6 space-y-6">
                     <div class="overflow-x-auto border border-gray-200 rounded-xl">
                         <table class="w-full text-left border-collapse">
@@ -656,7 +639,6 @@
                                 @empty
                                 <tr>
                                     <td colspan="6" class="p-8 text-center text-gray-500">
-                                        <i class="ph-fill ph-check-circle text-3xl text-green-500 mb-1 block"></i>
                                         <p class="font-bold text-gray-700 text-sm">Tidak ada pengajuan produk baru dari siswa.</p>
                                     </td>
                                 </tr>
