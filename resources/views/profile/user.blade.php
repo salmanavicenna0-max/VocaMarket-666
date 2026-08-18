@@ -345,6 +345,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
 
             <!-- TAB: Konfigurasi Toko (Khusus Siswa/Penjual) -->
             @if(Auth::user()->isSiswa() || Auth::user()->isSeller() || Auth::user()->seller_status === 'approved' || Auth::user()->role === 'siswa' || Auth::user()->role === 'seller')
