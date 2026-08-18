@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'siswa', 'pembeli'])->default('pembeli');
-            $table->enum('verification_seller', ['no', 'yes'])->default('no');
+            $table->boolean('verification_seller')->default(false);
             $table->timestamp('verification_seller_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

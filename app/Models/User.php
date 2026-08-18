@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -25,7 +26,7 @@ class User extends Authenticatable
         'password',
         'role',
         'verification_seller',
-        'verification_seller_at',
+        'seller_status',
     ];
 
     /**
@@ -47,8 +48,57 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'verification_seller_at' => 'datetime',
             'password' => 'hashed',
+            'verification_seller' => 'boolean',
         ];
+    }
+
+    // -- Relationships --
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function salesOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'seller_id');
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function cart(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    // -- Helpers --
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isSeller(): bool
+    {
+        return $this->verification_seller && $this->seller_status === 'approved';
+    }
+
+    public function isSiswa(): bool
+    {
+        return $this->role === 'siswa';
     }
 }

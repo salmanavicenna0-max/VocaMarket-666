@@ -1,0 +1,57 @@
+Module/Alat dan bahan yang di butuhkan:
+1. Modul User dan autentikasi
+	User(admin, pembeli, siswa)
+	Profile
+2. Modul Jurusan, department atau kategori utama
+	Id-jurusan, nama jurusan (pplg, animasi, akutansi, dekavi, pemasaran), deksripsi, logo jursusan
+3. Modul Katalog produk dan jasa
+	produk e commerse esemka
+	jasa dan kebutuhan dari setiap jurusan
+4. Modul Pemesanan dan transaksi
+	id_pesanan, kode_pesanan
+	bukti_pembayaran, link_wa
+5. Modul dan Ulasan
+	id_ulasan
+6. Modul Dashboard dan Ringkasan
+	total produk aktif
+	pesanan masuk
+	total omset / pendapatan
+	
+-PRODUK SEKOLAH
+	-Aksesoris
+		-Ganci
+		-Nametag
+		-pin
+		-Kaos
+		-Gelas Costum
+	-Merchandise
+		-Kaos khsus sekolah
+		-Gelas BN
+		-Pulpen BN
+	-Pepelege produk
+		-IoT (Hardware)
+-JASA SETIAP JURUSAN 
+	-DKV & ANIMASI
+		-Animasi (logo gerak, iklan, blender, dll)
+		-Motion Grapich
+		-Video Promosi
+		-Desain Grafis
+	- Pemasaran
+		- Digital Marketin
+		-Admin Medsos
+	-PPLG
+		-Website
+		-Mobile
+		-Server Hosting
+		-Cloud
+		-Game DEV
+		-Excel
+		-IoT (Software)
+	-Akuntansi
+		-Pembukuan
+		-Pembuatan laporan	
+		-Konsul Pajak		
+
+DATABASE
+DESAIN UI/UX
+FLOWCHART

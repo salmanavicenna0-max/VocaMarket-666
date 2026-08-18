@@ -20,8 +20,7 @@ class UserSeeder extends Seeder
                 'nis' => null,
                 'password' => 'admin123',
                 'role' => 'admin',
-                'verification_seller' => 'no',
-                'verification_seller_at' => null,
+                'verification_seller' => true,
             ]
         );
     }
