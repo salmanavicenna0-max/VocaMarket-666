@@ -129,7 +129,7 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->isSiswa()) {
+        if (!($user->isSiswa() || $user->isSeller() || $user->seller_status === 'approved' || $user->role === 'siswa' || $user->role === 'seller')) {
             return back()->with('error', 'Hanya siswa/penjual yang dapat mengonfigurasi toko.');
         }
 

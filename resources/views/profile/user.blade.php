@@ -71,7 +71,7 @@
                             <i class="ph-fill ph-gear text-xl"></i> Pengaturan
                         </button>
                     </li>
-                    @if(Auth::user()->isSiswa())
+                    @if(Auth::user()->isSiswa() || Auth::user()->isSeller() || Auth::user()->seller_status === 'approved' || Auth::user()->role === 'siswa' || Auth::user()->role === 'seller')
                     <li class="border-t border-gray-100">
                         <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-blue-600 font-bold hover:bg-blue-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-sliders text-xl"></i> Konfigurasi Toko
@@ -347,7 +347,7 @@
                 </div>
 
             <!-- TAB: Konfigurasi Toko (Khusus Siswa/Penjual) -->
-            @if(Auth::user()->isSiswa())
+            @if(Auth::user()->isSiswa() || Auth::user()->isSeller() || Auth::user()->seller_status === 'approved' || Auth::user()->role === 'siswa' || Auth::user()->role === 'seller')
             <div id="tab-konfigurasitoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -398,7 +398,7 @@
             @endif
 
             <!-- TAB: Buka Toko (Hanya Siswa) -->
-            @if(Auth::user()->isSiswa())
+            @if(Auth::user()->isSiswa() || Auth::user()->isSeller() || Auth::user()->seller_status === 'approved' || Auth::user()->role === 'siswa' || Auth::user()->role === 'seller')
             <div id="tab-bukatoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
                     <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
