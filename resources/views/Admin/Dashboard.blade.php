@@ -380,81 +380,45 @@
                                 <!-- PENGGUNA -->
                                 <td class="px-5 py-4">{{ $order->user->name ?? 'Pengguna Umum' }}</td>
                                 <!-- PENJUAL -->
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</td>
+                                <td class="px-5 py-4 font-bold text-gray-700">{{ $order->seller->name ?? 'Sistem' }}</td>
+                                <!-- JURUSAN -->
+                                 <td class="px-5 py-4">
+                                    <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">
+                                        {{ $order->seller->department->name ?? 'Umum' }}
+                                    </span>
+                                 </td>
 
-                            @empty
+                                <!-- JENIS -->
+                                <td class="px-5 py-4 text-gray-500 capitalize">
+                                    {{ $order->items->first()->product->type ?? 'Produk' }}
+                                </td>
 
+                                <!-- TOTAL -->
+                                 <td class="px-5 py-4 font-bold text-gray-800">
+                                    Rp {{ number_format($order->total, 0, ',', '.') }}
+                                 </td>
+
+                                 <!-- STATUS BADGE -->
+                                 <td class="px-5 py-4">
+                                 @php $statusClass = match($order->status) {
+                                        \App\Models\Order::STATUS_SELESAI => 'bg-green-100 text-green-700',
+                                        \App\Models\Order::STATUS_MENUNGGU_PENGEMBALIAN => 'bg-orange-100 text-orange-600',
+                                        \App\Models\Order::STATUS_DIBATALKAN => 'bg-gray-100 text-gray-500 border border-gray-200',
+                                        default => 'bg-blue-100 text-blue-700'
+                                    };
+                                @endphp
+                                <span class="{{ $statusClass }} px-3 py-1 rounded-md text-[10px] font-bold">
+                                    {{ ucfirst(str_replace('_', ' ', strtolower($order->status))) }}
+                                </span>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-5 py-8 text-center text-gray-500 text-sm">
+                                Belum ada transaksi yang tercatat.
+                            </td>
+                        </tr>
                             @endforelse
-                                <td class="px-5 py-4">Rian Hidayat</td>
-                                <td class="px-5 py-4 font-bold text-gray-700">Bagus Prasetyo</td>
-                                <td class="px-5 py-4"><span
-                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">PPLG</span>
-
-
-                                </td>
-                                <td class="px-5 py-4 text-gray-500">Jasa (Web Profile)</td>
-                                <td class="px-5 py-4 font-bold text-gray-800">Rp 450.000</td>
-                                <td class="px-5 py-4">
-                                    <span
-                                        class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-bold">Selesai</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-0491</td>
-                                <td class="px-5 py-4">Siti Aminah</td>
-                                <td class="px-5 py-4 font-bold text-gray-700">Aulia Rahma</td>
-                                <td class="px-5 py-4"><span
-                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">DKV</span>
-                                </td>
-                                <td class="px-5 py-4 text-gray-500">Produk (Sticker Pack)</td>
-                                <td class="px-5 py-4 font-bold text-gray-800">Rp 35.000</td>
-                                <td class="px-5 py-4">
-                                    <span
-                                        class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-bold">Selesai</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-0490</td>
-                                <td class="px-5 py-4">Budi Santoso</td>
-                                <td class="px-5 py-4 font-bold text-gray-700">Diki Kurniawan</td>
-                                <td class="px-5 py-4"><span
-                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">Animasi</span>
-                                </td>
-                                <td class="px-5 py-4 text-gray-500">Jasa (3D Model)</td>
-                                <td class="px-5 py-4 font-bold text-gray-800">Rp 850.000</td>
-                                <td class="px-5 py-4">
-                                    <span
-                                        class="bg-orange-100 text-orange-600 px-3 py-1 rounded-md text-[10px] font-bold">Diproses</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-0489</td>
-                                <td class="px-5 py-4">Megawati</td>
-                                <td class="px-5 py-4 font-bold text-gray-700">Intan Permata</td>
-                                <td class="px-5 py-4"><span
-                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">Akuntansi</span>
-                                </td>
-                                <td class="px-5 py-4 text-gray-500">Jasa (Laporan SPT)</td>
-                                <td class="px-5 py-4 font-bold text-gray-800">Rp 150.000</td>
-                                <td class="px-5 py-4">
-                                    <span
-                                        class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-[10px] font-bold">Selesai</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-0488</td>
-                                <td class="px-5 py-4">Hendra Wijaya</td>
-                                <td class="px-5 py-4 font-bold text-gray-700">Farhan Mahendra</td>
-                                <td class="px-5 py-4"><span
-                                        class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">Pemasaran</span>
-                                </td>
-                                <td class="px-5 py-4 text-gray-500">Produk (Jasa Ad Setup)</td>
-                                <td class="px-5 py-4 font-bold text-gray-800">Rp 300.000</td>
-                                <td class="px-5 py-4">
-                                    <span
-                                        class="bg-gray-100 text-gray-500 px-3 py-1 rounded-md text-[10px] font-bold border border-gray-200">Dibatalkan</span>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
