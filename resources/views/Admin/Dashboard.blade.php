@@ -377,10 +377,13 @@
                             <tr class="hover:bg-gray-50 transition">
                                 <!-- KODE UNIK -->
                                 <td class="px-5 py-4 font-bold text-gray-800">TRX-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</td>
+
                                 <!-- PENGGUNA -->
                                 <td class="px-5 py-4">{{ $order->user->name ?? 'Pengguna Umum' }}</td>
+
                                 <!-- PENJUAL -->
                                 <td class="px-5 py-4 font-bold text-gray-700">{{ $order->seller->name ?? 'Sistem' }}</td>
+
                                 <!-- JURUSAN -->
                                  <td class="px-5 py-4">
                                     <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">
@@ -412,6 +415,8 @@
                                 </span>
                             </td>
                         </tr>
+
+                        <!-- JIKA TIDAK ADA -->
                         @empty
                         <tr>
                             <td colspan="7" class="px-5 py-8 text-center text-gray-500 text-sm">
