@@ -662,7 +662,7 @@
                         <i class="ph-bold ph-upload-simple text-3xl text-gray-400 group-hover:text-primary transition mb-2"></i>
                         <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto/video ke sini</p>
                         <p class="text-xs text-gray-500 mt-1">Maks. 6 file (Foto JPG, PNG, WEBP & Video MP4, WEBM). Maks 50MB per file.</p>
-                        <input type="file" name="images[]" id="imageUpload" onchange="previewImages(event)" multiple accept="image/*,video/*" class="hidden">
+                        <input type="file" name="images[]" id="imageUpload" onchange="handleMediaSelect(event)" multiple accept="image/*,video/*" class="hidden">
                     </div>
                     <!-- Media Previews -->
                     <div id="imagePreviewContainer" class="flex gap-4 mt-4 hidden overflow-x-auto pb-2"></div>
@@ -1018,6 +1018,8 @@
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            selectedMediaFiles = [];
+            updateFileInputAndPreview();
         }, 300); // match duration-300
     }
 
@@ -1152,41 +1154,74 @@
         }
     }
 
-    // 3. Media Upload Preview (Max 6 Photos/Videos)
-    function previewImages(event) {
-        const files = event.target.files;
-        const container = document.getElementById('imagePreviewContainer');
+    // 3. Media Upload Accumulation & Preview (Max 6 Photos/Videos)
+    let selectedMediaFiles = [];
+
+    function handleMediaSelect(event) {
+        const newFiles = Array.from(event.target.files);
         
-        if (files.length > 0) {
+        // Append new files up to max 6 total
+        for (let file of newFiles) {
+            if (selectedMediaFiles.length < 6) {
+                selectedMediaFiles.push(file);
+            }
+        }
+        
+        updateFileInputAndPreview();
+    }
+
+    function removeMediaFile(index) {
+        selectedMediaFiles.splice(index, 1);
+        updateFileInputAndPreview();
+    }
+
+    function updateFileInputAndPreview() {
+        const input = document.getElementById('imageUpload');
+        const container = document.getElementById('imagePreviewContainer');
+        if (!input || !container) return;
+        
+        // Sync files array to input via DataTransfer
+        try {
+            const dt = new DataTransfer();
+            selectedMediaFiles.forEach(file => dt.items.add(file));
+            input.files = dt.files;
+        } catch (err) {
+            console.error("DataTransfer error:", err);
+        }
+        
+        // Render preview cards
+        if (selectedMediaFiles.length > 0) {
             container.classList.remove('hidden');
-            container.innerHTML = ''; // clear old previews
+            container.innerHTML = '';
             
-            // Limit to max 6 files
-            const maxFiles = Math.min(files.length, 6);
-            
-            for (let i = 0; i < maxFiles; i++) {
-                const file = files[i];
+            selectedMediaFiles.forEach((file, idx) => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const mediaDiv = document.createElement('div');
-                    mediaDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group bg-black/5";
+                    mediaDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group bg-black/5 shadow-sm";
                     
-                    if (file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i)) {
-                        mediaDiv.innerHTML = `
+                    const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i);
+                    
+                    mediaDiv.innerHTML = `
+                        ${isVideo ? `
                             <video src="${e.target.result}" class="w-full h-full object-cover"></video>
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
                                 <i class="ph-fill ph-video-camera text-white text-xl"></i>
                             </div>
-                        `;
-                    } else {
-                        mediaDiv.innerHTML = `
+                        ` : `
                             <img src="${e.target.result}" class="w-full h-full object-cover">
-                        `;
-                    }
+                        `}
+                        <button type="button" onclick="removeMediaFile(${idx})" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md transition z-10" title="Hapus File Ini">
+                            <i class="ph-bold ph-x text-[10px]"></i>
+                        </button>
+                    `;
                     container.appendChild(mediaDiv);
-                }
+                };
                 reader.readAsDataURL(file);
-            }
+            });
+        } else {
+            container.classList.add('hidden');
+            container.innerHTML = '';
         }
     }
 
