@@ -57,7 +57,9 @@
                                 @elseif($order->status == 'selesai')
                                     <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold border border-green-200">Selesai</span>
                                 @elseif($order->status == 'menunggu_pengembalian')
-                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold border border-orange-200">Komplain/Refund</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold border border-orange-200">Refund (Menunggu Admin)</span>
+                                @elseif($order->status == 'menunggu_pengembalian_penjual')
+                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold border border-yellow-200">Disetujui Admin (Menunggu Penjual)</span>
                                 @elseif($order->status == 'pengembalian')
                                     <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold border border-red-200">Dana Dikembalikan</span>
                                 @else
@@ -67,10 +69,10 @@
                             <td class="px-6 py-4 text-right">
                                 @if($order->status == 'menunggu_pengembalian')
                                 <div class="flex items-center justify-end gap-2">
-                                    <form action="{{ route('admin.refund.approve', $order->id) }}" method="POST" onsubmit="return confirm('Setujui pengembalian dana ini? Status akan menjadi Pengembalian.');">
+                                    <form action="{{ route('admin.refund.approve', $order->id) }}" method="POST" onsubmit="return confirm('Setujui refund ini dan teruskan ke penjual untuk konfirmasi?');">
                                         @csrf
                                         <button type="submit" class="px-3 py-1 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded hover:bg-green-100 transition">
-                                            Setujui
+                                            Setujui & Teruskan ke Penjual
                                         </button>
                                     </form>
                                     <form action="{{ route('admin.refund.reject', $order->id) }}" method="POST" onsubmit="return confirm('Tolak komplain ini? Pesanan akan dikembalikan ke status Selesai.');">

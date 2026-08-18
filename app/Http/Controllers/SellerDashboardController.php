@@ -13,26 +13,36 @@ class SellerDashboardController extends Controller
     {
         $user = Auth::user();
         $products = $user->products()->with('images')->latest()->get();
-        $orders = $user->salesOrders()
-            ->where('status', '!=', 'menunggu_pembayaran')
-            ->with(['items.product', 'user', 'payments'])
-            ->latest()
-            ->get();
-        
+        if ($user->isAdmin()) {
+            $orders = \App\Models\Order::where('status', '!=', 'menunggu_pembayaran')
+                ->with(['items.product', 'user', 'payments'])
+                ->latest()
+                ->get();
+        } else {
+            $orders = $user->salesOrders()
+                ->where('status', '!=', 'menunggu_pembayaran')
+                ->with(['items.product', 'user', 'payments'])
+                ->latest()
+                ->get();
+        }
+
         $reviews = \App\Models\Review::whereHas('product', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->with(['user', 'product'])->latest()->get();
-        
+
         $pendingOrdersCount = $orders->where('is_read_by_seller', false)->whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
+        $ordersSiapDikirim = $orders->where('status', 'diproses')->count();
         $totalReviewsCount = $reviews->where('is_read_by_seller', false)->count();
-        
+        $reviewsBelumDibalas = $reviews->where('is_read_by_seller', false)->count();
+
         $totalRevenue = $orders->where('status', 'selesai')->sum('total');
         $completedOrders = $orders->where('status', 'selesai')->count();
         $totalProducts = $products->count();
+        $visitorCount = $orders->count() > 0 ? $orders->sum('total') / 1000 : 0; // Estimated visitors based on order count
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
         $homepageBanners = \App\Models\HomepageBanner::where('user_id', $user->id)->get();
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount', 'homepageBanners'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners'));
     }
 
     public function storeProduct(Request $request)
@@ -61,7 +71,8 @@ class SellerDashboardController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
-            'is_active' => true,
+            'is_active' => false,
+            'approval_status' => 'pending',
         ]);
 
         if ($request->hasFile('images')) {
@@ -77,7 +88,7 @@ class SellerDashboardController extends Controller
             }
         }
 
-        return back()->with('success', 'Produk berhasil ditambahkan!');
+        return back()->with('success', 'Pengajuan produk berhasil dikirim! Menunggu konfirmasi admin.');
     }
 
     public function updateProduct(Request $request, $id)
@@ -107,7 +118,7 @@ class SellerDashboardController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
         ];
-        
+
         if ($request->has('is_active')) {
             $data['is_active'] = $request->is_active;
         }
@@ -121,7 +132,7 @@ class SellerDashboardController extends Controller
     {
         $product = Product::where('user_id', Auth::id())->findOrFail($id);
         $product->delete();
-        
+
         return back()->with('success', 'Produk dihapus!');
     }
     public function markOrdersRead()
@@ -130,7 +141,7 @@ class SellerDashboardController extends Controller
         \App\Models\Order::where('seller_id', $user->id)
             ->where('is_read_by_seller', false)
             ->update(['is_read_by_seller' => true]);
-            
+
         return response()->json(['success' => true]);
     }
 
@@ -140,7 +151,7 @@ class SellerDashboardController extends Controller
         \App\Models\Review::whereHas('product', function($query) use ($user) {
             $query->where('user_id', $user->id);
         })->where('is_read_by_seller', false)->update(['is_read_by_seller' => true]);
-        
+
         return response()->json(['success' => true]);
     }
     public function storeHomepageBanner(Request $request)
@@ -198,5 +209,41 @@ class SellerDashboardController extends Controller
         $banner->delete();
         
         return back()->with('success', 'Banner berhasil dihapus!');
+    }
+
+    public function getDashboardData()
+    {
+        $user = Auth::user();
+        $orders = $user->salesOrders()
+            ->where('status', 'selesai')
+            ->with(['items.product'])
+            ->get();
+
+        // Group by month
+        $monthlyRevenue = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlyRevenue[$m] = 0;
+        }
+
+        foreach ($orders as $order) {
+            $month = strtotime($order->created_at);
+            $monthKey = date('n', $month);
+            $monthlyRevenue[$monthKey] += $order->total;
+        }
+
+        $labels = [];
+        $data = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            $labels[] = $monthNames[$m - 1];
+            $data[] = $monthlyRevenue[$m];
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+            'totalRevenue' => $orders->where('status', 'selesai')->sum('total'),
+            'completedOrders' => $orders->where('status', 'selesai')->count(),
+        ]);
     }
 }

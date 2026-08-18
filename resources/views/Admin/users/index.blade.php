@@ -180,7 +180,6 @@
                                 <th class="px-5 py-3.5">NIS / ID</th>
                                 <th class="px-5 py-3.5">EMAIL</th>
                                 <th class="px-5 py-3.5">ROLE</th>
-                                <th class="px-5 py-3.5">SELLER VERIFIED</th>
                                 <th class="px-5 py-3.5 text-right rounded-r-xl">AKSI</th>
                             </tr>
                         </thead>
@@ -211,34 +210,11 @@
                                             <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">Pembeli</span>
                                         @endif
                                     </td>
-                                    <td class="px-5 py-4">
-                                        @if($user->seller_status === 'approved' || $user->verification_seller)
-                                            <span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold inline-flex items-center gap-1">
-                                                <i class="ph-bold ph-check"></i> Ya
-                                            </span>
-                                        @elseif($user->seller_status === 'pending')
-                                            <span class="bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-md text-xs font-bold inline-flex items-center gap-1">
-                                                <i class="ph-bold ph-clock"></i> Pending
-                                            </span>
-                                        @else
-                                            <span class="bg-gray-100 text-gray-400 px-2.5 py-1 rounded-md text-xs font-bold">
-                                                Tidak
-                                            </span>
-                                        @endif
-                                    </td>
                                     <td class="px-5 py-4 text-right">
                                         <div class="flex items-center justify-end gap-1">
-                                            @if($user->seller_status === 'pending')
-                                                <a href="{{ route('users.show', $user->id) }}" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Cek Detail">
-                                                    <i class="ph-bold ph-eye text-base"></i>
-                                                </a>
-                                                <form action="{{ route('users.approve_seller', $user->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition" title="Setujui Buka Toko">
-                                                        <i class="ph-bold ph-check-circle text-base"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <a href="{{ route('users.show', $user->id) }}" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Cek Detail">
+                                                <i class="ph-bold ph-eye text-base"></i>
+                                            </a>
                                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');" class="inline">
                                                 @csrf
                                                 @method('DELETE')

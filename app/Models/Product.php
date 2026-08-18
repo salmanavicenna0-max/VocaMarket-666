@@ -23,6 +23,7 @@ class Product extends Model
         'price',
         'image_path',
         'is_active',
+        'approval_status',
         'original_price',
         'discount_percentage',
         'sales_count',
