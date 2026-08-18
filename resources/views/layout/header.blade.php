@@ -98,8 +98,12 @@
                         @else
                             <div class="relative group cursor-pointer">
                                 <div class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition">
-                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm overflow-hidden">
+                                        @if(Auth::user()->profile && (Auth::user()->profile->photo || Auth::user()->profile->foto))
+                                            <img src="{{ asset('storage/' . (Auth::user()->profile->photo ?? Auth::user()->profile->foto)) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        @endif
                                     </div>
                                     <span class="text-sm font-medium text-gray-700 hidden md:block">{{ explode(' ', Auth::user()->name)[0] }}</span>
                                     <i class="ph-bold ph-caret-down text-gray-500 text-xs hidden md:block"></i>
@@ -107,12 +111,14 @@
                                 
                                 <!-- Dropdown -->
                                 <div class="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                                    <a href="{{ url('/user') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-user mr-2"></i>Profil Saya</a>
+                                    
                                     @if(Auth::user()->isAdmin())
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
-                                    @elseif(Auth::user()->isSeller())
-                                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-storefront mr-2"></i>Toko Saya</a>
-                                    @else
-                                        <a href="{{ url('/user') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary rounded-t-lg transition"><i class="ph-bold ph-user mr-2"></i>Profil Saya</a>
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
+                                    @endif
+
+                                    @if(Auth::user()->isSeller())
+                                        <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-storefront mr-2"></i>Dashboard Penjual</a>
                                     @endif
                                     
                                     <a href="{{ route('orders.index') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-receipt mr-2"></i>Pesanan Saya</a>

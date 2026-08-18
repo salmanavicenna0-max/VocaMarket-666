@@ -29,12 +29,18 @@ class SellerDashboardController extends Controller
         $totalRevenue = $orders->where('status', 'selesai')->sum('total');
         $completedOrders = $orders->where('status', 'selesai')->count();
         $totalProducts = $products->count();
+        $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'pendingOrdersCount', 'totalReviewsCount'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount'));
     }
 
     public function storeProduct(Request $request)
     {
+        if ($request->has('price')) {
+            $cleanPrice = (int) str_replace(['.', ','], '', $request->input('price'));
+            $request->merge(['price' => $cleanPrice]);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
@@ -42,7 +48,8 @@ class SellerDashboardController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'images' => 'nullable|array|max:6',
+            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,ogg,m4v|max:51200'
         ]);
 
         $product = Product::create([
@@ -58,6 +65,7 @@ class SellerDashboardController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $file) {
+                if ($index >= 6) break; // Limit to max 6 files
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -75,14 +83,35 @@ class SellerDashboardController extends Controller
     {
         $product = Product::where('user_id', Auth::id())->findOrFail($id);
 
+        if ($request->has('price')) {
+            $cleanPrice = (int) str_replace(['.', ','], '', $request->input('price'));
+            $request->merge(['price' => $cleanPrice]);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'sub_category' => 'nullable|string|max:255',
+            'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
-        $product->update($request->only('name', 'price', 'stock', 'is_active'));
+        $data = [
+            'name' => $request->name,
+            'category' => $request->category,
+            'type' => $request->sub_category,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+        ];
+        
+        if ($request->has('is_active')) {
+            $data['is_active'] = $request->is_active;
+        }
+
+        $product->update($data);
 
         return back()->with('success', 'Produk diperbarui!');
     }

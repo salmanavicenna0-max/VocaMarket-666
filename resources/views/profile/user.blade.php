@@ -29,12 +29,20 @@
             <!-- Profil Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col items-center text-center">
                 <div class="relative mb-3">
-                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-blue-100 text-primary font-bold flex items-center justify-center text-3xl">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-blue-100 text-primary font-bold flex items-center justify-center text-3xl overflow-hidden">
+                        @if($profile && ($profile->photo || $profile->foto))
+                            <img src="{{ asset('storage/' . ($profile->photo ?? $profile->foto)) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                        @endif
                     </div>
-                    <button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition">
-                        <i class="ph-bold ph-pencil-simple text-xs"></i>
-                    </button>
+                    <form id="avatar-form" action="{{ route('user.profile.photo') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="photo" id="avatar-input" class="hidden" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
+                        <button type="button" onclick="document.getElementById('avatar-input').click()" class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition" title="Ubah Foto Profil">
+                            <i class="ph-bold ph-pencil-simple text-xs"></i>
+                        </button>
+                    </form>
                 </div>
                 <h3 class="font-bold text-gray-900 text-lg">{{ Auth::user()->name }}</h3>
                 <p class="text-gray-500 text-sm">{{ Auth::user()->email ?? Auth::user()->nis }}</p>
@@ -63,13 +71,6 @@
                             <i class="ph-fill ph-gear text-xl"></i> Pengaturan
                         </button>
                     </li>
-                    @if(Auth::user()->isSiswa())
-                    <li class="border-t border-gray-100">
-                        <button onclick="switchTab('bukatoko')" id="nav-bukatoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-green-600 font-bold hover:bg-green-50 transition border-l-4 border-transparent">
-                            <i class="ph-bold ph-storefront text-xl"></i> Buka Toko
-                        </button>
-                    </li>
-                    @endif
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-red-500 font-medium hover:bg-red-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-sign-out text-xl"></i> Keluar
@@ -169,7 +170,6 @@
                                 </label>
                                 <div class="flex items-center gap-3">
                                     <input type="text" value="{{ $user->email ?? $user->nis }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded border border-green-200 shrink-0">Terverifikasi</span>
                                 </div>
                             </div>
                             <div>
@@ -332,87 +332,9 @@
                             <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
                         </div>
                     </form>
-                    
-                    <!-- Notifikasi -->
-                    <div class="mt-4">
-                        <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Notifikasi</h3>
-                        <div class="flex flex-col gap-3">
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <div>
-                                    <p class="font-bold text-gray-800 text-sm">Promo & Diskon</p>
-                                    <p class="text-xs text-gray-500">Dapatkan info terbaru tentang diskon di VocaMarket</p>
-                                </div>
-                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <div>
-                                    <p class="font-bold text-gray-800 text-sm">Pembaruan Pesanan</p>
-                                    <p class="text-xs text-gray-500">Pemberitahuan setiap kali status pesanan Anda berubah</p>
-                                </div>
-                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
-                            </label>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- TAB: Buka Toko (Hanya Siswa) -->
-            @if(Auth::user()->isSiswa())
-            <div id="tab-bukatoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
-                <div class="p-6 border-b border-gray-200 bg-green-50 rounded-t-xl">
-                    <h2 class="text-xl font-bold text-green-800 flex items-center gap-2">
-                        <i class="ph-fill ph-storefront"></i> Formulir Buka Toko
-                    </h2>
-                    <p class="text-green-700 text-sm mt-1">Verifikasi identitas siswa Anda untuk mulai berjualan di VocaMarket</p>
-                </div>
-                
-                <div class="p-6 flex flex-col gap-6">
-                    @if(Auth::user()->seller_status === 'pending')
-                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-lg text-center flex flex-col items-center justify-center">
-                            <i class="ph-fill ph-clock text-4xl text-yellow-500 mb-3"></i>
-                            <h3 class="font-bold text-yellow-800 text-lg">Permintaan Sedang Diproses</h3>
-                            <p class="text-yellow-700 text-sm mt-2 max-w-md">Pengajuan buka toko Anda sedang diverifikasi oleh Administrator. Mohon tunggu 1x24 jam kerja. Kami akan memberi tahu Anda jika toko sudah disetujui.</p>
-                        </div>
-                    @elseif(Auth::user()->seller_status === 'approved')
-                        <div class="bg-green-50 border border-green-200 p-6 rounded-lg text-center flex flex-col items-center justify-center">
-                            <i class="ph-fill ph-check-circle text-4xl text-green-500 mb-3"></i>
-                            <h3 class="font-bold text-green-800 text-lg">Toko Anda Sudah Aktif!</h3>
-                            <p class="text-green-700 text-sm mt-2 mb-4">Selamat! Pengajuan toko Anda telah disetujui. Anda sekarang dapat mulai mengelola produk dan berjualan.</p>
-                            <a href="{{ url('/seller/dashboard') }}" class="px-6 py-2 bg-green-600 text-white font-bold rounded-lg shadow-sm hover:bg-green-700 transition">Ke Dashboard Penjual</a>
-                        </div>
-                    @else
-                        @if(session('success'))
-                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                                <span class="block sm:inline">{{ session('success') }}</span>
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                                <span class="block sm:inline">{{ session('error') }}</span>
-                            </div>
-                        @endif
-
-                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex gap-3 text-sm text-blue-800">
-                            <i class="ph-fill ph-info text-xl shrink-0"></i>
-                            <p>Pastikan data Anda sesuai. Proses verifikasi biasanya memakan waktu 1x24 jam kerja setelah Anda menekan tombol ajukan.</p>
-                        </div>
-
-                        <form method="POST" action="{{ route('user.request_seller') }}" class="flex flex-col gap-4 max-w-lg">
-                            @csrf
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Akun <span class="text-red-500">*</span></label>
-                                <input type="text" value="{{ Auth::user()->name }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
-                            </div>
-                            
-                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg w-full mt-4 transition shadow-sm flex items-center justify-center gap-2">
-                                <i class="ph-bold ph-paper-plane-tilt"></i> Ajukan Verifikasi Toko Sekarang
-                            </button>
-                        </form>
-                    @endif
-                </div>
-            </div>
-            @endif
-            
         </div>
     </div>
 </div>
@@ -437,9 +359,20 @@
         
         // Set active state on clicked nav button
         const activeNav = document.getElementById('nav-' + tabId);
-        activeNav.classList.remove('text-gray-600', 'border-transparent');
-        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        if (activeNav) {
+            activeNav.classList.remove('text-gray-600', 'border-transparent');
+            activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            const tabId = window.location.hash.substring(1);
+            if (document.getElementById('tab-' + tabId)) {
+                switchTab(tabId);
+            }
+        }
+    });
 
     function filterPesananUser(status, btnElement) {
         // Update tab styling
@@ -469,6 +402,25 @@
                 order.style.display = 'none';
             }
         });
+    }
+
+    function previewBanner(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('banner-preview');
+                const placeholder = document.getElementById('banner-placeholder');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     }
 </script>
 @endsection

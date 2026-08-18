@@ -13,10 +13,18 @@ class Profile extends Model
     protected $fillable = [
         'user_id',
         'photo',
+        'foto',
         'class',
+        'kelas',
         'no_telp',
         'tanggal_lahir',
         'jenis_kelamin',
+        'alamat',
+        'nis_nip',
+        'nama_toko',
+        'deskripsi_toko',
+        'banner_toko',
+        'warna_judul_toko',
     ];
 
     // -- Relationships --
