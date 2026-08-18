@@ -76,6 +76,7 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
 
     Route::post('/mark-orders-read', [SellerDashboardController::class, 'markOrdersRead'])->name('mark_orders_read');
     Route::post('/mark-reviews-read', [SellerDashboardController::class, 'markReviewsRead'])->name('mark_reviews_read');
+    Route::get('/seller/dashboard/data', [SellerDashboardController::class, 'getDashboardData'])->name('seller.dashboard.data');
 });
 
 Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');

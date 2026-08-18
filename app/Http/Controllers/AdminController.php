@@ -16,7 +16,6 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $minTotal = 0;
         $totalUsers = User::count();
         $totalProducts = Product::whereIn('category', ['Aksesoris', 'Merchandise', 'Hardware'])->count();
         $totalServices = Product::whereIn('category', ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'])->count();

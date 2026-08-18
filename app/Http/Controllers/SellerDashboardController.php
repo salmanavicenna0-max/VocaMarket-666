@@ -24,14 +24,44 @@ class SellerDashboardController extends Controller
         })->with(['user', 'product'])->latest()->get();
         
         $pendingOrdersCount = $orders->where('is_read_by_seller', false)->whereIn('status', ['menunggu_verifikasi', 'diproses'])->count();
+        $ordersSiapDikirim = $orders->where('status', 'diproses')->count();
         $totalReviewsCount = $reviews->where('is_read_by_seller', false)->count();
+        $reviewsBelumDibalas = $reviews->where('is_read_by_seller', false)->count();
         
         $totalRevenue = $orders->where('status', 'selesai')->sum('total');
         $completedOrders = $orders->where('status', 'selesai')->count();
         $totalProducts = $products->count();
+        $visitorCount = $orders->count() > 0 ? $orders->sum('total') / 1000 : 0; // Estimated visitors based on order count
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount'));
+        // Prepare monthly sales data for Chart.js
+        $orders = $user->salesOrders()
+            ->where('status', 'selesai')
+            ->with(['items.product'])
+            ->get();
+
+        $monthlyRevenue = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlyRevenue[$m] = 0;
+        }
+
+        foreach ($orders as $order) {
+            $month = strtotime($order->created_at);
+            $monthKey = date('n', $month);
+            $monthlyRevenue[$monthKey] += $order->total;
+        }
+
+        $labels = [];
+        $data = [];
+        $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        for ($m = 1; $m <= 12; $m++) {
+            $labels[] = $monthNames[$m - 1];
+            $data[] = $monthlyRevenue[$m];
+        }
+
+        $salesData = json_encode(['labels' => $labels, 'data' => $data]);
+
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'visitorCount', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'reviewsBelumDibalas', 'salesData'));
     }
 
     public function storeProduct(Request $request)
@@ -141,5 +171,41 @@ class SellerDashboardController extends Controller
         })->where('is_read_by_seller', false)->update(['is_read_by_seller' => true]);
         
         return response()->json(['success' => true]);
+    }
+
+    public function getDashboardData()
+    {
+        $user = Auth::user();
+        $orders = $user->salesOrders()
+            ->where('status', 'selesai')
+            ->with(['items.product'])
+            ->get();
+
+        // Group by month
+        $monthlyRevenue = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlyRevenue[$m] = 0;
+        }
+
+        foreach ($orders as $order) {
+            $month = strtotime($order->created_at);
+            $monthKey = date('n', $month);
+            $monthlyRevenue[$monthKey] += $order->total;
+        }
+
+        $labels = [];
+        $data = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            $labels[] = $monthNames[$m - 1];
+            $data[] = $monthlyRevenue[$m];
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+            'totalRevenue' => $orders->where('status', 'selesai')->sum('total'),
+            'completedOrders' => $orders->where('status', 'selesai')->count(),
+        ]);
     }
 }

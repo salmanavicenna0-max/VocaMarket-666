@@ -97,7 +97,7 @@
         <!-- Konten Kanan: Tab Area -->
         <div class="lg:col-span-3">
 
-            <!-- TAB: Dashboard -->
+            ∏
             <div id="tab-dashboard" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <div>
@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="p-6 space-y-6">
-                    <!-- Grid Statistik Kunci -->
+                    <!-- Grid Statistik Kuncise -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Card 1 -->
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 flex flex-col justify-center transition hover:shadow-md hover:-translate-y-1">
@@ -120,6 +120,9 @@
                                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-primary">
                                     <i class="ph-fill ph-wallet text-xl"></i>
                                 </div>
+                                <span class="flex items-center text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                    <i class="ph-bold ph-trend-up mr-1"></i> 15%
+                                </span>
                             </div>
                             <p class="text-gray-500 text-sm font-medium">Total Pendapatan</p>
                             <h3 id="statPendapatan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
@@ -131,6 +134,9 @@
                                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-green-600">
                                     <i class="ph-fill ph-shopping-bag text-xl"></i>
                                 </div>
+                                <span class="flex items-center text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                    <i class="ph-bold ph-trend-up mr-1"></i> 8%
+                                </span>
                             </div>
                             <p class="text-gray-500 text-sm font-medium">Pesanan Selesai</p>
                             <h3 id="statPesanan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $completedOrders }}</h3>
@@ -142,6 +148,9 @@
                                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-purple-600">
                                     <i class="ph-fill ph-package text-xl"></i>
                                 </div>
+                                <span class="flex items-center text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded-full">
+                                    <i class="ph-bold ph-minus mr-1"></i> 0%
+                                </span>
                             </div>
                             <p class="text-gray-500 text-sm font-medium">Total Produk</p>
                             <h3 id="statProduk" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $totalProducts }}</h3>
@@ -153,9 +162,12 @@
                                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-orange-600">
                                     <i class="ph-fill ph-eye text-xl"></i>
                                 </div>
+                                <span class="flex items-center text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                    <i class="ph-bold ph-trend-up mr-1"></i> 24%
+                                </span>
                             </div>
                             <p class="text-gray-500 text-sm font-medium">Kunjungan Toko</p>
-                            <h3 id="statKunjungan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $visitorCount ?? 0 }}</h3>
+                            <h3 id="statKunjungan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">1.845</h3>
                         </div>
                     </div>
 
@@ -167,7 +179,14 @@
                                 <button class="text-sm text-primary font-medium hover:underline">Lihat Detail</button>
                             </div>
                             <div class="h-48 flex items-end gap-2 justify-between mt-6 px-2">
-                                <canvas id="salesChart" width="400" height="200" class="max-w-full"></canvas>
+                                <!-- Dummy Bar Chart -->
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[30%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp2M</span></div>
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[50%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp3M</span></div>
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[40%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp2.5M</span></div>
+                                <div class="w-full bg-primary rounded-t-sm h-[80%] relative group cursor-pointer shadow-[0_0_15px_rgba(37,99,235,0.4)]"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-primary">Rp4.2M</span></div>
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[60%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp3.5M</span></div>
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[45%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp2.8M</span></div>
+                                <div class="w-full bg-blue-100 rounded-t-sm h-[70%] relative group cursor-pointer hover:bg-blue-200 transition"><span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-gray-500 hidden group-hover:block">Rp4M</span></div>
                             </div>
                             <div class="flex justify-between text-xs text-gray-400 mt-2 px-2 font-medium">
                                 <span>Sen</span>
@@ -198,7 +217,15 @@
                                     <i class="ph-bold ph-truck text-xl"></i>
                                     <span class="font-bold text-sm">Siap Dikirim</span>
                                 </div>
-<span class="font-bold text-sm">{{ $ordersSiapDikirim }}</span>
+                                <span class="font-bold text-sm">1</span>
+                            </div>
+
+                            <div onclick="switchTab('pesanan')" class="flex items-center justify-between p-3 bg-gray-50 text-gray-700 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition">
+                                <div class="flex items-center gap-3">
+                                    <i class="ph-bold ph-chat-circle-dots text-xl"></i>
+                                    <span class="font-bold text-sm">Chat Belum Dibalas</span>
+                                </div>
+                                <span class="font-bold text-sm text-gray-400">0</span>
                             </div>
                         </div>
                     </div>
@@ -206,7 +233,7 @@
             </div>
 
             <!-- TAB: Produk Saya -->
-            <div id="tab-produk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+            <div id="tab-produk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content block">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Produk Saya</h2>
@@ -1410,60 +1437,7 @@
             if (document.getElementById('tab-' + tabId)) {
                 switchTab(tabId);
             }
-        } else {
-            switchTab('dashboard');
         }
     });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Initialize sales chart with backend data
-    const ctx = document.getElementById('salesChart');
-    if (ctx) {
-        const data = {{ $salesData ?? json_encode(['labels' => [], 'data' => []]) }};
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.labels,
-                datasets: [{
-                    label: 'Penjualan Bulanan',
-                    data: data.data,
-                    borderColor: 'rgba(59, 130, 246, 1)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                    tension: 0.1,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Performa Penjualan Bulanan'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'Rp' + value.toLocaleString('id-ID');
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    }
 </script>
 @endsection
