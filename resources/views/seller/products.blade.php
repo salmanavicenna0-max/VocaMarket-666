@@ -27,7 +27,6 @@
         </ol>
     </nav>
 
-<<<<<<< HEAD
     <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
         
         <!-- Mobile Sidebar Toggle -->
@@ -50,14 +49,6 @@
         <div id="seller-sidebar" class="lg:col-span-1 flex-col gap-4 hidden lg:flex absolute lg:relative w-full z-10 bg-white lg:bg-transparent rounded-xl shadow-lg lg:shadow-none p-4 lg:p-0 border border-gray-200 lg:border-none top-[80px] lg:top-0">
             
             <div class="bg-primary rounded-xl shadow-sm p-5 text-white hidden lg:flex items-center gap-4">
-=======
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-        <!-- Sidebar Penjual -->
-        <div class="lg:col-span-1 flex flex-col gap-4">
-
-            <div class="bg-primary rounded-xl shadow-sm p-5 text-white flex items-center gap-4">
->>>>>>> 1f5ad7225487017d7d848d05fde870719c2a9429
                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0">
                     <i class="ph-fill ph-storefront text-2xl text-primary"></i>
                 </div>
@@ -113,7 +104,6 @@
                             <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
                         </button>
                     </li>
-<<<<<<< HEAD
                     <li>
                         <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
@@ -126,8 +116,6 @@
                         </button>
                     </li>
                     @endif
-=======
->>>>>>> 1f5ad7225487017d7d848d05fde870719c2a9429
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-arrow-left text-xl"></i> Kembali ke Pembeli
