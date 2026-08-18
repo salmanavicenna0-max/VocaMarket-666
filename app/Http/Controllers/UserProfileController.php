@@ -110,8 +110,12 @@ class UserProfileController extends Controller
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('profiles', 'public');
-            $profile->photo = $path;
-            $profile->foto = $path;
+            if (\Illuminate\Support\Facades\Schema::hasColumn('profiles', 'foto')) {
+                $profile->foto = $path;
+            }
+            if (\Illuminate\Support\Facades\Schema::hasColumn('profiles', 'photo')) {
+                $profile->photo = $path;
+            }
             $profile->save();
         }
 
