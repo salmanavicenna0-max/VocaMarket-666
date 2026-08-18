@@ -204,15 +204,6 @@
                             <div class="h-48 flex items-end gap-2 justify-between mt-6 px-2">
                                 <canvas id="salesChart" width="400" height="200" class="max-w-full"></canvas>
                             </div>
-                            <div class="flex justify-between text-xs text-gray-400 mt-2 px-2 font-medium">
-                                <span>Sen</span>
-                                <span>Sel</span>
-                                <span>Rab</span>
-                                <span class="text-primary font-bold">Kam</span>
-                                <span>Jum</span>
-                                <span>Sab</span>
-                                <span>Min</span>
-                            </div>
                         </div>
 
                         <div class="border border-gray-200 rounded-xl p-5 flex flex-col gap-4">
@@ -2137,7 +2128,7 @@
     // Initialize sales chart with backend data
     const ctx = document.getElementById('salesChart');
     if (ctx) {
-        const data = {{ $salesData ?? json_encode(['labels' => [], 'data' => []]) }};
+        const data = @json($salesData);
 
         new Chart(ctx, {
             type: 'line',

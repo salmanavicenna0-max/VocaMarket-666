@@ -55,7 +55,9 @@ class SellerDashboardController extends Controller
 
         $allUsers = $user->isAdmin() ? \App\Models\User::latest()->get() : collect();
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'pendingProducts', 'allUsers'));
+        $salesData = $this->buildSalesData($orders);
+
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'pendingProducts', 'allUsers', 'salesData'));
     }
 
     public function storeProduct(Request $request)
@@ -272,31 +274,30 @@ class SellerDashboardController extends Controller
             ->with(['items.product'])
             ->get();
 
-        // Group by month
-        $monthlyRevenue = [];
-        for ($m = 1; $m <= 12; $m++) {
-            $monthlyRevenue[$m] = 0;
-        }
-
-        foreach ($orders as $order) {
-            $month = strtotime($order->created_at);
-            $monthKey = date('n', $month);
-            $monthlyRevenue[$monthKey] += $order->total;
-        }
-
-        $labels = [];
-        $data = [];
-        for ($m = 1; $m <= 12; $m++) {
-            $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            $labels[] = $monthNames[$m - 1];
-            $data[] = $monthlyRevenue[$m];
-        }
+        $salesData = $this->buildSalesData($orders);
 
         return response()->json([
-            'labels' => $labels,
-            'data' => $data,
-            'totalRevenue' => $orders->where('status', 'selesai')->sum('total'),
-            'completedOrders' => $orders->where('status', 'selesai')->count(),
+            'labels' => $salesData['labels'],
+            'data' => $salesData['data'],
+            'totalRevenue' => $orders->sum('total'),
+            'completedOrders' => $orders->count(),
         ]);
+    }
+
+    private function buildSalesData($orders)
+    {
+        $monthlyRevenue = array_fill(1, 12, 0);
+
+        foreach ($orders->where('status', 'selesai') as $order) {
+            $monthKey = (int) $order->created_at->format('n');
+            $monthlyRevenue[$monthKey] += (int) $order->total;
+        }
+
+        $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        return [
+            'labels' => $monthNames,
+            'data' => array_values($monthlyRevenue),
+        ];
     }
 }
