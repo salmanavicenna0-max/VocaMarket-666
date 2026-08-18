@@ -75,7 +75,7 @@
                 </a>
             </nav>
         </div>
-        
+
         <div class="p-6 border-t border-white/10">
             <h3 class="font-bold text-xs">SMK BAKTI NUSANTARA 666</h3>
         </div>
@@ -83,7 +83,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col h-full overflow-hidden">
-        
+
         <!-- Header -->
         <header class="h-20 px-8 flex items-center justify-between shrink-0 bg-white/50 backdrop-blur border-b border-gray-200">
             <div class="flex items-center gap-4">
@@ -110,7 +110,7 @@
                         {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
                     </div>
                 </div>
-                
+
                 <!-- Dropdown -->
                 <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[80]">
                     <a href="{{ url('/') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition border-b border-gray-50 rounded-t-lg">
@@ -129,7 +129,7 @@
         <!-- Content Area -->
         <div class="flex-1 overflow-y-auto p-8">
             <div class="max-w-3xl mx-auto">
-                
+
                 <!-- Notification Alerts -->
                 @if ($errors->any())
                     <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm">
@@ -151,7 +151,7 @@
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            
+
                             <!-- Nama Lengkap -->
                             <div class="col-span-2 md:col-span-1">
                                 <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -161,12 +161,12 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                                         <i class="ph-bold ph-user text-base"></i>
                                     </div>
-                                    <input 
-                                        type="text" 
-                                        id="name" 
-                                        name="name" 
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
                                         value="{{ old('name') }}"
-                                        placeholder="Masukkan nama lengkap" 
+                                        placeholder="Masukkan nama lengkap"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                                         required
                                     >
@@ -182,15 +182,15 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                                         <i class="ph-bold ph-card-holder text-base"></i>
                                     </div>
-                                    <input 
-                                        type="text" 
-                                        id="nis" 
-                                        name="nis" 
+                                    <input
+                                        type="text"
+                                        id="nis"
+                                        name="nis"
                                         value="{{ old('nis') }}"
                                         maxlength="12"
-                                        placeholder="Contoh: 123456789012" 
+                                        placeholder="Contoh: 123456789012"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-                                        required
+
                                     >
                                 </div>
                             </div>
@@ -204,12 +204,12 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                                         <i class="ph-bold ph-envelope-simple text-base"></i>
                                     </div>
-                                    <input 
-                                        type="email" 
-                                        id="email" 
-                                        name="email" 
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
                                         value="{{ old('email') }}"
-                                        placeholder="nama@smkbaktinusantara.sch.id" 
+                                        placeholder="nama@smkbaktinusantara.sch.id"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                                         required
                                     >
@@ -225,11 +225,11 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                                         <i class="ph-bold ph-lock-key text-base"></i>
                                     </div>
-                                    <input 
-                                        type="password" 
-                                        id="password" 
-                                        name="password" 
-                                        placeholder="Minimal 6 karakter" 
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        name="password"
+                                        placeholder="Minimal 6 karakter"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                                         required
                                     >
@@ -245,9 +245,9 @@
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                                         <i class="ph-bold ph-shield-check text-base"></i>
                                     </div>
-                                    <select 
-                                        id="role" 
-                                        name="role" 
+                                    <select
+                                        id="role"
+                                        name="role"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition appearance-none cursor-pointer"
                                         required
                                     >
@@ -266,14 +266,14 @@
 
                         <!-- Buttons -->
                         <div class="pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
-                            <a 
-                                href="{{ route('users.index') }}" 
+                            <a
+                                href="{{ route('users.index') }}"
                                 class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition"
                             >
                                 Batal
                             </a>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 class="px-6 py-2.5 rounded-xl bg-primary text-white font-bold text-sm shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-primary/20 transition flex items-center gap-2"
                             >
                                 <i class="ph-bold ph-plus-circle text-lg"></i>

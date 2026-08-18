@@ -131,7 +131,7 @@
                     <div class="mb-4">
                         <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Total Pengguna</h3>
                     </div>
-                    <div class="text-3xl font-extrabold text-gray-800 mb-2">1.248</div>
+                    <div class="text-3xl font-extrabold text-gray-800 mb-2">{{ number_format($totalUsers, 0, ',' , '.') }}</div>
                     <div class="text-[11px] text-gray-500 flex items-center gap-1">
                         <span class="text-green-500 font-bold">+12.4%</span> dari bulan lalu
                     </div>
@@ -141,7 +141,7 @@
                     <div class="mb-4">
                         <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Total Produk</h3>
                     </div>
-                    <div class="text-3xl font-extrabold text-gray-800 mb-2">356</div>
+                    <div class="text-3xl font-extrabold text-gray-800 mb-2">{{ number_format($totalProducts,0, ',' , '.') }}</div>
                     <div class="text-[11px] text-gray-500 flex items-center gap-1">
                         <span class="text-green-500 font-bold">+8.1%</span> dari bulan lalu
                     </div>
@@ -151,7 +151,7 @@
                     <div class="mb-4">
                         <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Total Jasa</h3>
                     </div>
-                    <div class="text-3xl font-extrabold text-gray-800 mb-2">189</div>
+                    <div class="text-3xl font-extrabold text-gray-800 mb-2">{{ number_format($totalServices,0, ',' , '.') }}</div>
                     <div class="text-[11px] text-gray-500 flex items-center gap-1">
                         <span class="text-green-500 font-bold">+15.3%</span> dari bulan lalu
                     </div>
@@ -162,9 +162,15 @@
                         <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Pendapatan Bulan Ini
                         </h3>
                     </div>
-                    <div class="text-3xl font-extrabold text-gray-800 mb-2">Rp 12.450.000</div>
+                    <div class="text-3xl font-extrabold text-gray-800 mb-2">Rp {{ number_format($revenueMonth, 0, ',', '.') }}</div>
                     <div class="text-[11px] text-gray-500 flex items-center gap-1">
-                        <span class="text-red-500 font-bold">-3.2%</span> dari bulan lalu
+                        @if($revenueChange > 0)
+                            <span class="text-green-500 font-bold">+{{ $revenueChange }}%</span> dari bulan lalu
+                        @elseif($revenueChange < 0)
+                            <span class="text-red-500 font-bold">{{ $revenueChange }}%</span> dari bulan lalu
+                        @else
+                            <span class="text-gray-500 font-bold">0%</span> dari bulan lalu
+                        @endif
                     </div>
                 </div>
             </div>
@@ -367,12 +373,24 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
+                            @forelse ($recentOrders as $order)
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="px-5 py-4 font-bold text-gray-800">TRX-0492</td>
+                                <!-- KODE UNIK -->
+                                <td class="px-5 py-4 font-bold text-gray-800">TRX-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</td>
+                                <!-- PENGGUNA -->
+                                <td class="px-5 py-4">{{ $order->user->name ?? 'Pengguna Umum' }}</td>
+                                <!-- PENJUAL -->
+                                <td class="px-5 py-4 font-bold text-gray-800">TRX-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}</td>
+
+                            @empty
+
+                            @endforelse
                                 <td class="px-5 py-4">Rian Hidayat</td>
                                 <td class="px-5 py-4 font-bold text-gray-700">Bagus Prasetyo</td>
                                 <td class="px-5 py-4"><span
                                         class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold">PPLG</span>
+
+
                                 </td>
                                 <td class="px-5 py-4 text-gray-500">Jasa (Web Profile)</td>
                                 <td class="px-5 py-4 font-bold text-gray-800">Rp 450.000</td>

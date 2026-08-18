@@ -11,12 +11,12 @@ use App\Models\Payment;
 class AdminController extends Controller
 {
 
-
     /**
      * Admin dashboard with real stats.
      */
     public function dashboard()
     {
+        $minTotal = 0;
         $totalUsers = User::count();
         $totalProducts = Product::whereIn('category', ['Aksesoris', 'Merchandise', 'Hardware'])->count();
         $totalServices = Product::whereIn('category', ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'])->count();
@@ -36,7 +36,7 @@ class AdminController extends Controller
         $pendingPayments = Payment::where('status', Payment::STATUS_PENDING)->count();
         $pendingReviews = \App\Models\Review::where('status', \App\Models\Review::STATUS_PENDING)->count();
 
-        $recentOrders = Order::with(['user', 'items'])
+        $recentOrders = Order::with(['user', 'seller.department', 'items.products'])
             ->latest()
             ->take(5)
             ->get();

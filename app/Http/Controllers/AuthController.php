@@ -47,7 +47,8 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nis' => ['nullable', 'string', 'max:12', 'unique:users,nis'],
+            // Ghif: ga pake NIS
+            // 'nis' => ['nullable', 'string', 'max:12', 'unique:users,nis'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'role' => ['nullable', 'in:admin,siswa,pembeli'],
@@ -55,7 +56,7 @@ class AuthController extends Controller
 
         $validated['password'] = bcrypt($validated['password']);
         $validated['role'] = $validated['role'] ?? 'pembeli';
-        $validated['email_verification'] = 'verified';
+        // email_verification tidak ada di schema users; default di DB saja
         $validated['verification_seller'] = false;
 
         $user = User::create($validated);

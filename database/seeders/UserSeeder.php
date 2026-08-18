@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
             ['email' => 'useradmin@admin.com'],
             [
                 'name' => 'Admin',
-                'nis' => null,
+                // Ghif: Ga pake nis
+                // 'nis' => null,
                 'password' => 'admin123',
                 'role' => 'admin',
                 'verification_seller' => true,

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('nis')->nullable()->unique();
+            // Ghif: Ga pake nis
+            // $table->string('nis', 20)->nullable()->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'siswa', 'pembeli'])->default('pembeli');
