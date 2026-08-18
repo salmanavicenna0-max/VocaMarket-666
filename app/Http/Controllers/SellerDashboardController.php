@@ -13,11 +13,18 @@ class SellerDashboardController extends Controller
     {
         $user = Auth::user();
         $products = $user->products()->with('images')->latest()->get();
-        $orders = $user->salesOrders()
-            ->where('status', '!=', 'menunggu_pembayaran')
-            ->with(['items.product', 'user', 'payments'])
-            ->latest()
-            ->get();
+        if ($user->isAdmin()) {
+            $orders = \App\Models\Order::where('status', '!=', 'menunggu_pembayaran')
+                ->with(['items.product', 'user', 'payments'])
+                ->latest()
+                ->get();
+        } else {
+            $orders = $user->salesOrders()
+                ->where('status', '!=', 'menunggu_pembayaran')
+                ->with(['items.product', 'user', 'payments'])
+                ->latest()
+                ->get();
+        }
         
         $reviews = \App\Models\Review::whereHas('product', function($query) use ($user) {
             $query->where('user_id', $user->id);
@@ -31,7 +38,18 @@ class SellerDashboardController extends Controller
         $totalProducts = $products->count();
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount'));
+        $pendingProducts = \App\Models\Product::with(['seller', 'images'])
+            ->where('approval_status', 'pending')
+            ->latest()
+            ->get();
+
+        $historyProducts = \App\Models\Product::with(['seller', 'images'])
+            ->whereIn('approval_status', ['approved', 'rejected'])
+            ->latest()
+            ->take(20)
+            ->get();
+
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount', 'pendingProducts', 'historyProducts'));
     }
 
     public function storeProduct(Request $request)
@@ -60,7 +78,8 @@ class SellerDashboardController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
-            'is_active' => true,
+            'is_active' => false,
+            'approval_status' => 'pending',
         ]);
 
         if ($request->hasFile('images')) {
@@ -76,7 +95,7 @@ class SellerDashboardController extends Controller
             }
         }
 
-        return back()->with('success', 'Produk berhasil ditambahkan!');
+        return back()->with('success', 'Pengajuan produk berhasil dikirim! Menunggu konfirmasi admin.');
     }
 
     public function updateProduct(Request $request, $id)

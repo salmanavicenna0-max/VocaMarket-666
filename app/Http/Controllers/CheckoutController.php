@@ -57,6 +57,9 @@ class CheckoutController extends Controller
 
         try {
             DB::transaction(function () use ($cartItems, $validated) {
+                $adminUser = \App\Models\User::where('role', 'admin')->first();
+                $adminId = $adminUser ? $adminUser->id : 1;
+
                 $groupedItems = $cartItems->groupBy(function ($item) {
                     return $item->product->user_id;
                 });
@@ -67,7 +70,7 @@ class CheckoutController extends Controller
                     $order = Order::create([
                         'code_order' => Order::generateCode(),
                         'user_id' => Auth::id(),
-                        'seller_id' => $sellerId,
+                        'seller_id' => $adminId,
                         'status' => Order::STATUS_MENUNGGU_PEMBAYARAN,
                         'subtotal' => $subtotal,
                         'discount' => 0,

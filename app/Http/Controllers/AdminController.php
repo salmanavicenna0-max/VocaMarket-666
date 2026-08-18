@@ -35,6 +35,7 @@ class AdminController extends Controller
 
         $pendingPayments = Payment::where('status', Payment::STATUS_PENDING)->count();
         $pendingReviews = \App\Models\Review::where('status', \App\Models\Review::STATUS_PENDING)->count();
+        $pendingProducts = Product::where('approval_status', 'pending')->count();
 
         $recentOrders = Order::with(['user', 'seller', 'items.product'])
             ->latest()
@@ -50,8 +51,47 @@ class AdminController extends Controller
             'revenueChange',
             'pendingPayments',
             'pendingReviews',
+            'pendingProducts',
             'recentOrders'
         ));
+    }
+
+    public function productSubmissions()
+    {
+        $pendingProducts = Product::with(['seller', 'images'])
+            ->where('approval_status', 'pending')
+            ->latest()
+            ->get();
+
+        $historyProducts = Product::with(['seller', 'images'])
+            ->whereIn('approval_status', ['approved', 'rejected'])
+            ->latest()
+            ->take(20)
+            ->get();
+
+        return view('Admin.products.submissions', compact('pendingProducts', 'historyProducts'));
+    }
+
+    public function approveProduct($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->update([
+            'is_active' => true,
+            'approval_status' => 'approved',
+        ]);
+
+        return back()->with('success', "Produk '{$product->name}' berhasil disetujui dan diterbitkan ke toko!");
+    }
+
+    public function rejectProduct(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $product->update([
+            'is_active' => false,
+            'approval_status' => 'rejected',
+        ]);
+
+        return back()->with('success', "Pengajuan produk '{$product->name}' telah ditolak.");
     }
 
     public function transactions()
@@ -64,10 +104,10 @@ class AdminController extends Controller
     {
         $order = Order::findOrFail($id);
         if ($order->status === Order::STATUS_MENUNGGU_PENGEMBALIAN) {
-            $order->update(['status' => Order::STATUS_PENGEMBALIAN]);
-            return back()->with('success', 'Pengembalian dana disetujui.');
+            $order->update(['status' => Order::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL]);
+            return back()->with('success', 'Refund disetujui Admin & diteruskan ke Penjual untuk konfirmasi.');
         }
-        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian admin.');
     }
 
     public function rejectRefund($id)

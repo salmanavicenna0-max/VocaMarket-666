@@ -59,6 +59,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // User / Seller
 Route::prefix('user')->middleware('auth')->group(function () {
     Route::get('/', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::get('/dashboard', [UserProfileController::class, 'submissions'])->name('user.submissions');
     Route::post('/profile', [UserProfileController::class, 'updateProfile'])->name('user.profile.update');
     Route::post('/photo', [UserProfileController::class, 'updatePhoto'])->name('user.profile.photo');
     Route::post('/password', [UserProfileController::class, 'updatePassword'])->name('user.password.update');
@@ -87,10 +88,15 @@ Route::get('/chat', function () {
 
 // Admin
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [SellerDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/products/submissions', [AdminController::class, 'productSubmissions'])->name('admin.products.submissions');
+    Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.products.approve');
+    Route::post('/admin/products/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.products.reject');
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
+    Route::post('/seller/refund/{id}/approve', [SellerOrderController::class, 'sellerApproveRefund'])->name('seller.refund.approve');
+    Route::post('/seller/refund/{id}/reject', [SellerOrderController::class, 'sellerRejectRefund'])->name('seller.refund.reject');
     Route::resource('admin/users', UserController::class);
 });
 

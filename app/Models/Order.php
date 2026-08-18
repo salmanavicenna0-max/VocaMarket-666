@@ -19,6 +19,7 @@ class Order extends Model
     const STATUS_DIBATALKAN = 'dibatalkan';
     const STATUS_DITOLAK = 'ditolak';
     const STATUS_MENUNGGU_PENGEMBALIAN = 'menunggu_pengembalian';
+    const STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL = 'menunggu_pengembalian_penjual';
     const STATUS_PENGEMBALIAN = 'pengembalian';
 
     protected $fillable = [
@@ -53,8 +54,9 @@ class Order extends Model
             self::STATUS_SELESAI => 'Selesai',
             self::STATUS_DIBATALKAN => 'Dibatalkan',
             self::STATUS_DITOLAK => 'Ditolak',
-            self::STATUS_MENUNGGU_PENGEMBALIAN => 'Menunggu Pengembalian',
-            self::STATUS_PENGEMBALIAN => 'Pengembalian',
+            self::STATUS_MENUNGGU_PENGEMBALIAN => 'Menunggu Refund Admin',
+            self::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL => 'Menunggu Refund Penjual',
+            self::STATUS_PENGEMBALIAN => 'Pengembalian Selesai',
             default => 'Tidak Diketahui',
         };
     }
