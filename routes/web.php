@@ -14,6 +14,7 @@ use App\Http\Controllers\SellerDashboardController;
 use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerProfileController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', [ProductController::class, 'index']);
 Route::get('/search', [ProductController::class, 'search'])->name('search');
@@ -25,6 +26,14 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
 Route::patch('/cart/{id}/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy')->middleware('auth');
+
+// Chat Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/chat/conversations', [ChatController::class, 'getConversations'])->name('chat.conversations');
+    Route::get('/chat/messages/{id}', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/start', [ChatController::class, 'startChat'])->name('chat.start');
+});
 
 Route::post('/service-request/{productId}', [\App\Http\Controllers\ServiceRequestController::class, 'store'])->name('service.request')->middleware('auth');
 

@@ -53,7 +53,7 @@
                         <i class="ph-bold ph-pencil-simple"></i> Edit Konfigurasi Toko
                     </a>
                 @else
-                    <a href="#" onclick="openMiniChat(event)" class="flex-1 md:flex-none px-6 py-2.5 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition flex items-center justify-center gap-2">
+                    <a href="#" onclick="event.preventDefault(); startNewChat({{ $seller->id }})" class="flex-1 md:flex-none px-6 py-2.5 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition flex items-center justify-center gap-2">
                         <i class="ph-bold ph-chat-circle"></i> Chat
                     </a>
                 @endif

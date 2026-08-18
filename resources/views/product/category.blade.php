@@ -16,9 +16,9 @@
         <!-- Filter Subkategori -->
         @if(count($currentSubcategories) > 0)
         <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-            <a href="#" class="px-4 py-1.5 bg-primary text-white rounded-full text-sm font-medium whitespace-nowrap shadow-sm">Semua</a>
+            <a href="{{ route('kategori', $slug) }}" class="px-4 py-1.5 {{ !request('type') ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300' }} rounded-full text-sm font-medium whitespace-nowrap shadow-sm transition">Semua</a>
             @foreach($currentSubcategories as $sub)
-            <a href="#" class="px-4 py-1.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 rounded-full text-sm font-medium whitespace-nowrap transition shadow-sm">{{ $sub }}</a>
+            <a href="{{ route('kategori', $slug) }}?type={{ urlencode($sub) }}" class="px-4 py-1.5 {{ request('type') == $sub ? 'bg-primary text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300' }} rounded-full text-sm font-medium whitespace-nowrap transition shadow-sm">{{ $sub }}</a>
             @endforeach
         </div>
         @endif

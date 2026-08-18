@@ -67,7 +67,7 @@
                     </li>
                     <li>
                         <button onclick="switchTab('produk')" id="nav-produk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
-                            <i class="ph-fill ph-package text-xl"></i> {{ Auth::user()->isAdmin() ? 'Produk' : 'Produk Saya' }}
+                            {{ Auth::user()->isAdmin() ? 'Produk' : 'Produk Saya' }}
                         </button>
                     </li>
                     <li>
@@ -113,7 +113,7 @@
                     </li>
                     <li>
                         <button onclick="switchTab('kelolapengguna')" id="nav-kelolapengguna" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-users text-xl text-indigo-500"></i> Kelola Pengguna
+                            Kelola Pengguna
                         </button>
                     </li>
                     @endif
@@ -122,11 +122,7 @@
                             Konfigurasi Toko
                         </button>
                     </li>
-                    <li>
-                        <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            Status Toko
-                        </button>
-                    </li>
+
                     @if(Auth::user()->seller_status === 'approved' || Auth::user()->isAdmin())
                     <li>
                         <button onclick="switchTab('bannerberanda')" id="nav-bannerberanda" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
@@ -731,7 +727,7 @@
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
                                     </td>
                                     <td class="p-4 text-center font-bold text-gray-700">
-                                        {{ $product->stock }}
+                                        {{ $product->isJasa() ? '-' : $product->stock }}
                                     </td>
                                     <td class="p-4">
                                         <div class="flex items-center justify-center gap-2">

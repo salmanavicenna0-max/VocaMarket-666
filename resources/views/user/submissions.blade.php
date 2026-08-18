@@ -333,12 +333,12 @@
                 datasets: [{
                     label: 'Pendapatan (Rp)',
                     data: totals,
-                    borderColor: '#0a84d4',
-                    backgroundColor: 'rgba(10, 132, 212, 0.1)',
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
-                    pointBackgroundColor: '#0a84d4',
+                    pointBackgroundColor: '#3B82F6',
                     pointRadius: 5
                 }]
             },

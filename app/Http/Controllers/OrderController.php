@@ -20,7 +20,12 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
-        return view('order.index', compact('orders'));
+        $serviceRequests = \App\Models\ServiceRequest::where('user_id', Auth::id())
+            ->with('product.seller')
+            ->latest()
+            ->get();
+
+        return view('order.index', compact('orders', 'serviceRequests'));
     }
 
     /**

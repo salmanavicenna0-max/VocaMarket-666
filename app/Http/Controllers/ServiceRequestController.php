@@ -17,7 +17,7 @@ class ServiceRequestController extends Controller
 
         $product = Product::findOrFail($productId);
 
-        if ($product->type !== 'jasa') {
+        if (!$product->isJasa()) {
             return back()->with('error', 'Produk ini bukan merupakan jasa.');
         }
 
@@ -77,17 +77,13 @@ class ServiceRequestController extends Controller
         // If we want a custom price, we might need to store `service_request_id` or `custom_price` in the cart.
 
         // Wait, since we are doing an MVP, let's update the ServiceRequest status to 'accepted' and redirect directly to checkout with this specific request.
-        // Let's create an Order directly.
-        
-        $serviceRequest->update(['status' => 'accepted']);
-        
-        // Since VocaMarket uses CheckoutController which reads from Cart, we might need a direct Checkout method for Services.
         // Let's just create an Order right here for simplicity.
         
         $order = \App\Models\Order::create([
-            'order_number' => 'ORD-' . strtoupper(uniqid()),
+            'code_order' => 'ORD-' . strtoupper(uniqid()),
             'user_id' => Auth::id(),
             'seller_id' => $serviceRequest->seller_id,
+            'subtotal' => $serviceRequest->quoted_price,
             'total' => $serviceRequest->quoted_price,
             'status' => 'menunggu_pembayaran',
         ]);
@@ -95,10 +91,13 @@ class ServiceRequestController extends Controller
         \App\Models\OrderItem::create([
             'order_id' => $order->id,
             'product_id' => $serviceRequest->product_id,
+            'name_snapshot' => $serviceRequest->product->name ?? 'Jasa',
+            'price_snapshot' => $serviceRequest->quoted_price,
             'quantity' => 1,
-            'price' => $serviceRequest->quoted_price,
             'subtotal' => $serviceRequest->quoted_price,
         ]);
+
+        $serviceRequest->update(['status' => 'accepted']);
 
         return redirect()->route('orders.show', $order->id)->with('success', 'Penawaran disetujui! Silakan selesaikan pembayaran Anda.');
     }
