@@ -32,9 +32,7 @@
                 <div class="lg:col-span-2">
                     <h4 class="font-bold text-gray-800 mb-4 uppercase text-xs tracking-wider">Metode Pembayaran</h4>
                     <div class="flex flex-wrap gap-2 mb-8">
-                        <div class="px-3 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-gray-700 hover:shadow-md hover:border-primary transition gap-1">
-                            <i class="ph-fill ph-truck text-sm text-gray-500"></i> COD
-                        </div>
+
                         <div class="px-3 h-8 bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-[10px] font-bold text-gray-700 hover:shadow-md hover:border-primary transition gap-1">
                             <i class="ph-fill ph-bank text-sm text-primary"></i> Transfer Bank / QRIS
                         </div>

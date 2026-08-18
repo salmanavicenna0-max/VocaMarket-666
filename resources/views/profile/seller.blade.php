@@ -85,7 +85,7 @@
                 @else
                     <i class="ph-fill ph-image text-4xl text-gray-400"></i>
                 @endif
-                @if($product->stock == 0)
+                @if($product->stock == 0 && !$product->isJasa())
                     <div class="absolute top-2 left-2 bg-gray-500 text-white text-xs font-bold px-2 py-1 rounded">Habis</div>
                 @endif
             </div>

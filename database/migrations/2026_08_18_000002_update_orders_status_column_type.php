@@ -12,7 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN status VARCHAR(50) NOT NULL DEFAULT 'menunggu_pembayaran'");
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('status', 50)->default('menunggu_pembayaran')->change();
+        });
     }
 
     /**

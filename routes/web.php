@@ -26,6 +26,8 @@ Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.a
 Route::patch('/cart/{id}/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy')->middleware('auth');
 
+Route::post('/service-request/{productId}', [\App\Http\Controllers\ServiceRequestController::class, 'store'])->name('service.request')->middleware('auth');
+
 // Checkout
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index')->middleware('auth');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('auth');
@@ -60,6 +62,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 Route::prefix('user')->middleware('auth')->group(function () {
     Route::get('/', [UserProfileController::class, 'index'])->name('user.profile');
     Route::get('/dashboard', [UserProfileController::class, 'submissions'])->name('user.submissions');
+    Route::post('/service-request/{id}/accept', [\App\Http\Controllers\ServiceRequestController::class, 'accept'])->name('service.request.accept');
     Route::post('/profile', [UserProfileController::class, 'updateProfile'])->name('user.profile.update');
     Route::post('/photo', [UserProfileController::class, 'updatePhoto'])->name('user.profile.photo');
     Route::post('/password', [UserProfileController::class, 'updatePassword'])->name('user.password.update');
@@ -74,6 +77,8 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
     Route::delete('/product/{id}', [SellerDashboardController::class, 'destroyProduct'])->name('product.destroy');
 
     Route::post('/order/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('order.status');
+
+    Route::post('/service-request/{id}/quote', [\App\Http\Controllers\ServiceRequestController::class, 'quote'])->name('service.request.quote');
 
     Route::post('/mark-orders-read', [SellerDashboardController::class, 'markOrdersRead'])->name('mark_orders_read');
     Route::post('/mark-reviews-read', [SellerDashboardController::class, 'markReviewsRead'])->name('mark_reviews_read');

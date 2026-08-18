@@ -94,4 +94,9 @@ class Product extends Model
 
         return asset('storage/products/default.png');
     }
+
+    public function isJasa()
+    {
+        return in_array($this->category, ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi']) || $this->type === 'jasa';
+    }
 }

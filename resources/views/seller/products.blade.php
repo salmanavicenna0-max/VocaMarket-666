@@ -36,7 +36,7 @@
                     <i class="ph-fill ph-storefront text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-sm leading-tight text-gray-900">Toko Saya</h3>
+                    <h3 class="font-bold text-sm leading-tight text-gray-900">Pusat Penjualan</h3>
                     <p class="text-gray-500 text-xs">{{ $user->name }}</p>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     <i class="ph-fill ph-storefront text-2xl text-primary"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg leading-tight">Toko Saya</h3>
+                    <h3 class="font-bold text-lg leading-tight">Pusat Penjualan</h3>
                     <p class="text-blue-100 text-xs">{{ $user->name }}</p>
                 </div>
             </div>
@@ -62,18 +62,18 @@
                 <ul class="flex flex-col" id="nav-tabs">
                     <li>
                         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-squares-four text-xl"></i> Dashboard
+                            Dashboard
                         </button>
                     </li>
                     <li>
                         <button onclick="switchTab('produk')" id="nav-produk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
-                            <i class="ph-fill ph-package text-xl"></i> Produk Saya
+                            Produk Saya
                         </button>
                     </li>
                     <li>
                         <button onclick="switchTab('pesanan')" id="nav-pesanan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
                             <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-shopping-bag text-xl"></i> Pesanan Masuk
+                                Pesanan Masuk
                             </div>
                             @if($pendingOrdersCount > 0)
                                 <span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pendingOrdersCount }}</span>
@@ -81,9 +81,19 @@
                         </button>
                     </li>
                     <li>
+                        <button onclick="switchTab('pengajuanjasa')" id="nav-pengajuanjasa" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
+                            <div class="flex items-center gap-3">
+                                Pengajuan Jasa
+                            </div>
+                            @if(isset($serviceRequests) && $serviceRequests->where('status', 'pending')->count() > 0)
+                                <span class="bg-yellow-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $serviceRequests->where('status', 'pending')->count() }}</span>
+                            @endif
+                        </button>
+                    </li>
+                    <li>
                         <button onclick="switchTab('ulasan')" id="nav-ulasan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
                             <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-star text-xl"></i> Ulasan Pembeli
+                                Ulasan Pembeli
                             </div>
                             @if($totalReviewsCount > 0)
                                 <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalReviewsCount }}</span>
@@ -94,25 +104,25 @@
                     <li>
                         <button onclick="switchTab('pengajuanproduk')" id="nav-pengajuanproduk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
                             <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-package text-xl text-yellow-500"></i> Pengajuan Produk Siswa
+                                Pengajuan Produk Siswa
                             </div>
                         </button>
                     </li>
                     @endif
                     <li>
                         <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-sliders text-xl"></i> Konfigurasi Toko
+                            Konfigurasi Toko
                         </button>
                     </li>
                     <li>
                         <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
+                            Status Toko
                         </button>
                     </li>
-                    @if(Auth::user()->seller_status === 'approved')
+                    @if(Auth::user()->seller_status === 'approved' || Auth::user()->isAdmin())
                     <li>
                         <button onclick="switchTab('bannerberanda')" id="nav-bannerberanda" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-image text-xl"></i> Banner Beranda
+                            Banner Beranda
                         </button>
                     </li>
                     @endif
@@ -143,45 +153,25 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Card 1 -->
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 flex flex-col justify-center transition hover:shadow-md hover:-translate-y-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-primary">
-                                    <i class="ph-fill ph-wallet text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-500 text-sm font-medium">Total Pendapatan</p>
+                            <p class="text-gray-500 text-sm font-medium mt-2">Total Pendapatan</p>
                             <h3 id="statPendapatan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
                         </div>
 
                         <!-- Card 2 -->
                         <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 flex flex-col justify-center transition hover:shadow-md hover:-translate-y-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-green-600">
-                                    <i class="ph-fill ph-shopping-bag text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-500 text-sm font-medium">Pesanan Selesai</p>
+                            <p class="text-gray-500 text-sm font-medium mt-2">Pesanan Selesai</p>
                             <h3 id="statPesanan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $completedOrders }}</h3>
                         </div>
 
                         <!-- Card 3 -->
                         <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200 flex flex-col justify-center transition hover:shadow-md hover:-translate-y-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-purple-600">
-                                    <i class="ph-fill ph-package text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-500 text-sm font-medium">Total Produk</p>
+                            <p class="text-gray-500 text-sm font-medium mt-2">Total Produk</p>
                             <h3 id="statProduk" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $totalProducts }}</h3>
                         </div>
 
                         <!-- Card 4 -->
                         <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 flex flex-col justify-center transition hover:shadow-md hover:-translate-y-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-orange-600">
-                                    <i class="ph-fill ph-eye text-xl"></i>
-                                </div>
-                            </div>
-                            <p class="text-gray-500 text-sm font-medium">Kunjungan Toko</p>
+                            <p class="text-gray-500 text-sm font-medium mt-2">Kunjungan Toko</p>
                             <h3 id="statKunjungan" class="text-2xl font-bold text-gray-900 mt-1 transition-all duration-300">{{ $visitorCount ?? 0 }}</h3>
                         </div>
                     </div>
@@ -299,7 +289,11 @@
                                                 <i class="ph-bold ph-x-circle mr-1"></i> Ditolak
                                             </span>
                                         @else
-                                            @if($product->stock > 0)
+                                            @if($product->isJasa())
+                                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center">
+                                                    <i class="ph-bold ph-handshake mr-1"></i> Aktif (Jasa)
+                                                </span>
+                                            @elseif($product->stock > 0)
                                                 <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full inline-flex items-center">
                                                     <i class="ph-bold ph-check-circle mr-1"></i> Aktif (Stok: {{ $product->stock }})
                                                 </span>
@@ -455,7 +449,64 @@
 </div>
             </div>
 
-            <!-- TAB: Ulasan -->
+            <!-- TAB: Pengajuan Jasa -->
+            <div id="tab-pengajuanjasa" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 rounded-t-xl flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        Pengajuan Jasa Baru
+                    </h2>
+                </div>
+                <div class="p-0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                    <th class="p-4 font-bold border-b border-gray-200">Tgl</th>
+                                    <th class="p-4 font-bold border-b border-gray-200">Pembeli</th>
+                                    <th class="p-4 font-bold border-b border-gray-200">Jasa</th>
+                                    <th class="p-4 font-bold border-b border-gray-200">Status</th>
+                                    <th class="p-4 font-bold border-b border-gray-200 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @if(isset($serviceRequests) && $serviceRequests->count() > 0)
+                                    @foreach($serviceRequests as $req)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="p-4 text-sm text-gray-600">{{ $req->created_at->format('d M Y') }}</td>
+                                        <td class="p-4 text-sm font-bold text-gray-900">{{ $req->user->name }}</td>
+                                        <td class="p-4 text-sm text-gray-600">{{ $req->product->name }}</td>
+                                        <td class="p-4">
+                                            @if($req->status === 'pending')
+                                                <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full border border-yellow-200">Menunggu Penawaran</span>
+                                            @elseif($req->status === 'quoted')
+                                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full border border-blue-200">Menunggu Pembeli</span>
+                                            @elseif($req->status === 'accepted' || $req->status === 'completed')
+                                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200">Diterima</span>
+                                            @else
+                                                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full border border-red-200">Ditolak</span>
+                                            @endif
+                                        </td>
+                                        <td class="p-4 text-center">
+                                            <button onclick="openQuoteModal({{ $req->id }}, '{{ addslashes($req->description) }}', '{{ $req->status }}', {{ $req->quoted_price ?? 0 }})" class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 font-bold text-xs rounded transition">
+                                                Lihat / Beri Harga
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="5" class="p-8 text-center text-gray-500">
+                                            <p class="font-bold text-gray-700 mb-1">Belum Ada Pengajuan Jasa</p>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Ulasan Pembeli -->
             <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200">
                     <h2 class="text-xl font-bold text-gray-900">Ulasan Pembeli</h2>
@@ -653,7 +704,7 @@
 
 
             <!-- TAB: Banner Beranda -->
-            @if(Auth::user()->seller_status === 'approved')
+            @if(Auth::user()->seller_status === 'approved' || Auth::user()->isAdmin())
             <div id="tab-bannerberanda" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -668,7 +719,7 @@
                 </div>
                 
                 <div class="p-6">
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="grid grid-cols-1 gap-6 max-h-[500px] overflow-y-auto pr-2" style="scrollbar-width: thin;">
                         @if(isset($homepageBanners) && $homepageBanners->count() > 0)
                             @foreach($homepageBanners as $banner)
                             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row">
@@ -794,14 +845,14 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
+                            <label id="lblHargaAdd" class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
                                 <input type="text" name="price" id="addProductPrice" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok (Opsional untuk Jasa)</label>
+                        <div id="containerStokAdd">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
                             <input type="number" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
                         </div>
                     </div>
@@ -900,15 +951,15 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
+                            <label id="lblHargaEdit" class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
                                 <input type="text" id="editProductPrice" name="price" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok <span class="text-red-500">*</span></label>
-                            <input type="number" id="editProductStock" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                        <div id="containerStokEdit">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Stok</label>
+                            <input type="number" id="editProductStock" name="stock" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
                         </div>
                     </div>
 
@@ -936,7 +987,7 @@
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
             <div>
-                <h3 class="font-bold text-lg text-gray-900">Status Transaksi (COD)</h3>
+                <h3 class="font-bold text-lg text-gray-900">Status Transaksi</h3>
                 <p class="text-xs text-gray-500">Metode: <span class="font-bold text-primary">Bertemu Langsung</span></p>
             </div>
             <button onclick="closeTrackingModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
@@ -1149,6 +1200,19 @@
         // Reset sub kategori
         subKategoriSelect.innerHTML = '<option value="" disabled selected>Pilih Sub Kategori</option>';
 
+        // Logic Jasa
+        const isJasa = ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'].includes(selectedKategori);
+        const lblHargaEdit = document.getElementById('lblHargaEdit');
+        const containerStokEdit = document.getElementById('containerStokEdit');
+
+        if (isJasa) {
+            containerStokEdit.classList.add('hidden');
+            lblHargaEdit.innerHTML = 'Harga Mulai Dari (Rp) <span class="text-red-500">*</span>';
+        } else {
+            containerStokEdit.classList.remove('hidden');
+            lblHargaEdit.innerHTML = 'Harga (Rp) <span class="text-red-500">*</span>';
+        }
+
         if (selectedKategori && kategoriData[selectedKategori]) {
             // Enable dropdown
             subKategoriSelect.disabled = false;
@@ -1201,6 +1265,19 @@
 
         // Reset sub kategori
         subKategoriSelect.innerHTML = '<option value="" disabled selected>Pilih Sub Kategori</option>';
+
+        // Logic Jasa
+        const isJasa = ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'].includes(selectedKategori);
+        const lblHargaAdd = document.getElementById('lblHargaAdd');
+        const containerStokAdd = document.getElementById('containerStokAdd');
+
+        if (isJasa) {
+            containerStokAdd.classList.add('hidden');
+            lblHargaAdd.innerHTML = 'Harga Mulai Dari (Rp) <span class="text-red-500">*</span>';
+        } else {
+            containerStokAdd.classList.remove('hidden');
+            lblHargaAdd.innerHTML = 'Harga (Rp) <span class="text-red-500">*</span>';
+        }
 
         if (selectedKategori && kategoriData[selectedKategori]) {
             // Enable dropdown
@@ -1783,6 +1860,47 @@
                 }
             }
         });
+    }
+</script>
+
+<!-- Modal Beri Penawaran (Quote) -->
+<div id="quoteModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h3 class="font-bold text-lg text-gray-900">Beri Penawaran Jasa</h3>
+            <button type="button" onclick="closeQuoteModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">X</button>
+        </div>
+        <form id="quoteForm" method="POST" class="p-6">
+            @csrf
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi Permintaan Pembeli</label>
+                <div id="quoteDesc" class="p-3 bg-gray-50 rounded-xl text-sm text-gray-700 border border-gray-200"></div>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Harga Penawaran (Rp)</label>
+                <input type="number" name="quoted_price" id="quoted_price" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition" placeholder="Contoh: 150000">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2">Catatan untuk Pembeli (Opsional)</label>
+                <textarea name="seller_notes" rows="3" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:border-primary transition" placeholder="Misal: Harga ini sudah termasuk revisi 2 kali."></textarea>
+            </div>
+            <div class="flex gap-3 justify-end mt-6">
+                <button type="button" onclick="closeQuoteModal()" class="px-5 py-2.5 text-gray-600 font-bold hover:bg-gray-100 rounded-xl transition">Batal</button>
+                <button type="submit" class="px-5 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md">Kirim Penawaran</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openQuoteModal(id, desc, status, price) {
+        document.getElementById('quoteModal').classList.remove('hidden');
+        document.getElementById('quoteDesc').innerText = desc;
+        document.getElementById('quoted_price').value = price > 0 ? price : '';
+        document.getElementById('quoteForm').action = '/seller/service-request/' + id + '/quote';
+    }
+    function closeQuoteModal() {
+        document.getElementById('quoteModal').classList.add('hidden');
     }
 </script>
 @endsection

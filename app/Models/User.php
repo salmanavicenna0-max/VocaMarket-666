@@ -95,7 +95,7 @@ class User extends Authenticatable
 
     public function isSeller(): bool
     {
-        return true;
+        return $this->seller_status === 'approved' || $this->verification_seller == 1;
     }
 
     public function isSiswa(): bool

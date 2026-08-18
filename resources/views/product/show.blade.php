@@ -101,6 +101,7 @@
             <!-- Detail Spesifikasi -->
             <h2 class="text-lg font-bold text-gray-900 mb-3">Detail Produk</h2>
             <div class="flex flex-col gap-3 text-sm text-gray-600 mb-6">
+                @if(!$product->isJasa())
                 <div class="flex items-center">
                     <span class="w-32 text-gray-500">Kondisi</span>
                     <span class="font-medium text-gray-900 bg-gray-100 px-2 py-0.5 rounded-md">Baru</span>
@@ -113,6 +114,7 @@
                     <span class="w-32 text-gray-500">Stok</span>
                     <span class="font-medium text-gray-900">{{ number_format($product->stock, 0, ',', '.') }}</span>
                 </div>
+                @endif
                 <div class="flex items-center">
                     <span class="w-32 text-gray-500">Etalase</span>
                     <a href="#" class="font-medium text-primary hover:underline">{{ $product->category }}</a>
@@ -151,6 +153,23 @@
 
         <!-- RIGHT COLUMN: Checkout Card -->
         <div class="md:col-span-3">
+            @if($product->isJasa())
+            <div class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-5">
+                    <span class="text-gray-500 text-sm">Harga Mulai Dari</span>
+                    <span class="font-bold text-gray-900 text-lg">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button type="button" onclick="openServiceModal()" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
+                        Ajukan Pemesanan Jasa
+                    </button>
+                </div>
+                <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                    <span class="flex items-center gap-1"><i class="ph-bold ph-shield-check text-green-500 text-sm"></i> Aman & Terpercaya</span>
+                    <span class="flex items-center gap-1"><i class="ph-bold ph-chat-circle text-blue-500 text-sm"></i> Bisa Diskusi</span>
+                </div>
+            </div>
+            @else
             <form action="{{ route('cart.add', $product->id) }}" method="POST" class="bg-white rounded-2xl shadow-lg shadow-gray-100/50 border border-gray-200 p-5">
                 @csrf
                 <input type="hidden" name="quantity" value="1">
@@ -178,6 +197,7 @@
                     </button>
                 </div>
             </form>
+            @endif
         </div>
 
     </div>
@@ -210,4 +230,34 @@ function changeMainMedia(mediaUrl, isVideo, thumbEl) {
     }
 }
 </script>
+@endsection
+
+@section('scripts')
+    @if($product->isJasa())
+    <!-- Modal Ajukan Jasa -->
+    <div id="serviceModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <h3 class="font-bold text-lg text-gray-900">Ajukan Pemesanan Jasa</h3>
+                <button type="button" onclick="closeServiceModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">X</button>
+            </div>
+            <form action="{{ url('/service-request/' . $product->id) }}" method="POST" class="p-6">
+                @csrf
+                <p class="text-sm text-gray-600 mb-4">Deskripsikan spesifikasi, ukuran, tema, atau permintaan khusus Anda untuk jasa <b>{{ $product->name }}</b> secara detail agar penjual dapat memberikan penawaran harga yang akurat.</p>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi Kebutuhan</label>
+                    <textarea name="description" rows="5" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" placeholder="Contoh: Saya membutuhkan jasa ini untuk..."></textarea>
+                </div>
+                <div class="flex gap-3 justify-end mt-6">
+                    <button type="button" onclick="closeServiceModal()" class="px-5 py-2.5 text-gray-600 font-bold hover:bg-gray-100 rounded-xl transition">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md">Kirim Pengajuan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function openServiceModal() { document.getElementById('serviceModal').classList.remove('hidden'); }
+        function closeServiceModal() { document.getElementById('serviceModal').classList.add('hidden'); }
+    </script>
+    @endif
 @endsection

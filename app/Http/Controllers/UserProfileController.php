@@ -25,7 +25,10 @@ class UserProfileController extends Controller
         // Ambil ulasan yang pernah dibuat
         $reviews = Review::where('user_id', $user->id)->with('product')->latest()->get();
 
-        return view('profile.user', compact('user', 'profile', 'orders', 'reviews'));
+        // Ambil pengajuan jasa
+        $serviceRequests = \App\Models\ServiceRequest::where('user_id', $user->id)->with('product.seller')->latest()->get();
+
+        return view('profile.user', compact('user', 'profile', 'orders', 'reviews', 'serviceRequests'));
     }
 
     /**

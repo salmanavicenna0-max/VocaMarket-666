@@ -209,7 +209,13 @@
                             {{ $product->name }}
                         </h3>
                         <div class="mt-2 flex flex-col justify-end mt-auto gap-1">
-                            <span class="text-primary font-bold text-sm md:text-base">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                            <span class="text-primary font-bold text-sm md:text-base">
+                                @if($product->isJasa())
+                                    Mulai Rp{{ number_format($product->price, 0, ',', '.') }}
+                                @else
+                                    Rp{{ number_format($product->price, 0, ',', '.') }}
+                                @endif
+                            </span>
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] text-gray-500 flex items-center gap-1">
                                     <i class="ph-fill ph-storefront"></i> 

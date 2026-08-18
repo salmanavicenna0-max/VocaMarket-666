@@ -41,8 +41,9 @@ class SellerDashboardController extends Controller
         $visitorCount = $orders->count() > 0 ? $orders->sum('total') / 1000 : 0; // Estimated visitors based on order count
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
         $homepageBanners = \App\Models\HomepageBanner::where('user_id', $user->id)->get();
+        $serviceRequests = \App\Models\ServiceRequest::where('seller_id', $user->id)->with(['product', 'user'])->latest()->get();
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'serviceRequests'));
     }
 
     public function storeProduct(Request $request)
@@ -58,7 +59,7 @@ class SellerDashboardController extends Controller
             'sub_category' => 'nullable|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
             'images' => 'nullable|array|max:6',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,ogg,m4v|max:51200'
         ]);
@@ -72,7 +73,7 @@ class SellerDashboardController extends Controller
             'type' => $request->sub_category,
             'description' => $request->description,
             'price' => $request->price,
-            'stock' => $request->stock,
+            'stock' => $request->stock ?? 0,
             'is_active' => $isAdmin ? true : false,
             'approval_status' => $isAdmin ? 'approved' : 'pending',
         ]);
@@ -112,7 +113,7 @@ class SellerDashboardController extends Controller
             'sub_category' => 'nullable|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
@@ -122,7 +123,7 @@ class SellerDashboardController extends Controller
             'type' => $request->sub_category,
             'description' => $request->description,
             'price' => $request->price,
-            'stock' => $request->stock,
+            'stock' => $request->stock ?? 0,
         ];
 
         if ($request->has('is_active')) {

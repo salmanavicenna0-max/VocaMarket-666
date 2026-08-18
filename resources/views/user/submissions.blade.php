@@ -194,7 +194,7 @@
                             </td>
                             <td class="p-4 text-center">
                                 <span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded">
-                                    {{ $product->stock }}
+                                    {{ $product->isJasa() ? '-' : $product->stock }}
                                 </span>
                             </td>
                             <td class="p-4 text-center">
@@ -219,9 +219,7 @@
                                 <i class="ph-fill ph-package text-4xl text-gray-300 mb-2 block"></i>
                                 <p class="font-bold text-gray-700">Belum Ada Pengajuan Produk / Jasa</p>
                                 <p class="text-xs text-gray-400 mt-1 mb-4">Kamu belum pernah mengajukan produk atau jasa ke toko VocaMarket.</p>
-                                <button onclick="openAddModal()" class="px-5 py-2.5 bg-primary text-white font-bold text-xs rounded-xl hover:bg-blue-700 transition shadow">
-                                    + Ajukan Produk Pertama Kamu
-                                </button>
+
                             </td>
                         </tr>
                         @endforelse
@@ -281,15 +279,15 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Harga (Rp) <span class="text-red-500">*</span></label>
+                    <label id="lblHargaSubmission" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Harga (Rp) <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <span class="absolute left-4 top-2.5 text-gray-500 text-sm font-bold">Rp</span>
                         <input type="text" name="price" oninput="formatRupiah(this)" placeholder="0" class="w-full border border-gray-300 rounded-xl pl-12 pr-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition" required>
                     </div>
                 </div>
-                <div>
+                <div id="containerStokSubmission">
                     <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Stok Unit <span class="text-red-500">*</span></label>
-                    <input type="number" name="stock" value="1" min="0" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition" required>
+                    <input type="number" name="stock" value="1" min="0" placeholder="Contoh: 10" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition">
                 </div>
             </div>
 
@@ -411,6 +409,19 @@
         const cat = document.getElementById('katUtama').value;
         const sub = document.getElementById('subKat');
         sub.innerHTML = '<option value="" disabled selected>Pilih Sub-Kategori</option>';
+
+        // Logic Jasa
+        const isJasa = ['DKV & Animasi', 'Pemasaran', 'PPLG', 'Akuntansi'].includes(cat);
+        const lblHargaSubmission = document.getElementById('lblHargaSubmission');
+        const containerStokSubmission = document.getElementById('containerStokSubmission');
+
+        if (isJasa) {
+            containerStokSubmission.classList.add('hidden');
+            lblHargaSubmission.innerHTML = 'Harga Mulai Dari (Rp) <span class="text-red-500">*</span>';
+        } else {
+            containerStokSubmission.classList.remove('hidden');
+            lblHargaSubmission.innerHTML = 'Harga (Rp) <span class="text-red-500">*</span>';
+        }
 
         if (subCategories[cat]) {
             sub.disabled = false;

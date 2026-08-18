@@ -89,11 +89,7 @@
             </h3>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <label class="payment-method-label border border-gray-200 hover:border-primary p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative" onclick="selectPayment(this)">
-                    <input type="radio" name="payment" value="cod" class="absolute top-2 right-2">
-                    <i class="payment-icon ph-fill ph-truck text-3xl text-gray-500"></i>
-                    <span class="payment-text text-xs font-bold text-center text-gray-500">COD</span>
-                </label>
+
                  <label class="payment-method-label border border-primary bg-blue-50 p-3 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer transition relative" onclick="selectPayment(this)">
                     <input type="radio" name="payment" value="transfer" class="absolute top-2 right-2" checked>
                     <i class="payment-icon ph-fill ph-bank text-3xl text-primary"></i>
