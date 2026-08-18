@@ -41,18 +41,7 @@ class SellerDashboardController extends Controller
         $visitorCount = $orders->count() > 0 ? $orders->sum('total') / 1000 : 0; // Estimated visitors based on order count
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
 
-        $pendingProducts = \App\Models\Product::with(['seller', 'images'])
-            ->where('approval_status', 'pending')
-            ->latest()
-            ->get();
-
-        $historyProducts = \App\Models\Product::with(['seller', 'images'])
-            ->whereIn('approval_status', ['approved', 'rejected'])
-            ->latest()
-            ->take(20)
-            ->get();
-
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'totalReviewsCount', 'pendingProducts', 'historyProducts'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount'));
     }
 
     public function storeProduct(Request $request)

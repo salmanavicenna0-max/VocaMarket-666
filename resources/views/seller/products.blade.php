@@ -80,9 +80,6 @@
                             <div class="flex items-center gap-3">
                                 <i class="ph-fill ph-package text-xl text-yellow-500"></i> Pengajuan Produk Siswa
                             </div>
-                            @if(isset($pendingProducts) && $pendingProducts->count() > 0)
-                                <span class="bg-yellow-500 text-gray-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingProducts->count() }}</span>
-                            @endif
                         </button>
                     </li>
                     @endif
@@ -560,7 +557,7 @@
                         <p class="text-xs text-gray-500 mt-1">Tinjau, setujui, atau tolak pengajuan titip barang/jasa dari siswa sebelum diterbitkan ke toko publik.</p>
                     </div>
                     <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-200">
-                        {{ isset($pendingProducts) ? $pendingProducts->count() : 0 }} Pengajuan Pending
+                        0 Pengajuan Pending
                     </span>
                 </div>
 
