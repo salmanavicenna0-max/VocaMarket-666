@@ -36,6 +36,11 @@ class SellerDashboardController extends Controller
 
     public function storeProduct(Request $request)
     {
+        if ($request->has('price')) {
+            $cleanPrice = (int) str_replace(['.', ','], '', $request->input('price'));
+            $request->merge(['price' => $cleanPrice]);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
@@ -43,7 +48,8 @@ class SellerDashboardController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'images' => 'nullable|array|max:6',
+            'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,ogg,m4v|max:51200'
         ]);
 
         $product = Product::create([
@@ -59,6 +65,7 @@ class SellerDashboardController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $file) {
+                if ($index >= 6) break; // Limit to max 6 files
                 $path = $file->store('products', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -75,6 +82,11 @@ class SellerDashboardController extends Controller
     public function updateProduct(Request $request, $id)
     {
         $product = Product::where('user_id', Auth::id())->findOrFail($id);
+
+        if ($request->has('price')) {
+            $cleanPrice = (int) str_replace(['.', ','], '', $request->input('price'));
+            $request->merge(['price' => $cleanPrice]);
+        }
 
         $request->validate([
             'name' => 'required|string|max:255',

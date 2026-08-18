@@ -644,7 +644,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
-                                <input type="number" name="price" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                                <input type="text" name="price" id="addProductPrice" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
                         <div>
@@ -654,17 +654,17 @@
                     </div>
                 </div>
 
-                <!-- Foto Produk -->
+                <!-- Foto & Video Produk -->
                 <div class="space-y-4 pt-2">
-                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto Produk</h4>
+                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto & Video Produk (Maks. 6 File)</h4>
                     
                     <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition group cursor-pointer bg-gray-50 hover:bg-blue-50/50" onclick="document.getElementById('imageUpload').click()">
                         <i class="ph-bold ph-upload-simple text-3xl text-gray-400 group-hover:text-primary transition mb-2"></i>
-                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto ke sini</p>
-                        <p class="text-xs text-gray-500 mt-1">Maks. 3 foto (JPG, PNG). Ukuran maks 2MB per foto.</p>
-                        <input type="file" name="images[]" id="imageUpload" onchange="previewImages(event)" multiple accept="image/*" class="hidden">
+                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto/video ke sini</p>
+                        <p class="text-xs text-gray-500 mt-1">Maks. 6 file (Foto JPG, PNG, WEBP & Video MP4, WEBM). Maks 50MB per file.</p>
+                        <input type="file" name="images[]" id="imageUpload" onchange="previewImages(event)" multiple accept="image/*,video/*" class="hidden">
                     </div>
-                    <!-- Image Previews -->
+                    <!-- Media Previews -->
                     <div id="imagePreviewContainer" class="flex gap-4 mt-4 hidden overflow-x-auto pb-2"></div>
                 </div>
 
@@ -749,7 +749,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
-                                <input type="number" id="editProductPrice" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
+                                <input type="text" id="editProductPrice" name="price" oninput="formatRupiahInput(this)" placeholder="0" class="w-full border border-gray-300 rounded-lg pl-12 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition" required>
                             </div>
                         </div>
                         <div>
@@ -1143,7 +1143,16 @@
         });
     }
 
-    // 3. Image Upload Preview
+    function formatRupiahInput(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value) {
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        } else {
+            input.value = '';
+        }
+    }
+
+    // 3. Media Upload Preview (Max 6 Photos/Videos)
     function previewImages(event) {
         const files = event.target.files;
         const container = document.getElementById('imagePreviewContainer');
@@ -1152,23 +1161,31 @@
             container.classList.remove('hidden');
             container.innerHTML = ''; // clear old previews
             
-            // Limit to 3 files
-            const maxFiles = Math.min(files.length, 3);
+            // Limit to max 6 files
+            const maxFiles = Math.min(files.length, 6);
             
             for (let i = 0; i < maxFiles; i++) {
+                const file = files[i];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const imgDiv = document.createElement('div');
-                    imgDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group";
-                    imgDiv.innerHTML = `
-                        <img src="${e.target.result}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition cursor-pointer">
-                            <i class="ph-bold ph-trash text-white"></i>
-                        </div>
-                    `;
-                    container.appendChild(imgDiv);
+                    const mediaDiv = document.createElement('div');
+                    mediaDiv.className = "relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 group bg-black/5";
+                    
+                    if (file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i)) {
+                        mediaDiv.innerHTML = `
+                            <video src="${e.target.result}" class="w-full h-full object-cover"></video>
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                                <i class="ph-fill ph-video-camera text-white text-xl"></i>
+                            </div>
+                        `;
+                    } else {
+                        mediaDiv.innerHTML = `
+                            <img src="${e.target.result}" class="w-full h-full object-cover">
+                        `;
+                    }
+                    container.appendChild(mediaDiv);
                 }
-                reader.readAsDataURL(files[i]);
+                reader.readAsDataURL(file);
             }
         }
     }
