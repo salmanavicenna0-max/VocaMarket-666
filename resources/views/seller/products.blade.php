@@ -27,12 +27,28 @@
         </ol>
     </nav>
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
         
+        <!-- Mobile Sidebar Toggle -->
+        <div class="lg:hidden bg-white p-4 border border-gray-200 rounded-xl flex justify-between items-center shadow-sm mb-2 sticky top-0 z-20">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center shrink-0">
+                    <i class="ph-fill ph-storefront text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm leading-tight text-gray-900">Toko Saya</h3>
+                    <p class="text-gray-500 text-xs">{{ $user->name }}</p>
+                </div>
+            </div>
+            <button id="seller-sidebar-toggle" class="p-2 text-gray-600 hover:text-primary transition bg-gray-50 rounded-lg">
+                <i class="ph-bold ph-list text-2xl"></i>
+            </button>
+        </div>
+
         <!-- Sidebar Penjual -->
-        <div class="lg:col-span-1 flex flex-col gap-4">
+        <div id="seller-sidebar" class="lg:col-span-1 flex-col gap-4 hidden lg:flex absolute lg:relative w-full z-10 bg-white lg:bg-transparent rounded-xl shadow-lg lg:shadow-none p-4 lg:p-0 border border-gray-200 lg:border-none top-[80px] lg:top-0">
             
-            <div class="bg-primary rounded-xl shadow-sm p-5 text-white flex items-center gap-4">
+            <div class="bg-primary rounded-xl shadow-sm p-5 text-white hidden lg:flex items-center gap-4">
                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0">
                     <i class="ph-fill ph-storefront text-2xl text-primary"></i>
                 </div>
@@ -84,6 +100,13 @@
                             <i class="ph-fill ph-check-circle text-xl"></i> Status Toko
                         </button>
                     </li>
+                    @if(Auth::user()->seller_status === 'approved')
+                    <li>
+                        <button onclick="switchTab('bannerberanda')" id="nav-bannerberanda" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-image text-xl"></i> Banner Beranda
+                        </button>
+                    </li>
+                    @endif
                     <li class="border-t border-gray-100">
                         <a href="{{ url('/user') }}" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 transition border-l-4 border-transparent">
                             <i class="ph-bold ph-arrow-left text-xl"></i> Kembali ke Pembeli
@@ -571,6 +594,75 @@
                 </div>
             </div>
 
+            <!-- TAB: Banner Beranda -->
+            @if(Auth::user()->seller_status === 'approved')
+            <div id="tab-bannerberanda" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-image text-primary"></i> Pengaturan Banner Beranda (Homepage)
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Kelola banner promosi toko Anda. Resolusi yang direkomendasikan adalah 1200x450 pixel (Landscape).</p>
+                    </div>
+                    <button onclick="openBannerModal()" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2 shrink-0">
+                        <i class="ph-bold ph-plus"></i> Tambah Banner Baru
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-1 gap-6">
+                        @if(isset($homepageBanners) && $homepageBanners->count() > 0)
+                            @foreach($homepageBanners as $banner)
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row">
+                                <div class="w-full md:w-1/3 bg-gray-100">
+                                    <img src="{{ str_starts_with($banner->image_path, 'images/') ? asset($banner->image_path) : asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title }}" class="w-full h-48 object-cover">
+                                </div>
+                                <div class="p-6 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            @if($banner->badge_text)
+                                                <span class="bg-accent text-gray-900 text-xs font-bold px-2.5 py-1 rounded-full uppercase">{{ $banner->badge_text }}</span>
+                                            @endif
+                                            @if($banner->is_active)
+                                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200">Aktif</span>
+                                            @endif
+                                        </div>
+                                        <h3 class="text-xl font-bold text-gray-900 mb-1">{{ $banner->title ?? '(Tanpa Judul)' }}</h3>
+                                        <p class="text-gray-600 text-sm mb-4">{{ $banner->subtitle }}</p>
+                                        <div class="flex items-center gap-2 text-sm">
+                                            <span class="text-gray-500 font-medium">Tombol:</span>
+                                            <span class="font-bold text-primary">{{ $banner->button_text ?? '-' }}</span>
+                                            <span class="text-gray-400">&rarr;</span>
+                                            <a href="{{ $banner->button_link }}" target="_blank" class="text-blue-500 hover:underline">{{ $banner->button_link ?? '-' }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                                        <button onclick='editBanner(@json($banner))' class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-50 transition flex items-center gap-2">
+                                            <i class="ph-bold ph-pencil-simple"></i> Edit
+                                        </button>
+                                        <form action="{{ route('seller.homepage_banner.destroy', $banner->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus banner ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-bold hover:bg-red-100 transition flex items-center gap-2">
+                                                <i class="ph-bold ph-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        @else
+                            <div class="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center flex flex-col items-center">
+                                <i class="ph-fill ph-images text-6xl text-gray-300 mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-700 mb-2">Belum Ada Banner</h3>
+                                <p class="text-gray-500 max-w-md">Anda belum mengunggah banner promosi. Klik tombol "Tambah Banner Baru" untuk mulai menambahkan.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
+
         </div>
     </div>
 </div>
@@ -852,6 +944,63 @@
     </div>
 </div>
 
+<!-- Modal Banner Form -->
+<div id="bannerModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 id="bannerModalTitle" class="font-bold text-lg text-gray-900">Tambah Banner Baru</h3>
+            <button onclick="closeBannerModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <form id="bannerForm" action="{{ route('seller.homepage_banner.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
+                @csrf
+                <input type="hidden" name="banner_id" id="banner_id">
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1.5">Gambar Banner</label>
+                    <input type="file" name="image" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 transition cursor-pointer">
+                    <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah gambar (untuk Edit).</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Teks Badge</label>
+                        <input type="text" name="badge_text" id="badge_text" placeholder="Promo Terbatas" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Judul Utama</label>
+                        <input type="text" name="title" id="title" placeholder="Koleksi Seragam" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1.5">Subjudul / Deskripsi</label>
+                    <input type="text" name="subtitle" id="subtitle" placeholder="Deskripsi singkat..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Teks Tombol</label>
+                        <input type="text" name="button_text" id="button_text" value="Lihat Toko" placeholder="Lihat Toko" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Link Tujuan</label>
+                        <input type="url" name="button_link" id="button_link" placeholder="https://..." value="{{ route('seller.profile', Auth::id()) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                    <button type="button" onclick="closeBannerModal()" class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm">Simpan Banner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Toast Notification -->
 <div id="toastSuccess" class="fixed bottom-6 right-6 bg-white border-l-4 border-green-500 shadow-lg rounded-lg p-4 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[200]">
     <div id="toastIconContainer" class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
@@ -1075,6 +1224,15 @@
         if (activeNav) {
             activeNav.classList.remove('text-gray-600', 'border-transparent');
             activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        }
+
+        // Hide sidebar on mobile after clicking a tab
+        if (window.innerWidth < 1024) {
+            const sidebar = document.getElementById('seller-sidebar');
+            if (sidebar) {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex');
+            }
         }
         
         if (tabId === 'pesanan') {
@@ -1431,6 +1589,22 @@
         }
     }
 
+    function previewHomepageBanner(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('homepage-banner-preview');
+                const placeholder = document.getElementById('homepage-banner-placeholder');
+                
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if(placeholder) placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         if (window.location.hash) {
             const tabId = window.location.hash.substring(1);
@@ -1439,5 +1613,61 @@
             }
         }
     });
+
+    // Mobile Sidebar Toggle
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('seller-sidebar-toggle');
+        const sidebar = document.getElementById('seller-sidebar');
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('flex');
+            });
+        }
+    });
+
+    const bannerModal = document.getElementById('bannerModal');
+    const bannerModalInner = bannerModal ? bannerModal.querySelector('div') : null;
+
+    function openBannerModal() {
+        document.getElementById('bannerForm').reset();
+        document.getElementById('banner_id').value = '';
+        document.getElementById('bannerModalTitle').innerText = 'Tambah Banner Baru';
+        // Reset default link
+        document.getElementById('button_link').value = '{{ route('seller.profile', Auth::id()) }}';
+        document.getElementById('button_text').value = 'Lihat Toko';
+        
+        bannerModal.classList.remove('hidden');
+        setTimeout(() => {
+            bannerModal.classList.remove('opacity-0');
+            bannerModalInner.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function editBanner(banner) {
+        document.getElementById('bannerForm').reset();
+        document.getElementById('banner_id').value = banner.id;
+        document.getElementById('badge_text').value = banner.badge_text || '';
+        document.getElementById('title').value = banner.title || '';
+        document.getElementById('subtitle').value = banner.subtitle || '';
+        document.getElementById('button_text').value = banner.button_text || '';
+        document.getElementById('button_link').value = banner.button_link || '';
+        
+        document.getElementById('bannerModalTitle').innerText = 'Edit Banner';
+        
+        bannerModal.classList.remove('hidden');
+        setTimeout(() => {
+            bannerModal.classList.remove('opacity-0');
+            bannerModalInner.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeBannerModal() {
+        bannerModal.classList.add('opacity-0');
+        bannerModalInner.classList.add('scale-95');
+        setTimeout(() => {
+            bannerModal.classList.add('hidden');
+        }, 300);
+    }
 </script>
 @endsection
