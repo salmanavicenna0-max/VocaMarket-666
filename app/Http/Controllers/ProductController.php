@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['images', 'reviews', 'jurusans', 'seller.profile'])->findOrFail($id);
+        $product = Product::with(['images', 'reviews', 'seller.profile'])->findOrFail($id);
 
         return view('product.show', compact('product'));
     }

@@ -36,7 +36,7 @@ class AdminController extends Controller
         $pendingPayments = Payment::where('status', Payment::STATUS_PENDING)->count();
         $pendingReviews = \App\Models\Review::where('status', \App\Models\Review::STATUS_PENDING)->count();
 
-        $recentOrders = Order::with(['user', 'seller.department', 'items.products'])
+        $recentOrders = Order::with(['user', 'seller', 'items.product'])
             ->latest()
             ->take(5)
             ->get();

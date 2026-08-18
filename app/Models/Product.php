@@ -60,10 +60,7 @@ class Product extends Model
             ?? $this->images()->orderBy('sort_order')->first();
     }
 
-    public function jurusans(): BelongsToMany
-    {
-        return $this->belongsToMany(Jurusan::class, 'product_jurusan');
-    }
+
 
     public function reviews(): HasMany
     {
