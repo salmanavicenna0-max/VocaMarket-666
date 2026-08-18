@@ -7,6 +7,7 @@
     <title>Admin Dashboard - Voca Market</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -178,6 +179,13 @@
             <!-- Middle Grid -->
             <div class="grid grid-cols-3 gap-6 mb-6">
                 <!-- Left Chart -->
+                <canvas id="multiAxisChart" height="100"></canvas>
+
+
+
+
+
+
                 <div class="col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
                     <div class="flex justify-between items-start mb-6">
                         <div>
@@ -430,6 +438,68 @@
             </div>
 
         </div>
+        <script>
+            const ctx = document.getElementById('multiAxisChart').getContext('2d');
+
+            // Ganti Utils.months dengan array string manual
+            const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'];
+
+            const config = {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Penjualan (Juta Rp)', // Dataset 1
+                        data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: 'rgb(255, 99, 132)', // Merah
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)', // Merah transparan (pengganti Utils.transparentize)
+                        yAxisID: 'y', // Terikat ke sumbu KIRI
+                    },
+                    {
+                    label: 'Jumlah Pengunjung (Orang)', // Dataset 2
+                    data: [120, 190, 150, 250, 220, 300, 280],
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Grafik Transaksi Bulanan (Multi-Axis)'
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Nilai Penjualan' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: { display: true, text: 'Jumlah Pengunjung' },
+                    grid: {
+                        drawOnChartArea: false, // Mencegah garis grid bertumpuk dan berantakan
+                    },
+                },
+            }
+        },
+    };
+
+        // Render chart
+            new Chart(ctx, config);
+        </script>
     </main>
 
 </body>

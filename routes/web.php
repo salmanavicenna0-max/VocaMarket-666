@@ -87,7 +87,7 @@ Route::get('/chat', function () {
 
 // Admin
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [SellerDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');

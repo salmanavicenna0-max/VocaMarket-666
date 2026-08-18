@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Jurusan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -29,7 +30,7 @@ class UserController extends Controller
             $query->where('seller_status', 'pending');
         }
 
-        $users = $query->latest()->get();
+        $users = $query->latest()->paginate(15)->withQueryString();
 
         return view('Admin.users.index', compact('users'));
     }
@@ -49,7 +50,6 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nis' => 'required|string|max:12|unique:users,nis',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,siswa,pembeli',
@@ -59,6 +59,8 @@ class UserController extends Controller
 
         $validated['email_verification'] = $request->input('email_verification', 'verified');
         $validated['verification_seller'] = $request->has('verification_seller') ? 1 : 0;
+        $validated['password'] = Hash::make($validated['password']);
+                        User::create($validated);
 
         User::create($validated);
 
@@ -88,15 +90,13 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nis' => 'required|string|max:12|unique:users,nis,' . $user->id,
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,siswa,pembeli',
             'verification_seller' => 'nullable|boolean',
         ]);
 
         if ($request->filled('password')) {
-            $request->validate(['password' => 'string|min:6']);
-            $validated['password'] = $request->password;
+            $validated['password'] = Hash::make($request->password);
         }
 
         $validated['verification_seller'] = $request->has('verification_seller') ? 1 : 0;

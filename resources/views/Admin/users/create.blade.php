@@ -176,7 +176,7 @@
                             <!-- NIS / Nomor Induk -->
                             <div class="col-span-2 md:col-span-1">
                                 <label for="nis" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    NIS / ID Pengguna <span class="text-red-500">*</span>
+                                    NIS / ID Pengguna
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
@@ -190,7 +190,6 @@
                                         maxlength="12"
                                         placeholder="Contoh: 123456789012"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-
                                     >
                                 </div>
                             </div>
