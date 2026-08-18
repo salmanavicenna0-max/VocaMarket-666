@@ -29,8 +29,10 @@
             
             <!-- Info -->
             <div class="flex-grow text-center md:text-left pt-4 md:pt-0">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ $seller->profile->nama_toko ?? ('Toko ' . $seller->name) }}</h1>
-                <p class="text-gray-500 mt-1 flex items-center justify-center md:justify-start gap-1">
+                <h1 class="text-2xl md:text-3xl font-bold transition-colors duration-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" style="color: {{ $seller->profile->warna_judul_toko ?? '#111827' }};">
+                    {{ $seller->profile->nama_toko ?? ('Toko ' . $seller->name) }}
+                </h1>
+                <p class="text-gray-600 mt-1 flex items-center justify-center md:justify-start gap-1 text-sm font-medium">
                     <i class="ph-fill ph-graduation-cap text-primary"></i> Siswa / Penjual Aktif
                 </p>
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">

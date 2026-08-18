@@ -494,6 +494,16 @@
                         <p class="text-xs text-gray-500 mt-1">Nama ini akan menjadi judul utama di halaman profil toko Anda.</p>
                     </div>
 
+                    <!-- Color Picker Warna Judul Toko -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Warna Teks Judul Toko</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" id="warna_judul_toko" name="warna_judul_toko" value="{{ old('warna_judul_toko', $profile->warna_judul_toko ?? '#111827') }}" oninput="document.getElementById('hex_judul_toko').value = this.value" class="w-12 h-10 border border-gray-300 rounded-lg p-1 cursor-pointer bg-white">
+                            <input type="text" id="hex_judul_toko" value="{{ old('warna_judul_toko', $profile->warna_judul_toko ?? '#111827') }}" readonly class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-700 font-mono text-center">
+                            <span class="text-xs text-gray-500">Pilih warna teks agar judul toko Anda kontras dan terlihat jelas di atas banner.</span>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1.5">Tentang Penjual / Deskripsi Toko</label>
                         <textarea name="deskripsi_toko" rows="4" placeholder="Tuliskan deskripsi singkat mengenai produk, jasa, atau toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">{{ old('deskripsi_toko', $profile->deskripsi_toko) }}</textarea>

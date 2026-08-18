@@ -139,6 +139,7 @@ class UserProfileController extends Controller
             'alamat' => 'nullable|string|max:255',
             'no_telp' => 'nullable|string|max:20',
             'banner_toko' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
+            'warna_judul_toko' => 'nullable|string|max:20',
         ]);
 
         $profileData = [
@@ -146,6 +147,7 @@ class UserProfileController extends Controller
             'deskripsi_toko' => $validated['deskripsi_toko'] ?? null,
             'alamat' => $validated['alamat'] ?? null,
             'no_telp' => $validated['no_telp'] ?? null,
+            'warna_judul_toko' => $validated['warna_judul_toko'] ?? '#111827',
         ];
 
         if ($request->hasFile('banner_toko')) {

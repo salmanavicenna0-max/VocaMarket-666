@@ -24,6 +24,7 @@ class Profile extends Model
         'nama_toko',
         'deskripsi_toko',
         'banner_toko',
+        'warna_judul_toko',
     ];
 
     // -- Relationships --
