@@ -98,8 +98,12 @@
                         @else
                             <div class="relative group cursor-pointer">
                                 <div class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition">
-                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm overflow-hidden">
+                                        @if(Auth::user()->profile && (Auth::user()->profile->photo || Auth::user()->profile->foto))
+                                            <img src="{{ asset('storage/' . (Auth::user()->profile->photo ?? Auth::user()->profile->foto)) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        @endif
                                     </div>
                                     <span class="text-sm font-medium text-gray-700 hidden md:block">{{ explode(' ', Auth::user()->name)[0] }}</span>
                                     <i class="ph-bold ph-caret-down text-gray-500 text-xs hidden md:block"></i>

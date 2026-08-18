@@ -60,6 +60,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 Route::prefix('user')->middleware('auth')->group(function () {
     Route::get('/', [UserProfileController::class, 'index'])->name('user.profile');
     Route::post('/profile', [UserProfileController::class, 'updateProfile'])->name('user.profile.update');
+    Route::post('/photo', [UserProfileController::class, 'updatePhoto'])->name('user.profile.photo');
     Route::post('/password', [UserProfileController::class, 'updatePassword'])->name('user.password.update');
     Route::post('/request-seller', [UserController::class, 'requestSeller'])->name('user.request_seller');
 });

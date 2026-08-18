@@ -95,4 +95,26 @@ class UserProfileController extends Controller
 
         return back()->with('success', 'Kata sandi berhasil diperbarui.');
     }
+
+    /**
+     * Perbarui Foto Profil
+     */
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
+
+        $user = Auth::user();
+        $profile = Profile::firstOrCreate(['user_id' => $user->id]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('profiles', 'public');
+            $profile->photo = $path;
+            $profile->foto = $path;
+            $profile->save();
+        }
+
+        return back()->with('success', 'Foto profil berhasil diperbarui!');
+    }
 }

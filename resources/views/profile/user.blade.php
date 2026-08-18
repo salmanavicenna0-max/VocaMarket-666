@@ -29,12 +29,20 @@
             <!-- Profil Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col items-center text-center">
                 <div class="relative mb-3">
-                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-blue-100 text-primary font-bold flex items-center justify-center text-3xl">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md bg-blue-100 text-primary font-bold flex items-center justify-center text-3xl overflow-hidden">
+                        @if($profile && ($profile->photo || $profile->foto))
+                            <img src="{{ asset('storage/' . ($profile->photo ?? $profile->foto)) }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                        @endif
                     </div>
-                    <button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition">
-                        <i class="ph-bold ph-pencil-simple text-xs"></i>
-                    </button>
+                    <form id="avatar-form" action="{{ route('user.profile.photo') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="photo" id="avatar-input" class="hidden" accept="image/*" onchange="document.getElementById('avatar-form').submit()">
+                        <button type="button" onclick="document.getElementById('avatar-input').click()" class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow hover:bg-blue-700 transition" title="Ubah Foto Profil">
+                            <i class="ph-bold ph-pencil-simple text-xs"></i>
+                        </button>
+                    </form>
                 </div>
                 <h3 class="font-bold text-gray-900 text-lg">{{ Auth::user()->name }}</h3>
                 <p class="text-gray-500 text-sm">{{ Auth::user()->email ?? Auth::user()->nis }}</p>
@@ -169,7 +177,6 @@
                                 </label>
                                 <div class="flex items-center gap-3">
                                     <input type="text" value="{{ $user->email ?? $user->nis }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-500 cursor-not-allowed" disabled>
-                                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded border border-green-200 shrink-0">Terverifikasi</span>
                                 </div>
                             </div>
                             <div>
@@ -332,29 +339,7 @@
                             <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
                         </div>
                     </form>
-                    
-                    <!-- Notifikasi -->
-                    <div class="mt-4">
-                        <h3 class="font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Notifikasi</h3>
-                        <div class="flex flex-col gap-3">
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <div>
-                                    <p class="font-bold text-gray-800 text-sm">Promo & Diskon</p>
-                                    <p class="text-xs text-gray-500">Dapatkan info terbaru tentang diskon di VocaMarket</p>
-                                </div>
-                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer">
-                                <div>
-                                    <p class="font-bold text-gray-800 text-sm">Pembaruan Pesanan</p>
-                                    <p class="text-xs text-gray-500">Pemberitahuan setiap kali status pesanan Anda berubah</p>
-                                </div>
-                                <input type="checkbox" class="w-5 h-5 text-primary rounded focus:ring-primary" checked>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- TAB: Buka Toko (Hanya Siswa) -->
             @if(Auth::user()->isSiswa())
