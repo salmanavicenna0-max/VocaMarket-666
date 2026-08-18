@@ -362,9 +362,27 @@
                     </a>
                 </div>
                 
-                <form action="{{ route('user.store.update') }}" method="POST" class="p-6 flex flex-col gap-6">
+                <form action="{{ route('user.store.update') }}" method="POST" enctype="multipart/form-data" class="p-6 flex flex-col gap-6">
                     @csrf
                     
+                    <!-- Banner Toko Field -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Banner Sampul Toko</label>
+                        <div class="relative w-full h-40 rounded-lg overflow-hidden border border-gray-300 bg-gray-100 flex items-center justify-center mb-2">
+                            @if($profile && $profile->banner_toko)
+                                <img src="{{ asset('storage/' . $profile->banner_toko) }}" alt="Banner Toko" id="banner-preview" class="w-full h-full object-cover">
+                            @else
+                                <div id="banner-placeholder" class="text-center text-gray-400 flex flex-col items-center">
+                                    <i class="ph-fill ph-image text-4xl mb-1"></i>
+                                    <span class="text-xs font-medium">Belum ada banner khusus (menggunakan tampilan default)</span>
+                                </div>
+                                <img id="banner-preview" class="w-full h-full object-cover hidden">
+                            @endif
+                        </div>
+                        <input type="file" name="banner_toko" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100 transition cursor-pointer" onchange="previewBanner(event)">
+                        <p class="text-xs text-gray-500 mt-1">Rekomendasi banner: Rasio lanskap (contoh: 1200 x 400 pixel, Maks: 3MB).</p>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko</label>
                         <input type="text" name="nama_toko" value="{{ old('nama_toko', $profile->nama_toko ?? ('Toko ' . $user->name)) }}" placeholder="Masukkan nama toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" required>
@@ -522,6 +540,25 @@
                 order.style.display = 'none';
             }
         });
+    }
+
+    function previewBanner(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('banner-preview');
+                const placeholder = document.getElementById('banner-placeholder');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     }
 </script>
 @endsection

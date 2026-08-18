@@ -23,6 +23,7 @@ class Profile extends Model
         'nis_nip',
         'nama_toko',
         'deskripsi_toko',
+        'banner_toko',
     ];
 
     // -- Relationships --

@@ -138,16 +138,24 @@ class UserProfileController extends Controller
             'deskripsi_toko' => 'nullable|string|max:1000',
             'alamat' => 'nullable|string|max:255',
             'no_telp' => 'nullable|string|max:20',
+            'banner_toko' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:3072',
         ]);
+
+        $profileData = [
+            'nama_toko' => $validated['nama_toko'] ?? null,
+            'deskripsi_toko' => $validated['deskripsi_toko'] ?? null,
+            'alamat' => $validated['alamat'] ?? null,
+            'no_telp' => $validated['no_telp'] ?? null,
+        ];
+
+        if ($request->hasFile('banner_toko')) {
+            $bannerPath = $request->file('banner_toko')->store('banners', 'public');
+            $profileData['banner_toko'] = $bannerPath;
+        }
 
         Profile::updateOrCreate(
             ['user_id' => $user->id],
-            [
-                'nama_toko' => $validated['nama_toko'] ?? null,
-                'deskripsi_toko' => $validated['deskripsi_toko'] ?? null,
-                'alamat' => $validated['alamat'] ?? null,
-                'no_telp' => $validated['no_telp'] ?? null,
-            ]
+            $profileData
         );
 
         return back()->with('success', 'Konfigurasi profil toko berhasil disimpan!');

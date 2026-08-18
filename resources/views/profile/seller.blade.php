@@ -6,10 +6,15 @@
     
     <!-- Profile Banner & Info -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-        <div class="h-48 w-full bg-gradient-to-r from-primary to-blue-400 relative">
-            <div class="absolute inset-0 bg-black/20"></div>
-            <!-- Banner Decoration -->
-            <i class="ph-fill ph-storefront absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl text-white/10"></i>
+        <div class="h-48 md:h-64 w-full bg-gradient-to-r from-primary to-blue-400 relative overflow-hidden">
+            @if($seller->profile && $seller->profile->banner_toko)
+                <img src="{{ asset('storage/' . $seller->profile->banner_toko) }}" alt="Banner Toko" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/20"></div>
+            @else
+                <div class="absolute inset-0 bg-black/20"></div>
+                <!-- Banner Decoration -->
+                <i class="ph-fill ph-storefront absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl text-white/10"></i>
+            @endif
         </div>
         
         <div class="px-6 md:px-10 pb-6 -mt-16 relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6">
