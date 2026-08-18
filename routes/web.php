@@ -95,7 +95,7 @@ Route::get('/chat', function () {
 });
 
 // Admin
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [SellerDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/products/submissions', [AdminController::class, 'productSubmissions'])->name('admin.products.submissions');
     Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.products.approve');
@@ -108,6 +108,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/seller/refund/{id}/approve', [SellerOrderController::class, 'sellerApproveRefund'])->name('seller.refund.approve');
     Route::post('/seller/refund/{id}/reject', [SellerOrderController::class, 'sellerRejectRefund'])->name('seller.refund.reject');
     Route::resource('admin/users', UserController::class);
+    Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');
 });
-
-Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');

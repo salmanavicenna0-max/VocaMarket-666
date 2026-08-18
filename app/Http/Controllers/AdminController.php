@@ -73,7 +73,11 @@ class AdminController extends Controller
 
     public function approveProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+        if (!$product) {
+            return back()->with('error', 'Produk tidak ditemukan atau sudah dihapus.');
+        }
+
         $product->update([
             'is_active' => true,
             'approval_status' => 'approved',
@@ -84,7 +88,11 @@ class AdminController extends Controller
 
     public function rejectProduct(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+        if (!$product) {
+            return back()->with('error', 'Produk tidak ditemukan atau sudah dihapus.');
+        }
+
         $product->update([
             'is_active' => false,
             'approval_status' => 'rejected',

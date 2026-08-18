@@ -68,14 +68,14 @@
                 </div>
             @endif
             
-            <!-- Email / NIS -->
+            <!-- Email -->
             <div>
-                <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Email atau NIS</label>
+                <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                 <input 
-                    type="text" 
+                    type="email" 
                     id="username" 
                     name="username" 
-                    placeholder="Masukkan Email atau NIS"
+                    placeholder="Masukkan Email"
                     class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                     required
                 >

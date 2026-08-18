@@ -53,18 +53,14 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,siswa,pembeli',
-            'email_verification' => 'nullable|string',
             'verification_seller' => 'nullable|boolean',
         ]);
 
-        $validated['email_verification'] = $request->input('email_verification', 'verified');
         $validated['verification_seller'] = $request->has('verification_seller') ? 1 : 0;
         $validated['password'] = Hash::make($validated['password']);
-                        User::create($validated);
-
         User::create($validated);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan!');
+        return back()->with('success', 'Pengguna baru berhasil ditambahkan!');
     }
 
     /**
@@ -92,18 +88,21 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,siswa,pembeli',
+            'password' => 'nullable|string|min:6',
             'verification_seller' => 'nullable|boolean',
         ]);
 
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
         }
 
         $validated['verification_seller'] = $request->has('verification_seller') ? 1 : 0;
 
         $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'Data user berhasil diperbarui!');
+        return back()->with('success', 'Data pengguna berhasil diperbarui!');
     }
 
     /**
@@ -111,9 +110,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus!');
+        return back()->with('success', 'Pengguna berhasil dihapus!');
     }
 
     /**

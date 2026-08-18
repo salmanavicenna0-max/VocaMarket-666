@@ -105,21 +105,7 @@
                 @enderror
             </div>
 
-            <!-- NIS (Opsional) -->
-            <div>
-                <label for="nis" class="block text-sm font-semibold text-gray-700 mb-2">NIS <span class="text-gray-400 font-normal text-xs">(Opsional, untuk Siswa)</span></label>
-                <input
-                    type="text"
-                    id="nis"
-                    name="nis"
-                    placeholder="Masukkan Nomor Induk Siswa"
-                    value="{{ old('nis') }}"
-                    class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-md px-4 py-3 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-                >
-                @error('nis')
-                    <p class="text-xs text-red-600 mt-1 font-medium">NIS tidak valid</p>
-                @enderror
-            </div>
+
 
             <!-- Password -->
             <div>

@@ -160,14 +160,14 @@
                             type="text" 
                             name="search" 
                             value="{{ request('search') }}"
-                            placeholder="Cari nama, NIS, atau email..." 
+                            placeholder="Cari nama atau email..." 
                             class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl pl-10 pr-4 py-2.5 outline-none focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
                         >
                         <i class="ph-bold ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     </form>
 
                     <div class="flex items-center gap-2">
-                        <span class="text-xs text-gray-500 font-medium">Total Pengguna: <strong class="text-gray-800">{{ $users->count() }}</strong></span>
+                        <span class="text-xs text-gray-500 font-medium">Total Pengguna: <strong class="text-gray-800">{{ $users->total() }}</strong></span>
                     </div>
                 </div>
 
@@ -177,7 +177,6 @@
                         <thead class="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100">
                             <tr>
                                 <th class="px-5 py-3.5 rounded-l-xl">PENGGUNA</th>
-                                <th class="px-5 py-3.5">NIS / ID</th>
                                 <th class="px-5 py-3.5">EMAIL</th>
                                 <th class="px-5 py-3.5">ROLE</th>
                                 <th class="px-5 py-3.5 text-right rounded-r-xl">AKSI</th>
@@ -194,9 +193,6 @@
                                             <p class="font-bold text-gray-800">{{ $user->name }}</p>
                                             <span class="text-[10px] text-gray-400">Dibuat {{ $user->created_at ? $user->created_at->diffForHumans() : '-' }}</span>
                                         </div>
-                                    </td>
-                                    <td class="px-5 py-4 font-semibold text-gray-700">
-                                        {{ $user->nis ?? '-' }}
                                     </td>
                                     <td class="px-5 py-4 text-gray-600">
                                         {{ $user->email }}
