@@ -73,8 +73,13 @@
                     </li>
                     @if(Auth::user()->isSiswa())
                     <li class="border-t border-gray-100">
+                        <button onclick="switchTab('konfigurasitoko')" id="nav-konfigurasitoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-blue-600 font-bold hover:bg-blue-50 transition border-l-4 border-transparent">
+                            <i class="ph-bold ph-sliders text-xl"></i> Konfigurasi Toko
+                        </button>
+                    </li>
+                    <li class="border-t border-gray-100">
                         <button onclick="switchTab('bukatoko')" id="nav-bukatoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-green-600 font-bold hover:bg-green-50 transition border-l-4 border-transparent">
-                            <i class="ph-bold ph-storefront text-xl"></i> Buka Toko
+                            <i class="ph-bold ph-storefront text-xl"></i> Status Toko
                         </button>
                     </li>
                     @endif
@@ -339,7 +344,58 @@
                             <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg w-fit mt-2 transition">Perbarui Kata Sandi</button>
                         </div>
                     </form>
+                </div>
 
+            <!-- TAB: Konfigurasi Toko (Khusus Siswa/Penjual) -->
+            @if(Auth::user()->isSiswa())
+            <div id="tab-konfigurasitoko" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-sliders text-primary"></i> Konfigurasi Profil Toko
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Atur informasi toko Anda agar terlihat menarik bagi calon pembeli</p>
+                    </div>
+                    <a href="{{ route('seller.profile', Auth::user()->id) }}" target="_blank" class="px-4 py-2 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition text-sm flex items-center gap-1.5 shrink-0">
+                        <i class="ph-bold ph-arrow-square-out"></i> Lihat Halaman Toko Saya
+                    </a>
+                </div>
+                
+                <form action="{{ route('user.store.update') }}" method="POST" class="p-6 flex flex-col gap-6">
+                    @csrf
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Toko</label>
+                        <input type="text" name="nama_toko" value="{{ old('nama_toko', $profile->nama_toko ?? ('Toko ' . $user->name)) }}" placeholder="Masukkan nama toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" required>
+                        <p class="text-xs text-gray-500 mt-1">Nama ini akan menjadi judul utama di halaman profil toko Anda.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Tentang Penjual / Deskripsi Toko</label>
+                        <textarea name="deskripsi_toko" rows="4" placeholder="Tuliskan deskripsi singkat mengenai produk, jasa, atau toko Anda..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">{{ old('deskripsi_toko', $profile->deskripsi_toko) }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Deskripsi ini akan ditampilkan pada bagian "Tentang Penjual" di halaman profil toko.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Lokasi Toko / Alamat Sekolah</label>
+                            <input type="text" name="alamat" value="{{ old('alamat', $profile->alamat ?? 'SMK Bakti Nusantara 666') }}" placeholder="Contoh: SMK Bakti Nusantara 666" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1.5">Nomor HP / WhatsApp Toko</label>
+                            <input type="text" name="no_telp" value="{{ old('no_telp', $profile->no_telp) }}" placeholder="Contoh: 085156699111" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                        <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2">
+                            <i class="ph-bold ph-floppy-disk"></i> Simpan Konfigurasi Toko
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endif
 
             <!-- TAB: Buka Toko (Hanya Siswa) -->
             @if(Auth::user()->isSiswa())
@@ -422,9 +478,20 @@
         
         // Set active state on clicked nav button
         const activeNav = document.getElementById('nav-' + tabId);
-        activeNav.classList.remove('text-gray-600', 'border-transparent');
-        activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        if (activeNav) {
+            activeNav.classList.remove('text-gray-600', 'border-transparent');
+            activeNav.classList.add('text-primary', 'bg-blue-50', 'border-primary');
+        }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            const tabId = window.location.hash.substring(1);
+            if (document.getElementById('tab-' + tabId)) {
+                switchTab(tabId);
+            }
+        }
+    });
 
     function filterPesananUser(status, btnElement) {
         // Update tab styling

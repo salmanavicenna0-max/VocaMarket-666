@@ -121,4 +121,35 @@ class UserProfileController extends Controller
 
         return back()->with('success', 'Foto profil berhasil diperbarui!');
     }
+
+    /**
+     * Perbarui Konfigurasi Toko (Khusus Siswa/Penjual)
+     */
+    public function updateStore(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user->isSiswa()) {
+            return back()->with('error', 'Hanya siswa/penjual yang dapat mengonfigurasi toko.');
+        }
+
+        $validated = $request->validate([
+            'nama_toko' => 'nullable|string|max:255',
+            'deskripsi_toko' => 'nullable|string|max:1000',
+            'alamat' => 'nullable|string|max:255',
+            'no_telp' => 'nullable|string|max:20',
+        ]);
+
+        Profile::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'nama_toko' => $validated['nama_toko'] ?? null,
+                'deskripsi_toko' => $validated['deskripsi_toko'] ?? null,
+                'alamat' => $validated['alamat'] ?? null,
+                'no_telp' => $validated['no_telp'] ?? null,
+            ]
+        );
+
+        return back()->with('success', 'Konfigurasi profil toko berhasil disimpan!');
+    }
 }

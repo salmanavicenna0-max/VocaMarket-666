@@ -15,31 +15,41 @@
         <div class="px-6 md:px-10 pb-6 -mt-16 relative z-10 flex flex-col md:flex-row items-center md:items-end gap-6">
             <!-- Avatar -->
             <div class="w-32 h-32 rounded-full border-4 border-white bg-white shadow-md overflow-hidden shrink-0">
-                <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=0a84d4&color=fff&size=128" alt="Profile" class="w-full h-full object-cover">
+                @if($seller->profile && ($seller->profile->photo || $seller->profile->foto))
+                    <img src="{{ asset('storage/' . ($seller->profile->photo ?? $seller->profile->foto)) }}" alt="{{ $seller->name }}" class="w-full h-full object-cover">
+                @else
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($seller->name) }}&background=0a84d4&color=fff&size=128" alt="{{ $seller->name }}" class="w-full h-full object-cover">
+                @endif
             </div>
             
             <!-- Info -->
             <div class="flex-grow text-center md:text-left pt-4 md:pt-0">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Toko {{ $seller->name }}</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ $seller->profile->nama_toko ?? ('Toko ' . $seller->name) }}</h1>
                 <p class="text-gray-500 mt-1 flex items-center justify-center md:justify-start gap-1">
                     <i class="ph-fill ph-graduation-cap text-primary"></i> Siswa / Penjual Aktif
                 </p>
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-sm text-gray-600">
                     <span class="flex items-center gap-1"><i class="ph-fill ph-star text-yellow-400 text-lg"></i> {{ $rating }} (Toko Aktif)</span>
                     <span class="flex items-center gap-1"><i class="ph-fill ph-box-arrow-up text-green-500 text-lg"></i> {{ $totalSales }} Terjual</span>
-                    <span class="flex items-center gap-1"><i class="ph-fill ph-map-pin text-red-500 text-lg"></i> SMK Bakti Nusantara 666</span>
+                    <span class="flex items-center gap-1"><i class="ph-fill ph-map-pin text-red-500 text-lg"></i> {{ $seller->profile->alamat ?? 'SMK Bakti Nusantara 666' }}</span>
                 </div>
                 <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-2 text-sm text-gray-600">
                     <span class="flex items-center gap-1"><i class="ph-fill ph-envelope-simple text-blue-500 text-lg"></i> {{ $seller->email }}</span>
-                    <span class="flex items-center gap-1"><i class="ph-fill ph-phone text-green-500 text-lg"></i> {{ $seller->profile->no_hp ?? 'Belum ada nomor HP' }}</span>
+                    <span class="flex items-center gap-1"><i class="ph-fill ph-phone text-green-500 text-lg"></i> {{ $seller->profile->no_telp ?? $seller->profile->no_hp ?? 'Belum ada nomor HP' }}</span>
                 </div>
             </div>
             
             <!-- Actions -->
             <div class="flex items-center gap-3 w-full md:w-auto">
-                <a href="#" onclick="openMiniChat(event)" class="flex-1 md:flex-none px-6 py-2.5 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-chat-circle"></i> Chat
-                </a>
+                @if(Auth::check() && Auth::id() == $seller->id)
+                    <a href="{{ url('/user#konfigurasitoko') }}" class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-white font-bold rounded-lg shadow-sm hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-pencil-simple"></i> Edit Konfigurasi Toko
+                    </a>
+                @else
+                    <a href="#" onclick="openMiniChat(event)" class="flex-1 md:flex-none px-6 py-2.5 bg-white text-primary font-bold border border-primary rounded-lg shadow-sm hover:bg-blue-50 transition flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-chat-circle"></i> Chat
+                    </a>
+                @endif
             </div>
         </div>
         
@@ -47,7 +57,7 @@
         <div class="px-6 md:px-10 py-6 border-t border-gray-100 bg-gray-50/50">
             <h3 class="font-bold text-gray-900 mb-2">Tentang Penjual</h3>
             <p class="text-gray-600 text-sm leading-relaxed">
-                Halo! Ini adalah toko resmi milik {{ $seller->name }}. Di sini saya menyediakan berbagai macam produk dan jasa menarik. Mari dukung karya siswa!
+                {{ $seller->profile->deskripsi_toko ?? ('Halo! Ini adalah toko resmi milik ' . $seller->name . '. Di sini saya menyediakan berbagai macam produk dan jasa menarik. Mari dukung karya siswa!') }}
             </p>
         </div>
     </div>

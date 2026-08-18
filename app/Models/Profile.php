@@ -21,6 +21,8 @@ class Profile extends Model
         'jenis_kelamin',
         'alamat',
         'nis_nip',
+        'nama_toko',
+        'deskripsi_toko',
     ];
 
     // -- Relationships --
