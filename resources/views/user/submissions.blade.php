@@ -299,11 +299,11 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Unggah Foto / Video Produk (Maks. 6 File)</label>
-                <div onclick="document.getElementById('imgInp').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary hover:bg-blue-50/50 transition cursor-pointer bg-gray-50">
-                    <i class="ph-bold ph-upload-simple text-3xl text-gray-400 mb-1"></i>
-                    <p class="text-xs font-bold text-gray-700">Klik untuk memilih foto / video</p>
-                    <p class="text-[11px] text-gray-400 mt-0.5">Format: JPG, PNG, WEBP, MP4 (Maks. 50MB per file)</p>
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Unggah Foto / Video Produk (Bisa Lebih Dari 1 File, Maks. 10)</label>
+                <div onclick="document.getElementById('imgInp').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary hover:bg-blue-50/50 transition cursor-pointer bg-gray-50 group">
+                    <i class="ph-bold ph-upload-simple text-3xl text-gray-400 group-hover:text-primary transition mb-1"></i>
+                    <p class="text-xs font-bold text-gray-700">Klik untuk memilih foto / video (bisa pilih beberapa sekaligus)</p>
+                    <p class="text-[11px] text-gray-400 mt-0.5">Format: JPG, PNG, WEBP, MP4 (Maks. 10 file, hingga 50MB per file)</p>
                     <input type="file" name="images[]" id="imgInp" onchange="previewMedia(event)" multiple accept="image/*,video/*" class="hidden">
                 </div>
                 <div id="mediaPreviews" class="flex gap-3 mt-3 overflow-x-auto pb-2 hidden"></div>
@@ -371,6 +371,8 @@
         });
     });
 
+    let selectedSubmissionMedia = [];
+
     function openAddModal() {
         document.getElementById('addModal').classList.remove('hidden');
         document.getElementById('addModal').classList.add('flex');
@@ -379,6 +381,8 @@
     function closeAddModal() {
         document.getElementById('addModal').classList.add('hidden');
         document.getElementById('addModal').classList.remove('flex');
+        selectedSubmissionMedia = [];
+        updateSubmissionMediaUI();
     }
 
     function formatRupiah(input) {
@@ -423,27 +427,73 @@
     }
 
     function previewMedia(event) {
-        const container = document.getElementById('mediaPreviews');
-        container.innerHTML = '';
-        const files = event.target.files;
+        const newFiles = Array.from(event.target.files);
+        
+        for (let file of newFiles) {
+            if (selectedSubmissionMedia.length < 10) {
+                // Avoid exact duplicate files
+                const exists = selectedSubmissionMedia.some(f => f.name === file.name && f.size === file.size);
+                if (!exists) {
+                    selectedSubmissionMedia.push(file);
+                }
+            }
+        }
 
-        if (files.length > 0) {
+        updateSubmissionMediaUI();
+    }
+
+    function removeSubmissionMedia(index) {
+        selectedSubmissionMedia.splice(index, 1);
+        updateSubmissionMediaUI();
+    }
+
+    function updateSubmissionMediaUI() {
+        const input = document.getElementById('imgInp');
+        const container = document.getElementById('mediaPreviews');
+        if (!input || !container) return;
+
+        // Sync files array to input via DataTransfer
+        try {
+            const dt = new DataTransfer();
+            selectedSubmissionMedia.forEach(f => dt.items.add(f));
+            input.files = dt.files;
+        } catch(e) {
+            console.error("DataTransfer error", e);
+        }
+
+        if (selectedSubmissionMedia.length > 0) {
             container.classList.remove('hidden');
-            Array.from(files).slice(0, 6).forEach(file => {
-                const isVideo = file.type.startsWith('video/');
+            container.innerHTML = '';
+
+            selectedSubmissionMedia.forEach((file, idx) => {
+                const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i);
                 const div = document.createElement('div');
-                div.className = 'w-20 h-20 rounded-xl border border-gray-200 overflow-hidden bg-gray-100 shrink-0 relative';
+                div.className = 'w-24 h-24 rounded-xl border border-gray-200 overflow-hidden bg-gray-100 shrink-0 relative group shadow-sm';
 
                 const url = URL.createObjectURL(file);
                 if (isVideo) {
-                    div.innerHTML = `<video src="${url}" class="w-full h-full object-cover"></video>`;
+                    div.innerHTML = `
+                        <video src="${url}" class="w-full h-full object-cover"></video>
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center pointer-events-none">
+                            <i class="ph-fill ph-video-camera text-white text-xl"></i>
+                        </div>
+                    `;
                 } else {
                     div.innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
                 }
+
+                div.innerHTML += `
+                    <button type="button" onclick="removeSubmissionMedia(${idx})" class="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-md transition z-10" title="Hapus File Ini">
+                        <i class="ph-bold ph-x text-[10px]"></i>
+                    </button>
+                    <span class="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">#${idx + 1}</span>
+                `;
+
                 container.appendChild(div);
             });
         } else {
             container.classList.add('hidden');
+            container.innerHTML = '';
         }
     }
 </script>

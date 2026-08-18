@@ -59,6 +59,10 @@ class CartController extends Controller
         $cartItem->is_read = false;
         $cartItem->save();
 
+        if ($request->has('buy_now') || $request->input('action') === 'buy_now') {
+            return redirect()->route('checkout.index');
+        }
+
         return back()->with('success', $product->name . ' masuk keranjang.');
     }
 

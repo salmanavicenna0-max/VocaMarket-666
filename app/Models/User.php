@@ -23,7 +23,6 @@ class User extends Authenticatable
         'name',
         'nis',
         'email',
-        'email_verification',
         'password',
         'role',
         'verification_seller',
@@ -95,11 +94,16 @@ class User extends Authenticatable
 
     public function isSeller(): bool
     {
-        return true;
+        return $this->role === 'siswa' || $this->role === 'admin';
     }
 
     public function isSiswa(): bool
     {
         return $this->role === 'siswa';
+    }
+
+    public function isPembeli(): bool
+    {
+        return $this->role === 'pembeli';
     }
 }

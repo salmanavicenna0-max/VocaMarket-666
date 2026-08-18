@@ -67,7 +67,7 @@
                     </li>
                     <li>
                         <button onclick="switchTab('produk')" id="nav-produk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
-                            <i class="ph-fill ph-package text-xl"></i> Produk Saya
+                            <i class="ph-fill ph-package text-xl"></i> {{ Auth::user()->isAdmin() ? 'Produk' : 'Produk Saya' }}
                         </button>
                     </li>
                     <li>
@@ -96,6 +96,14 @@
                             <div class="flex items-center gap-3">
                                 <i class="ph-fill ph-package text-xl text-yellow-500"></i> Pengajuan Produk Siswa
                             </div>
+                            @if(isset($pendingProducts) && $pendingProducts->count() > 0)
+                                <span class="bg-yellow-500 text-gray-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">{{ $pendingProducts->count() }}</span>
+                            @endif
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="switchTab('kelolapengguna')" id="nav-kelolapengguna" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            <i class="ph-fill ph-users text-xl text-indigo-500"></i> Kelola Pengguna
                         </button>
                     </li>
                     @endif
@@ -225,19 +233,29 @@
                                     <i class="ph-bold ph-truck text-xl"></i>
                                     <span class="font-bold text-sm">Siap Dikirim</span>
                                 </div>
-<span class="font-bold text-sm">{{ $ordersSiapDikirim }}</span>
+                                <span class="font-bold text-sm">{{ $ordersSiapDikirim }}</span>
                             </div>
+
+                            @if(Auth::user()->isAdmin() && isset($pendingProducts) && $pendingProducts->count() > 0)
+                            <div onclick="switchTab('pengajuanproduk')" class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 text-yellow-800 rounded-lg border border-yellow-200 cursor-pointer hover:from-yellow-100 hover:to-orange-100 transition shadow-xs">
+                                <div class="flex items-center gap-2">
+                                    <i class="ph-bold ph-package text-xl text-yellow-600"></i>
+                                    <span class="font-bold text-sm">Pengajuan Produk Siswa</span>
+                                </div>
+                                <span class="bg-yellow-500 text-gray-900 text-xs font-black px-2 py-0.5 rounded-full">{{ $pendingProducts->count() }}</span>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: Produk Saya -->
+            <!-- TAB: Produk -->
             <div id="tab-produk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-900">Produk Saya</h2>
-                        <p class="text-gray-500 text-sm mt-1">Kelola daftar produk, stok, dan harga jualan Anda</p>
+                        <h2 class="text-xl font-bold text-gray-900">{{ Auth::user()->isAdmin() ? 'Daftar Semua Produk & Jasa' : 'Produk Saya' }}</h2>
+                        <p class="text-gray-500 text-sm mt-1">{{ Auth::user()->isAdmin() ? 'Kelola seluruh produk dan jasa sekolah (karya admin dan pengajuan siswa)' : 'Kelola daftar produk, stok, dan harga jualan Anda' }}</p>
                     </div>
                     <button onclick="openAddProductModal()" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-5 rounded-lg shadow-sm transition flex items-center gap-2">
                         <i class="ph-bold ph-plus"></i> Tambah Produk Baru
@@ -251,9 +269,17 @@
                     </div>
                     <select id="filterKategoriProduk" onchange="filterProduk()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-white transition cursor-pointer">
                         <option value="">Semua Kategori</option>
-                        <option value="Barang Fisik">Barang Fisik</option>
-                        <option value="Jasa">Jasa</option>
-                        <option value="Makanan">Makanan</option>
+                        <optgroup label="Produk Sekolah">
+                            <option value="Aksesoris">Aksesoris</option>
+                            <option value="Merchandise">Merchandise</option>
+                            <option value="Hardware">Hardware</option>
+                        </optgroup>
+                        <optgroup label="Jasa Jurusan">
+                            <option value="DKV & Animasi">DKV & Animasi</option>
+                            <option value="Pemasaran">Pemasaran</option>
+                            <option value="PPLG">PPLG</option>
+                            <option value="Akuntansi">Akuntansi</option>
+                        </optgroup>
                     </select>
                 </div>
 
@@ -261,7 +287,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                                <th class="p-4 font-bold w-[40%]">Info Produk</th>
+                                <th class="p-4 font-bold w-[35%]">Info Produk</th>
+                                @if(Auth::user()->isAdmin())
+                                    <th class="p-4 font-bold">Pembuat / Penjual</th>
+                                @endif
                                 <th class="p-4 font-bold text-center">Harga</th>
                                 <th class="p-4 font-bold text-center">Stok / Status</th>
                                 <th class="p-4 font-bold text-center">Aksi</th>
@@ -269,7 +298,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($products as $product)
-                            <tr class="produk-row hover:bg-gray-50 transition">
+                            <tr class="produk-row hover:bg-gray-50 transition" data-name="{{ strtolower($product->name) }}" data-category="{{ strtolower($product->category) }}">
                                 <td class="p-4">
                                     <div class="flex gap-4 items-center">
                                         @if($product->images->isNotEmpty())
@@ -281,10 +310,23 @@
                                         @endif
                                         <div>
                                             <h4 class="font-bold text-gray-900 text-sm line-clamp-2">{{ $product->name }}</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Kategori: {{ $product->category }}</p>
+                                            <p class="text-xs text-gray-500 mt-1">Kategori: <span class="font-medium text-gray-700">{{ $product->category }}</span> @if($product->type) &bull; <span class="text-primary">{{ $product->type }}</span>@endif</p>
                                         </div>
                                     </div>
                                 </td>
+                                @if(Auth::user()->isAdmin())
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                                            {{ strtoupper(substr($product->seller->name ?? 'A', 0, 1)) }}
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-800 text-xs">{{ $product->seller->name ?? 'Admin' }}</p>
+                                            <p class="text-[10px] text-gray-500 capitalize">{{ $product->seller->role ?? 'admin' }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                @endif
                                 <td class="p-4 text-center">
                                     <span class="font-bold text-primary">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                 </td>
@@ -314,7 +356,7 @@
                                         <button type="button" onclick='openEditProductModal({{ $product->id }}, @json($product->name), {{ $product->price }}, @json($product->category), @json($product->type), @json($product->description), {{ $product->stock }})' class="p-2 text-blue-600 hover:bg-blue-100 rounded transition tooltip" title="Edit">
                                             <i class="ph-bold ph-pencil-simple text-lg"></i>
                                         </button>
-                                        <form action="{{ route('seller.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Yakin hapus?');">
+                                        <form action="{{ route('seller.product.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="p-2 text-red-600 hover:bg-red-100 rounded transition tooltip" title="Hapus">
                                                 <i class="ph-bold ph-trash text-lg"></i>
@@ -324,14 +366,14 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="4" class="text-center p-4 text-gray-500">Belum ada produk.</td></tr>
+                            <tr><td colspan="{{ Auth::user()->isAdmin() ? 5 : 4 }}" class="text-center p-8 text-gray-500">Belum ada produk.</td></tr>
                             @endforelse
-</tbody>
+                        </tbody>
                     </table>
                 </div>
 
                 <div class="p-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
-                    <p>Menampilkan 3 produk</p>
+                    <p>Menampilkan {{ $products->count() }} produk</p>
                     <div class="flex gap-1">
                         <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 hover:bg-gray-50" disabled><i class="ph-bold ph-caret-left"></i></button>
                         <button class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-white font-bold">1</button>
@@ -572,12 +614,26 @@
             @if(Auth::user()->isAdmin())
             <!-- TAB: Pengajuan Produk Siswa (Admin Moderasi) -->
             <div id="tab-pengajuanproduk" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden overflow-hidden">
+                <div class="p-6 border-b border-gray-200 bg-yellow-50/50 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-package text-yellow-500 text-2xl"></i> Pengajuan Produk & Jasa Siswa
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Tinjau, setujui atau tolak produk yang diajukan oleh siswa agar tampil di katalog toko publik</p>
+                    </div>
+                    @if(isset($pendingProducts) && $pendingProducts->count() > 0)
+                        <span class="bg-yellow-500 text-gray-900 text-xs font-black px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                            <i class="ph-bold ph-clock"></i> {{ $pendingProducts->count() }} Pengajuan Menunggu
+                        </span>
+                    @endif
+                </div>
+
                 <div class="p-6 space-y-6">
-                    <div class="overflow-x-auto border border-gray-200 rounded-xl">
+                    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-2xs">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-gray-50 text-gray-600 text-xs font-bold uppercase border-b border-gray-200">
-                                    <th class="p-4">Produk / Jasa</th>
+                                    <th class="p-4 w-[35%]">Produk / Jasa</th>
                                     <th class="p-4">Siswa / Penjual</th>
                                     <th class="p-4">Kategori & Tipe</th>
                                     <th class="p-4 text-center">Harga</th>
@@ -590,28 +646,44 @@
                                 <tr class="hover:bg-yellow-50/30 transition">
                                     <td class="p-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden shrink-0 relative">
+                                            <div class="w-14 h-14 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden shrink-0 relative group">
                                                 @if($product->images->isNotEmpty())
                                                     <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                                                    @if($product->images->count() > 1)
+                                                        <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                                            +{{ $product->images->count() - 1 }}
+                                                        </span>
+                                                    @endif
                                                 @else
                                                     <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                                        <i class="ph-fill ph-image text-lg"></i>
+                                                        <i class="ph-fill ph-image text-xl"></i>
                                                     </div>
                                                 @endif
                                             </div>
                                             <div>
                                                 <h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $product->name }}</h4>
-                                                <p class="text-xs text-gray-500 line-clamp-1">{{ $product->description }}</p>
+                                                <p class="text-xs text-gray-500 line-clamp-1 mt-0.5">{{ $product->description }}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="p-4 font-semibold text-gray-800">
-                                        {{ $product->seller->name ?? 'Siswa' }}
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                                                {{ strtoupper(substr($product->seller->name ?? 'S', 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-800 text-xs">{{ $product->seller->name ?? 'Siswa' }}</p>
+                                                <p class="text-[11px] text-gray-500">{{ $product->seller->email ?? '-' }}</p>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="p-4">
-                                        <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-0.5 rounded border border-blue-100">
+                                        <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded border border-blue-100 inline-block">
                                             {{ $product->category }}
                                         </span>
+                                        @if($product->type)
+                                            <p class="text-xs text-gray-500 mt-1 font-medium">{{ $product->type }}</p>
+                                        @endif
                                     </td>
                                     <td class="p-4 text-center font-bold text-primary">
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
@@ -621,16 +693,16 @@
                                     </td>
                                     <td class="p-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <form action="{{ route('admin.products.approve', $product->id) }}" method="POST" onsubmit="return confirm('Setujui dan publikasikan produk ini ke toko?');">
+                                            <form action="{{ route('admin.products.approve', $product->id) }}" method="POST" onsubmit="return confirm('Setujui dan publikasikan produk ini ke katalog toko publik?');">
                                                 @csrf
-                                                <button type="submit" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition shadow-sm flex items-center gap-1">
-                                                    <i class="ph-bold ph-check"></i> Setujui
+                                                <button type="submit" class="px-3.5 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition shadow-sm flex items-center gap-1.5">
+                                                    <i class="ph-bold ph-check text-sm"></i> Setujui
                                                 </button>
                                             </form>
                                             <form action="{{ route('admin.products.reject', $product->id) }}" method="POST" onsubmit="return confirm('Tolak pengajuan produk ini?');">
                                                 @csrf
-                                                <button type="submit" class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg transition flex items-center gap-1">
-                                                    <i class="ph-bold ph-x"></i> Tolak
+                                                <button type="submit" class="px-3.5 py-2 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg transition flex items-center gap-1.5">
+                                                    <i class="ph-bold ph-x text-sm"></i> Tolak
                                                 </button>
                                             </form>
                                         </div>
@@ -638,8 +710,165 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="p-8 text-center text-gray-500">
-                                        <p class="font-bold text-gray-700 text-sm">Tidak ada pengajuan produk baru dari siswa.</p>
+                                    <td colspan="6" class="p-12 text-center text-gray-500">
+                                        <i class="ph-fill ph-check-circle text-5xl text-green-400 mb-2"></i>
+                                        <p class="font-bold text-gray-800 text-base">Semua pengajuan produk siswa sudah ditinjau</p>
+                                        <p class="text-xs text-gray-400 mt-1">Tidak ada produk atau jasa berstatus pending saat ini.</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- TAB: Kelola Pengguna (Admin Khusus) -->
+            <div id="tab-kelolapengguna" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden overflow-hidden">
+                <div class="p-6 border-b border-gray-200 bg-indigo-50/40 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-users text-indigo-600 text-2xl"></i> Manajemen & Kelola Pengguna
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Kelola data seluruh pengguna sistem VocaMarket (Admin, Siswa/Penjual, dan Pembeli)</p>
+                    </div>
+                    <button onclick="openAddUserModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-5 rounded-lg transition shadow-sm flex items-center gap-2">
+                        <i class="ph-bold ph-user-plus text-lg"></i> Tambah Pengguna Baru
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Stats Mini Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="ph-fill ph-users"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-blue-700 font-bold uppercase tracking-wider">Total User</p>
+                                <h4 class="text-2xl font-extrabold text-gray-900 mt-0.5">{{ $allUsers->count() }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="ph-fill ph-student"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-emerald-700 font-bold uppercase tracking-wider">Siswa / Penjual</p>
+                                <h4 class="text-2xl font-extrabold text-gray-900 mt-0.5">{{ $allUsers->where('role', 'siswa')->count() }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50/70 border border-amber-100 rounded-xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="ph-fill ph-shopping-bag"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-amber-700 font-bold uppercase tracking-wider">Pembeli</p>
+                                <h4 class="text-2xl font-extrabold text-gray-900 mt-0.5">{{ $allUsers->where('role', 'pembeli')->count() }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-50/70 border border-purple-100 rounded-xl p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-purple-500 text-white flex items-center justify-center text-xl shrink-0">
+                                <i class="ph-fill ph-shield-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-purple-700 font-bold uppercase tracking-wider">Administrator</p>
+                                <h4 class="text-2xl font-extrabold text-gray-900 mt-0.5">{{ $allUsers->where('role', 'admin')->count() }}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Role Filter Bar -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <i class="ph ph-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-base"></i>
+                            <input type="text" id="searchUser" onkeyup="filterUsers()" placeholder="Cari nama atau email pengguna..." class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:border-indigo-500 text-sm transition">
+                        </div>
+                        <select id="filterRoleUser" onchange="filterUsers()" class="border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 bg-white transition cursor-pointer font-medium">
+                            <option value="">Semua Role</option>
+                            <option value="admin">Administrator</option>
+                            <option value="siswa">Siswa / Penjual</option>
+                            <option value="pembeli">Pembeli</option>
+                        </select>
+                    </div>
+
+                    <!-- User Table -->
+                    <div class="overflow-x-auto border border-gray-200 rounded-xl shadow-2xs">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-xs font-bold uppercase border-b border-gray-200">
+                                    <th class="p-4 w-[35%]">Pengguna</th>
+                                    <th class="p-4 text-center">Role / Peran</th>
+                                    <th class="p-4 text-center">Status Toko</th>
+                                    <th class="p-4 text-center">Terdaftar</th>
+                                    <th class="p-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm">
+                                @forelse($allUsers as $u)
+                                <tr class="user-row hover:bg-indigo-50/20 transition" data-name="{{ strtolower($u->name) }}" data-email="{{ strtolower($u->email) }}" data-role="{{ strtolower($u->role) }}">
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full {{ $u->role === 'admin' ? 'bg-purple-100 text-purple-700' : ($u->role === 'siswa' ? 'bg-blue-100 text-primary' : 'bg-emerald-100 text-emerald-700') }} flex items-center justify-center font-bold text-sm shrink-0 border border-black/5">
+                                                {{ strtoupper(substr($u->name, 0, 2)) }}
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-sm">{{ $u->name }}</h4>
+                                                <p class="text-xs text-gray-500 mt-0.5">{{ $u->email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        @if($u->role === 'admin')
+                                            <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded-full border border-purple-200">
+                                                <i class="ph-bold ph-shield-check"></i> Admin
+                                            </span>
+                                        @elseif($u->role === 'siswa')
+                                            <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-200">
+                                                <i class="ph-bold ph-student"></i> Siswa
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+                                                <i class="ph-bold ph-user"></i> Pembeli
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="p-4 text-center">
+                                        @if($u->seller_status === 'approved')
+                                            <span class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded">Toko Aktif</span>
+                                        @elseif($u->seller_status === 'pending')
+                                            <span class="text-xs font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 px-2 py-0.5 rounded">Menunggu Approval</span>
+                                        @else
+                                            <span class="text-xs text-gray-400 font-medium">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-4 text-center text-xs text-gray-500">
+                                        {{ $u->created_at ? $u->created_at->translatedFormat('d M Y') : '-' }}
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <button type="button" onclick='openEditUserModal(@json($u))' class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Edit Pengguna">
+                                                <i class="ph-bold ph-pencil-simple text-lg"></i>
+                                            </button>
+                                            @if($u->id !== Auth::id())
+                                            <form action="{{ route('users.destroy', $u->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna {{ $u->name }}?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Pengguna">
+                                                    <i class="ph-bold ph-trash text-lg"></i>
+                                                </button>
+                                            </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="p-12 text-center text-gray-500">
+                                        <i class="ph-fill ph-users text-4xl text-gray-300 mb-2"></i>
+                                        <p class="font-bold text-gray-800 text-sm">Belum ada pengguna terdaftar.</p>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -809,12 +1038,12 @@
 
                 <!-- Foto & Video Produk -->
                 <div class="space-y-4 pt-2">
-                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto & Video Produk (Maks. 6 File)</h4>
+                    <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2">3. Foto & Video Produk (Maks. 10 File)</h4>
 
                     <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition group cursor-pointer bg-gray-50 hover:bg-blue-50/50" onclick="document.getElementById('imageUpload').click()">
                         <i class="ph-bold ph-upload-simple text-3xl text-gray-400 group-hover:text-primary transition mb-2"></i>
-                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto/video ke sini</p>
-                        <p class="text-xs text-gray-500 mt-1">Maks. 6 file (Foto JPG, PNG, WEBP & Video MP4, WEBM). Maks 50MB per file.</p>
+                        <p class="text-sm font-medium text-gray-700">Klik untuk mengunggah atau seret foto/video ke sini (bisa pilih lebih dari 1 file)</p>
+                        <p class="text-xs text-gray-500 mt-1">Maks. 10 file (Foto JPG, PNG, WEBP & Video MP4, WEBM). Maks 50MB per file.</p>
                         <input type="file" name="images[]" id="imageUpload" onchange="handleMediaSelect(event)" multiple accept="image/*,video/*" class="hidden">
                     </div>
                     <!-- Media Previews -->
@@ -1058,6 +1287,105 @@
         </div>
     </div>
 </div>
+
+@if(Auth::user()->isAdmin())
+<!-- Modal Tambah User Baru -->
+<div id="addUserModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <i class="ph-bold ph-user-plus text-indigo-600"></i> Tambah Pengguna Baru
+            </h3>
+            <button onclick="closeAddUserModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <form action="{{ route('users.store') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" placeholder="Nama Lengkap" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                    <input type="email" name="email" placeholder="email@contoh.com" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Role / Peran <span class="text-red-500">*</span></label>
+                    <select name="role" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 bg-white transition cursor-pointer" required>
+                        <option value="siswa">Siswa / Penjual</option>
+                        <option value="pembeli">Pembeli</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+                    <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition" required minlength="6">
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                    <button type="button" onclick="closeAddUserModal()" class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition shadow-sm">Simpan Pengguna</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit User -->
+<div id="editUserModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <i class="ph-bold ph-pencil-simple text-indigo-600"></i> Edit Pengguna
+            </h3>
+            <button onclick="closeEditUserModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <form id="editUserForm" action="" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <input type="text" id="editUserName" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                    <input type="email" id="editUserEmail" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Role / Peran <span class="text-red-500">*</span></label>
+                    <select id="editUserRole" name="role" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 bg-white transition cursor-pointer" required>
+                        <option value="siswa">Siswa / Penjual</option>
+                        <option value="pembeli">Pembeli</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Ubah Password <span class="text-xs text-gray-400 font-normal">(Kosongkan jika tidak ingin mengubah)</span></label>
+                    <input type="password" name="password" placeholder="Password baru" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 transition">
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                    <button type="button" onclick="closeEditUserModal()" class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition shadow-sm">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Toast Notification -->
 <div id="toastSuccess" class="fixed bottom-6 right-6 bg-white border-l-4 border-green-500 shadow-lg rounded-lg p-4 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[200]">
@@ -1394,10 +1722,13 @@
     function handleMediaSelect(event) {
         const newFiles = Array.from(event.target.files);
 
-        // Append new files up to max 6 total
+        // Append new files up to max 10 total
         for (let file of newFiles) {
-            if (selectedMediaFiles.length < 6) {
-                selectedMediaFiles.push(file);
+            if (selectedMediaFiles.length < 10) {
+                const exists = selectedMediaFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!exists) {
+                    selectedMediaFiles.push(file);
+                }
             }
         }
 
@@ -1732,6 +2063,73 @@
         setTimeout(() => {
             bannerModal.classList.add('hidden');
         }, 300);
+    }
+
+    // --- User Management Modal Logic ---
+    function openAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function openEditUserModal(user) {
+        const modal = document.getElementById('editUserModal');
+        if (!modal) return;
+        document.getElementById('editUserForm').action = `/admin/users/${user.id}`;
+        document.getElementById('editUserName').value = user.name;
+        document.getElementById('editUserEmail').value = user.email;
+        document.getElementById('editUserRole').value = user.role;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeEditUserModal() {
+        const modal = document.getElementById('editUserModal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function filterUsers() {
+        const searchVal = (document.getElementById('searchUser')?.value || '').toLowerCase();
+        const roleVal = (document.getElementById('filterRoleUser')?.value || '').toLowerCase();
+        const rows = document.querySelectorAll('.user-row');
+
+        rows.forEach(row => {
+            const name = (row.getAttribute('data-name') || '').toLowerCase();
+            const email = (row.getAttribute('data-email') || '').toLowerCase();
+            const role = (row.getAttribute('data-role') || '').toLowerCase();
+
+            const matchSearch = !searchVal || name.includes(searchVal) || email.includes(searchVal);
+            const matchRole = !roleVal || role === roleVal;
+
+            if (matchSearch && matchRole) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

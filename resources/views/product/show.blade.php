@@ -162,19 +162,12 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-col gap-2">
-                    <button type="submit" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
-                        + Keranjang
+                <div class="flex flex-col gap-2.5">
+                    <button type="submit" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-shopping-cart-simple text-lg"></i> + Keranjang
                     </button>
-                    <a href="{{ url('/checkout') }}" class="w-full py-2.5 bg-white text-primary font-bold border border-primary rounded-xl hover:bg-blue-50 transition flex items-center justify-center">
-                        Beli Langsung
-                    </a>
-                </div>
-                
-                <!-- Extras -->
-                <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-                    <button type="button" class="flex items-center gap-1 hover:text-gray-800 transition">
-                        <i class="ph-bold ph-share-network"></i> Share
+                    <button type="submit" name="buy_now" value="1" class="w-full py-2.5 bg-white text-primary font-bold border-2 border-primary rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-lightning text-lg"></i> Beli Langsung
                     </button>
                 </div>
             </form>

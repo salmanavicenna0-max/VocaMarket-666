@@ -94,8 +94,8 @@
                 <div class="mt-auto">
                     <div class="font-bold text-primary text-lg">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
                     <div class="flex items-center justify-between mt-2">
-                        <div class="flex items-center text-xs text-gray-500 gap-1">
-                            <i class="ph-fill ph-star text-yellow-400"></i> 4.9
+                        <div class="flex items-center text-xs text-gray-500 gap-1 capitalize">
+                            <i class="ph-fill ph-tag text-primary"></i> {{ $product->type }}
                         </div>
                         <div class="text-xs text-gray-500">Stok {{ $product->stock }}</div>
                     </div>

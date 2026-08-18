@@ -195,6 +195,10 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
 
+        if ($user->role === 'pembeli') {
+            return redirect()->route('orders.index')->with('error', 'Role pembeli tidak memiliki akses ke pengaturan toko.');
+        }
+
         $validated = $request->validate([
             'nama_toko' => 'nullable|string|max:255',
             'deskripsi_toko' => 'nullable|string|max:1000',

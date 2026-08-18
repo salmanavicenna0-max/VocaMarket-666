@@ -12,13 +12,19 @@ class SellerDashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $products = $user->products()->with('images')->latest()->get();
+
+        if ($user->role === 'pembeli') {
+            return redirect()->route('orders.index')->with('error', 'Role pembeli tidak memiliki akses ke halaman dashboard penjual.');
+        }
+
         if ($user->isAdmin()) {
+            $products = Product::with(['images', 'seller'])->latest()->get();
             $orders = \App\Models\Order::where('status', '!=', 'menunggu_pembayaran')
                 ->with(['items.product', 'user', 'payments'])
                 ->latest()
                 ->get();
         } else {
+            $products = $user->products()->with('images')->latest()->get();
             $orders = $user->salesOrders()
                 ->where('status', '!=', 'menunggu_pembayaran')
                 ->with(['items.product', 'user', 'payments'])
@@ -42,7 +48,14 @@ class SellerDashboardController extends Controller
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
         $homepageBanners = \App\Models\HomepageBanner::where('user_id', $user->id)->get();
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners'));
+        $pendingProducts = Product::with(['seller', 'images'])
+            ->where('approval_status', 'pending')
+            ->latest()
+            ->get();
+
+        $allUsers = $user->isAdmin() ? \App\Models\User::latest()->get() : collect();
+
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'pendingProducts', 'allUsers'));
     }
 
     public function storeProduct(Request $request)
@@ -59,7 +72,7 @@ class SellerDashboardController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'images' => 'nullable|array|max:6',
+            'images' => 'nullable|array|max:10',
             'images.*' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,ogg,m4v|max:51200'
         ]);
 
@@ -78,9 +91,13 @@ class SellerDashboardController extends Controller
         ]);
 
         if ($request->hasFile('images')) {
+            $firstPath = null;
             foreach ($request->file('images') as $index => $file) {
-                if ($index >= 6) break; // Limit to max 6 files
+                if ($index >= 10) break; // Limit to max 10 files
                 $path = $file->store('products', 'public');
+                if ($index === 0) {
+                    $firstPath = $path;
+                }
                 ProductImage::create([
                     'product_id' => $product->id,
                     'path' => $path,
@@ -88,18 +105,29 @@ class SellerDashboardController extends Controller
                     'sort_order' => $index,
                 ]);
             }
+            if ($firstPath) {
+                $product->update(['image_path' => $firstPath]);
+            }
         }
 
         if ($isAdmin) {
             return back()->with('success', 'Produk berhasil ditambahkan dan langsung aktif!');
         } else {
-            return back()->with('success', 'Pengajuan produk berhasil dikirim! Menunggu konfirmasi admin.');
+            return back()->with('success', 'Pengajuan berhasil dikirim! Menunggu konfirmasi admin.');
         }
     }
 
     public function updateProduct(Request $request, $id)
     {
-        $product = Product::where('user_id', Auth::id())->findOrFail($id);
+        if (Auth::user()->isAdmin()) {
+            $product = Product::find($id);
+        } else {
+            $product = Product::where('user_id', Auth::id())->find($id);
+        }
+
+        if (!$product) {
+            return back()->with('error', 'Produk tidak ditemukan atau sudah dihapus.');
+        }
 
         if ($request->has('price')) {
             $cleanPrice = (int) str_replace(['.', ','], '', $request->input('price'));
@@ -131,15 +159,34 @@ class SellerDashboardController extends Controller
 
         $product->update($data);
 
-        return back()->with('success', 'Produk diperbarui!');
+        return back()->with('success', 'Produk berhasil diperbarui!');
     }
 
     public function destroyProduct($id)
     {
-        $product = Product::where('user_id', Auth::id())->findOrFail($id);
+        if (Auth::user()->isAdmin()) {
+            $product = Product::with('images')->find($id);
+        } else {
+            $product = Product::with('images')->where('user_id', Auth::id())->find($id);
+        }
+
+        if (!$product) {
+            return back()->with('success', 'Produk sudah tidak ada atau telah dihapus sebelumnya.');
+        }
+
+        // Delete image files from storage
+        foreach ($product->images as $img) {
+            if ($img->path && \Illuminate\Support\Facades\Storage::disk('public')->exists($img->path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($img->path);
+            }
+        }
+        if ($product->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($product->image_path);
+        }
+
         $product->delete();
 
-        return back()->with('success', 'Produk dihapus!');
+        return back()->with('success', 'Produk berhasil dihapus!');
     }
     public function markOrdersRead()
     {
