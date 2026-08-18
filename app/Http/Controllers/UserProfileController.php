@@ -35,6 +35,10 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
 
+        if ($user->role === 'pembeli') {
+            return redirect()->route('orders.index')->with('error', 'Role pembeli khusus untuk melakukan pembelian barang dan jasa.');
+        }
+
         // Ambil produk yang diajukan oleh siswa ini
         $products = \App\Models\Product::where('user_id', $user->id)
             ->with(['images'])

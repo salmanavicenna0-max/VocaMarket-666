@@ -115,7 +115,7 @@
                                     
                                     @if(Auth::user()->isAdmin())
                                         <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard Admin</a>
-                                    @else
+                                    @elseif(Auth::user()->role === 'siswa')
                                         <a href="{{ route('user.submissions') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-primary transition"><i class="ph-bold ph-squares-four mr-2"></i>Dashboard</a>
                                     @endif
                                     
