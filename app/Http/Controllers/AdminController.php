@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Refund;
+use App\Models\PaymentMethod;
 
 class AdminController extends Controller
 {
@@ -106,6 +107,69 @@ class AdminController extends Controller
     {
         $orders = Order::with(['user', 'seller', 'items.product', 'refunds'])->latest()->paginate(20);
         return view('Admin.transactions.index', compact('orders'));
+    }
+
+    public function approveRefund(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->status !== Order::STATUS_MENUNGGU_PENGEMBALIAN) {
+            return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian admin.');
+        }
+
+        $request->validate([
+            'proof_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'transfer_reference' => 'nullable|string|max:100',
+            'admin_note' => 'nullable|string|max:1000',
+        ]);
+
+        $proofPath = $request->file('proof_image')->store('refunds', 'public');
+
+        $refund = $order->refunds()->latest()->first();
+
+        if ($refund) {
+            $refund->update([
+                'status' => Refund::STATUS_PROOF_SENT,
+                'proof_path' => $proofPath,
+                'transfer_reference' => $request->transfer_reference,
+                'admin_note' => $request->admin_note,
+                'handled_by' => auth()->id(),
+                'proof_sent_at' => now(),
+                'dispute_reason' => null,
+                'investigation_note' => null,
+            ]);
+        }
+
+        $order->update(['status' => Order::STATUS_MENUNGGU_KONFIRMASI_PEMBELI]);
+
+        return back()->with('success', 'Refund disetujui & bukti transfer terkirim ke pembeli untuk konfirmasi.');
+    }
+
+    public function rejectRefund(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if (!in_array($order->status, [Order::STATUS_MENUNGGU_PENGEMBALIAN, Order::STATUS_MENUNGGU_KONFIRMASI_PEMBELI])) {
+            return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+        }
+
+        $request->validate([
+    public function showOrder($id)
+    {
+        $order = Order::with(['user', 'seller', 'items.product.images', 'payments', 'refunds'])
+            ->findOrFail($id);
+
+        $paymentMethods = PaymentMethod::active()->orderBy('sort_order')->get();
+
+        return view('Admin.transactions.show', compact('order', 'paymentMethods'));
+    }
+
+    public function invoiceOrder($id)
+    {
+        $order = Order::with(['user', 'seller', 'items.product.images', 'payments', 'refunds'])
+            ->findOrFail($id);
+
+        return view('order.invoice', compact('order'));
     }
 
     public function approveRefund(Request $request, $id)

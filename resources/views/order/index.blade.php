@@ -48,6 +48,10 @@
                     <p class="text-sm font-semibold text-gray-800 uppercase">#{{ substr($order->id, 0, 8) }}</p>
                 </div>
                 <div>
+                    <p class="text-xs text-gray-500 mb-1">No. Invoice</p>
+                    <p class="text-sm font-semibold text-gray-800">{{ $order->code_order }}</p>
+                </div>
+                <div>
                     <p class="text-xs text-gray-500 mb-1">Status</p>
                     @if($order->status == 'menunggu_pembayaran')
                         <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">Menunggu Pembayaran</span>

@@ -43,6 +43,15 @@ class OrderController extends Controller
         return view('order.show', compact('order', 'paymentMethods'));
     }
 
+    public function invoice($id)
+    {
+        $order = Order::with(['user', 'seller', 'items.product.images', 'payments', 'refunds'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('order.invoice', compact('order'));
+    }
+
     /**
      * Cancel order (only when still menunggu_pembayaran).
      */

@@ -66,7 +66,7 @@
                         <span>Jasa</span>
                     </div>
                 </a>
-                <a href="{{ url('/admin/transactions') }}" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 rounded-xl transition font-medium group">
+                <a href="{{ route('admin.transactions') }}" class="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 rounded-xl transition font-medium group">
                     <div class="flex items-center gap-3">
                         <i class="ph-bold ph-receipt text-xl group-hover:scale-110 transition-transform"></i>
                         <span>Transaksi</span>
@@ -206,7 +206,7 @@
                         <h2 class="text-lg font-bold text-gray-800">Transaksi Terbaru</h2>
                         <p class="text-xs text-gray-500 mt-1">Daftar 5 pesanan terakhir yang masuk ke sistem.</p>
                     </div>
-                    <a href="{{ url('/admin/transactions') }}" class="text-sm font-bold text-primary hover:text-blue-700 transition flex items-center gap-1">
+                    <a href="{{ route('admin.transactions') }}" class="text-sm font-bold text-primary hover:text-blue-700 transition flex items-center gap-1">
                         Lihat Semua <i class="ph-bold ph-arrow-right"></i>
                     </a>
                 </div>

@@ -43,7 +43,8 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 
 // Orders
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
+        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice')->middleware('auth');
 Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->middleware('auth');
 Route::post('/orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund')->middleware('auth');
 Route::post('/refund/{id}/confirm', [OrderController::class, 'confirmRefund'])->name('refund.confirm')->middleware('auth');
@@ -116,6 +117,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.products.approve');
     Route::post('/admin/products/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.products.reject');
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::get('/seller/orders/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
+    Route::get('/seller/orders/{id}/invoice', [AdminController::class, 'invoiceOrder'])->name('admin.orders.invoice');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
     Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');

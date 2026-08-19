@@ -21,6 +21,12 @@
         </div>
     @endif
 
+    <div class="flex justify-end mb-4">
+        <a href="{{ route('orders.invoice', $order->id) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white font-bold rounded-lg shadow-sm hover:bg-blue-600 transition">
+            <i class="ph-bold ph-printer"></i> Cetak Invoice
+        </a>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Kolom Kiri: Info Produk & Status -->
         <div class="lg:col-span-2 space-y-6">
@@ -32,6 +38,12 @@
                         <p class="text-sm text-gray-500 mb-1">ID Pesanan</p>
                         <h2 class="text-xl font-bold text-gray-800 uppercase">#{{ substr($order->id, 0, 8) }}</h2>
                         <p class="text-xs text-gray-500 mt-1">Dipesan pada {{ $order->created_at->format('d M Y, H:i') }}</p>
+                        <p class="text-xs text-gray-500 mt-2">No. Invoice: <span class="font-semibold text-gray-800">{{ $order->code_order }}</span></p>
+                        @if($order->status == \App\Models\Order::STATUS_DIPROSES)
+                            <span class="inline-block mt-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold px-2 py-1 rounded">Fase: Produksi</span>
+                        @endif
+                        <p class="text-xs text-gray-500 mt-2">Pembeli: <span class="font-semibold text-gray-800">{{ $order->user->name ?? '-' }}</span></p>
+                        <p class="text-xs text-gray-500 mt-1">Oleh / Penjual: <span class="font-semibold text-gray-800">{{ $order->seller->name ?? 'VocaMarket' }}</span></p>
                     </div>
                     <div>
                         @if($order->status == \App\Models\Order::STATUS_SELESAI && ($latestRefund = $order->refunds->first()) && $latestRefund->status === \App\Models\Refund::STATUS_REJECTED)
