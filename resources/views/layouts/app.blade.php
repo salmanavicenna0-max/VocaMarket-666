@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'E-Commerce Sekolah')</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,8 +13,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3B82F6', 
-                        accent: '#ffb900',  
+                        primary: '#3B82F6',
+                        accent: '#ffb900',
+                        'primary-dark': '#2563EB',
+                        'accent-hover': '#e6a600',
                         'primary-dark': '#2563EB',
                         'accent-hover': '#e6a600',
                         blue: {
@@ -23,6 +26,7 @@
                             300: '#8ed4ff',
                             400: '#59bcff',
                             500: '#32a2ff',
+                            600: '#3B82F6', // The exact requested color
                             600: '#3B82F6', // The exact requested color
                             700: '#0267ad',
                             800: '#06578e',
@@ -102,7 +106,7 @@
                 </script>
             </div>
         @endif
-        
+
         @if(session('error') || $errors->any())
             <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-md px-4" id="global-error-alert">
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex justify-between items-center">
@@ -139,7 +143,7 @@
         @endif
 
         @yield('content')
-        
+
     </main>
 
     @include('layout.footer')
@@ -164,10 +168,10 @@
                 <button class="hover:bg-gray-100 p-1.5 rounded transition" onclick="closeMiniChat(event)"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
         </div>
-        
+
         <!-- Chat Body (Two Columns, Always visible when widget is open) -->
         <div class="h-[450px] flex bg-white relative w-full" id="mini-chat-body">
-            
+
             <!-- Left Column: Chat List -->
             <div class="w-2/5 border-r border-gray-200 flex flex-col bg-white">
                 <!-- Search -->
@@ -180,20 +184,20 @@
                 <!-- List -->
                 <div class="flex-1 overflow-y-auto hide-scrollbar" id="chat-conversation-list">
                     <!-- Conversations will be loaded here via JS -->
-                    <div class="p-4 text-center text-gray-500 text-xs">Memuat obrolan...</div>
+                    <div class="p-4 text-center text-gray-400 text-xs">Belum ada percakapan</div>
                 </div>
             </div>
 
             <!-- Right Column: Active Chat Area -->
             <div class="w-3/5 flex flex-col bg-gray-50/50">
-                
+
                 <!-- Chat Header -->
                 <div class="p-2 border-b border-gray-200 flex items-center justify-between bg-white shrink-0" id="active-chat-header" style="display: none;">
                     <div class="flex items-center gap-2">
                         <span class="font-bold text-gray-900 text-sm" id="active-chat-name">Pilih obrolan</span>
                     </div>
                 </div>
-                
+
                 <!-- Pinned Product Info -->
                 <div class="bg-white p-2 border-b border-gray-100 flex items-center justify-between shrink-0 shadow-sm z-10 hidden" id="active-chat-product">
                     <div class="flex items-center gap-2">
@@ -224,7 +228,7 @@
                     </button>
                 </div>
             </div>
-            
+
         </div>
     </div>
 
@@ -233,6 +237,13 @@
     let currentActiveConversationId = null;
     let currentActiveProductId = null;
     let csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+    let chatBaseUrl = @json(rtrim(request()->getBaseUrl(), '/'));
+    let chatConversationsUrl = chatBaseUrl + '/chat/conversations';
+    let chatMessagesUrlPrefix = chatBaseUrl + '/chat/messages';
+    let chatSendUrl = chatBaseUrl + '/chat/send';
+    let chatStartUrl = chatBaseUrl + '/chat/start';
+    let chatStorageUrl = chatBaseUrl + '/storage/';
+    let chatProductUrlBase = chatBaseUrl + '/';
 
     function openMiniChat(event) {
         if(event) event.preventDefault();
@@ -245,7 +256,7 @@
                 chatPollInterval = setInterval(pollChat, 5000);
             }
         @else
-            window.location.href = '/login';
+            window.location.href = '{{ route('login') }}';
         @endauth
     }
 
@@ -277,7 +288,7 @@
     }
 
     function loadConversations(isPolling = false) {
-        fetch('/chat/conversations', {
+        fetch(chatConversationsUrl, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -286,14 +297,14 @@
         .then(data => {
             const listContainer = document.getElementById('chat-conversation-list');
             if (!isPolling) listContainer.innerHTML = '';
-            
+
             if (data.conversations && data.conversations.length > 0) {
                 let html = '';
                 data.conversations.forEach(conv => {
                     const isActive = conv.id === currentActiveConversationId ? 'bg-blue-50/50 border-primary' : 'hover:bg-gray-50 border-transparent';
                     const unreadBadge = conv.unread_count > 0 ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">${conv.unread_count}</div>` : '';
                     const avatar = conv.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.name)}`;
-                    
+
                     html += `
                     <div onclick="loadMessages(${conv.id}, '${conv.name}', '${avatar}')" class="flex items-start gap-2 p-3 cursor-pointer border-l-2 transition ${isActive}">
                         <div class="relative shrink-0 mt-0.5">
@@ -322,7 +333,7 @@
         document.getElementById('current-conversation-id').value = conversationId;
         document.getElementById('active-chat-header').style.display = 'flex';
         document.getElementById('active-chat-input').style.display = 'flex';
-        
+
         if (name) {
             document.getElementById('active-chat-name').textContent = name;
         }
@@ -330,7 +341,7 @@
         // Highlight selected conversation
         loadConversations(true);
 
-        fetch(`/chat/messages/${conversationId}`, {
+        fetch(chatMessagesUrlPrefix + '/' + conversationId, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -338,12 +349,12 @@
         .then(res => res.json())
         .then(data => {
             const msgsContainer = document.getElementById('active-chat-messages');
-            
+
             // Product info
             const productInfo = document.getElementById('active-chat-product');
             if (data.product && showProductContext) {
                 currentActiveProductId = data.product.id;
-                document.getElementById('active-chat-product-img').src = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : '/storage/' + data.product.thumbnail) : '';
+                document.getElementById('active-chat-product-img').src = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
                 document.getElementById('active-chat-product-name').textContent = data.product.name;
                 document.getElementById('active-chat-product-price').textContent = 'Rp ' + data.product.price.toLocaleString('id-ID');
                 productInfo.classList.remove('hidden');
@@ -356,11 +367,11 @@
                 let html = '';
                 data.messages.forEach(msg => {
                     let messageContent = msg.message;
-                    
+
                     // Render rich product card if token matched
                     if ((msg.message || '').trim() === '[PRODUCT_CARD]' && data.product) {
-                        const productUrl = window.location.origin + '/product/' + data.product.id;
-                        const img = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : '/storage/' + data.product.thumbnail) : '';
+                        const productUrl = chatProductUrlBase + 'product/' + data.product.id;
+                        const img = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
                         const price = 'Rp ' + data.product.price.toLocaleString('id-ID');
                         messageContent = `
                         <div class="flex flex-col gap-1.5 text-left">
@@ -395,7 +406,7 @@
                         </div>`;
                     }
                 });
-                
+
                 // Only auto-scroll if not polling, or if user is already at the bottom
                 const isAtBottom = msgsContainer.scrollHeight - msgsContainer.scrollTop <= msgsContainer.clientHeight + 50;
                 msgsContainer.innerHTML = html;
@@ -422,8 +433,8 @@
         if (!message || !convId) return;
 
         btn.disabled = true;
-        
-        fetch('/chat/send', {
+
+        fetch(chatSendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -454,7 +465,7 @@
         if (!input) return;
         const keyword = input.value.toLowerCase();
         const chatItems = document.querySelectorAll('#chat-conversation-list > div.cursor-pointer');
-        
+
         chatItems.forEach(item => {
             const nameElement = item.querySelector('h4');
             if (nameElement) {
@@ -483,7 +494,7 @@
 
     function startNewChat(sellerId, productId = null) {
         @auth
-            fetch('/chat/start', {
+            fetch(chatStartUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -506,7 +517,7 @@
             })
             .catch(err => console.error(err));
         @else
-            window.location.href = '/login';
+            window.location.href = '{{ route('login') }}';
         @endauth
     }
 
@@ -516,7 +527,7 @@
         const searchDropdown = document.getElementById('search-dropdown');
         const keywordSpans = document.querySelectorAll('.search-keyword');
         const searchContainer = document.getElementById('search-container');
-        
+
         if (searchInput && searchDropdown) {
             function updateDropdown() {
                 const val = searchInput.value.trim();

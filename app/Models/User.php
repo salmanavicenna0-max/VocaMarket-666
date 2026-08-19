@@ -27,6 +27,8 @@ class User extends Authenticatable
         'role',
         'verification_seller',
         'seller_status',
+        'refund_warnings',
+        'account_restricted',
     ];
 
     /**
@@ -50,6 +52,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'verification_seller' => 'boolean',
+            'refund_warnings' => 'integer',
+            'account_restricted' => 'boolean',
         ];
     }
 
@@ -105,5 +109,10 @@ class User extends Authenticatable
     public function isPembeli(): bool
     {
         return $this->role === 'pembeli';
+    }
+
+    public function isRefundRestricted(): bool
+    {
+        return (bool) $this->account_restricted;
     }
 }

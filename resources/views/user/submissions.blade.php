@@ -76,61 +76,6 @@
             </div>
         </div>
 
-        @if(isset($refundRequests) && $refundRequests->isNotEmpty())
-        <!-- Section: Pengajuan Refund Diteruskan Admin -->
-        <div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl border border-orange-200 overflow-hidden shadow-sm p-6 space-y-4">
-            <div class="flex items-center justify-between border-b border-orange-200/60 pb-3">
-                <div>
-                    <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                        <i class="ph-fill ph-warning text-orange-600"></i> Pengajuan Refund Diteruskan Admin
-                    </h2>
-                    <p class="text-xs text-gray-600 mt-0.5">Admin telah menyetujui pengajuan pengembalian dari pembeli. Silakan beri persetujuan akhir.</p>
-                </div>
-                <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    {{ $refundRequests->count() }} Perlu Konfirmasi
-                </span>
-            </div>
-
-            <div class="overflow-x-auto bg-white rounded-xl border border-orange-200">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-orange-100/50 text-gray-700 text-xs font-bold uppercase border-b border-orange-200">
-                            <th class="p-4">Kode Transaksi</th>
-                            <th class="p-4">Pembeli</th>
-                            <th class="p-4 text-center">Total Refund</th>
-                            <th class="p-4 text-center">Konfirmasi Penjual</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm">
-                        @foreach($refundRequests as $reqOrder)
-                        <tr>
-                            <td class="p-4 font-bold text-gray-900">{{ $reqOrder->code_order }}</td>
-                            <td class="p-4 text-gray-700">{{ $reqOrder->user->name ?? 'Pembeli' }}</td>
-                            <td class="p-4 text-center font-bold text-red-600">Rp {{ number_format($reqOrder->total, 0, ',', '.') }}</td>
-                            <td class="p-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    <form action="{{ route('seller.refund.approve', $reqOrder->id) }}" method="POST" onsubmit="return confirm('Apakah Anda setuju untuk menyetujui pengembalian dana ini?');">
-                                        @csrf
-                                        <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded-xl shadow transition">
-                                            ✓ Setujui Refund
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('seller.refund.reject', $reqOrder->id) }}" method="POST" onsubmit="return confirm('Tolak refund? Pesanan akan ditandai Selesai.');">
-                                        @csrf
-                                        <button type="submit" class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-600 font-bold text-xs rounded-xl transition">
-                                            ✕ Tolak
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @endif
-
         <!-- Section 3: Daftar Pengajuan Produk Saya -->
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
             <div class="p-6 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4 bg-gray-50/50">

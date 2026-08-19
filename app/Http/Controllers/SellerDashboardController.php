@@ -48,6 +48,7 @@ class SellerDashboardController extends Controller
         $profile = $user->profile ?? \App\Models\Profile::firstOrCreate(['user_id' => $user->id]);
         $homepageBanners = \App\Models\HomepageBanner::where('user_id', $user->id)->get();
         $serviceRequests = \App\Models\ServiceRequest::where('seller_id', $user->id)->with(['product', 'user'])->latest()->get();
+        $paymentMethods = \App\Models\PaymentMethod::orderBy('sort_order')->orderBy('name')->get();
 
         $pendingProducts = Product::with(['seller', 'images'])
             ->where('approval_status', 'pending')
@@ -58,7 +59,7 @@ class SellerDashboardController extends Controller
 
         $salesData = $this->buildSalesData($orders);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'serviceRequests', 'pendingProducts', 'allUsers', 'salesData'));
+        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'serviceRequests', 'pendingProducts', 'allUsers', 'salesData', 'paymentMethods'));
     }
 
     public function storeProduct(Request $request)
@@ -265,6 +266,57 @@ class SellerDashboardController extends Controller
         $banner->delete();
         
         return back()->with('success', 'Banner berhasil dihapus!');
+    }
+
+    public function storePaymentMethod(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'account_number' => 'required|string|max:50',
+            'account_name' => 'nullable|string|max:100',
+            'is_active' => 'sometimes|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        \App\Models\PaymentMethod::create([
+            'name' => $request->name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'is_active' => $request->boolean('is_active'),
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil ditambahkan!');
+    }
+
+    public function updatePaymentMethod(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'account_number' => 'required|string|max:50',
+            'account_name' => 'nullable|string|max:100',
+            'is_active' => 'sometimes|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $method = \App\Models\PaymentMethod::findOrFail($id);
+        $method->update([
+            'name' => $request->name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'is_active' => $request->boolean('is_active'),
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil diperbarui!');
+    }
+
+    public function destroyPaymentMethod($id)
+    {
+        $method = \App\Models\PaymentMethod::findOrFail($id);
+        $method->delete();
+
+        return back()->with('success', 'Metode pembayaran berhasil dihapus!');
     }
 
     public function getDashboardData()

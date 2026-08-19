@@ -48,6 +48,10 @@
                     <p class="text-sm font-semibold text-gray-800 uppercase">#{{ substr($order->id, 0, 8) }}</p>
                 </div>
                 <div>
+                    <p class="text-xs text-gray-500 mb-1">No. Invoice</p>
+                    <p class="text-sm font-semibold text-gray-800">{{ $order->code_order }}</p>
+                </div>
+                <div>
                     <p class="text-xs text-gray-500 mb-1">Status</p>
                     @if($order->status == 'menunggu_pembayaran')
                         <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded">Menunggu Pembayaran</span>
@@ -56,9 +60,21 @@
                     @elseif($order->status == 'menunggu_verifikasi')
                         <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">Menunggu Konfirmasi Penjual</span>
                     @elseif($order->status == 'selesai')
-                        <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Selesai</span>
+                        @php $fRejected = $order->refunds->first(); @endphp
+                        @if($fRejected && $fRejected->status === \App\Models\Refund::STATUS_REJECTED)
+                            <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">Refund Dibatalkan</span>
+                        @else
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Selesai</span>
+                        @endif
                     @elseif($order->status == 'menunggu_pengembalian')
-                        <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded">Menunggu Pengembalian</span>
+                        @php $pendingRefund = $order->refunds->first(); @endphp
+                        @if($pendingRefund && $pendingRefund->status === \App\Models\Refund::STATUS_DISPUTED)
+                            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded">Refund Sengketa</span>
+                        @else
+                            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded">Menunggu Pengembalian</span>
+                        @endif
+                    @elseif($order->status == 'menunggu_konfirmasi_pembeli')
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">Menunggu Konfirmasi Anda</span>
                     @elseif($order->status == 'pengembalian')
                         <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">Dikembalikan</span>
                     @else
