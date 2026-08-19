@@ -62,16 +62,6 @@
                         </button>
                     </li>
                     <li>
-                        <button onclick="switchTab('jasa')" id="nav-jasa" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent flex justify-between">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ph-handshake text-xl"></i> Pengajuan Jasa
-                            </div>
-                            @if(isset($serviceRequests) && $serviceRequests->where('status', 'quoted')->count() > 0)
-                                <span class="bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $serviceRequests->where('status', 'quoted')->count() }}</span>
-                            @endif
-                        </button>
-                    </li>
-                    <li>
                         <button onclick="switchTab('ulasan')" id="nav-ulasan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             <i class="ph-fill ph-star text-xl"></i> Ulasan Saya
                         </button>
@@ -215,7 +205,7 @@
                 
                 <div class="p-6 flex flex-col gap-4">
                     @forelse($orders as $order)
-                        <div class="pesanan-user-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition" data-status="{{ $order->status_label }}">
+                        <div class="pesanan-user-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition" data-status="@if($order->status == 'selesai' && ($lr = $order->refunds->first()) && $lr->status === \App\Models\Refund::STATUS_REJECTED)Refund Dibatalkan@else{{ $order->status_label }}@endif">
                             <!-- Order Header -->
                             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex flex-wrap gap-4 items-center justify-between">
                                 <div>
@@ -228,7 +218,11 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Status</p>
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{{ $order->status_label }}</span>
+                                    @if($order->status == 'selesai' && ($lr2 = $order->refunds->first()) && $lr2->status === \App\Models\Refund::STATUS_REJECTED)
+                                        <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">Refund Dibatalkan</span>
+                                    @else
+                                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{{ $order->status_label }}</span>
+                                    @endif
                                 </div>
                                 <div class="text-right">
                                     <p class="text-xs text-gray-500 mb-1">Total Belanja</p>
@@ -272,79 +266,6 @@
                 </div>
             </div>
 
-            <!-- TAB: Pengajuan Jasa -->
-            <div id="tab-jasa" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
-                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50 rounded-t-xl">
-                    <h2 class="text-xl font-bold text-gray-900">Pengajuan Jasa Saya</h2>
-                </div>
-                <div class="p-0">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                                    <th class="p-4 font-bold border-b border-gray-200">Tgl</th>
-                                    <th class="p-4 font-bold border-b border-gray-200">Jasa & Penjual</th>
-                                    <th class="p-4 font-bold border-b border-gray-200">Status</th>
-                                    <th class="p-4 font-bold border-b border-gray-200">Harga Penawaran</th>
-                                    <th class="p-4 font-bold border-b border-gray-200 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                @if(isset($serviceRequests) && $serviceRequests->count() > 0)
-                                    @foreach($serviceRequests as $req)
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="p-4 text-sm text-gray-600">{{ $req->created_at->format('d M Y') }}</td>
-                                        <td class="p-4">
-                                            <div class="font-bold text-gray-900 text-sm">{{ $req->product->name }}</div>
-                                            <div class="text-xs text-gray-500">{{ $req->product->seller->name ?? 'Toko' }}</div>
-                                        </td>
-                                        <td class="p-4">
-                                            @if($req->status === 'pending')
-                                                <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full border border-yellow-200">Menunggu Penawaran</span>
-                                            @elseif($req->status === 'quoted')
-                                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full border border-blue-200">Penawaran Diberikan</span>
-                                            @elseif($req->status === 'accepted' || $req->status === 'completed')
-                                                <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full border border-green-200">Disetujui</span>
-                                            @else
-                                                <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full border border-red-200">Ditolak</span>
-                                            @endif
-                                        </td>
-                                        <td class="p-4 font-bold text-gray-900 text-sm">
-                                            {{ $req->quoted_price ? 'Rp' . number_format($req->quoted_price, 0, ',', '.') : '-' }}
-                                        </td>
-                                        <td class="p-4 text-center">
-                                            @if($req->status === 'quoted')
-                                                <form action="{{ route('service.request.accept', $req->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="px-3 py-1.5 bg-primary text-white font-bold text-xs rounded hover:bg-blue-700 transition shadow-sm">
-                                                        Setujui & Checkout
-                                                    </button>
-                                                </form>
-                                                <div class="mt-1 text-[10px] text-gray-500">
-                                                    @if($req->seller_notes)
-                                                        Catatan Penjual: "{{ $req->seller_notes }}"
-                                                    @endif
-                                                </div>
-                                            @else
-                                                <button onclick="alert('{{ addslashes($req->description) }}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 font-bold text-xs rounded hover:bg-gray-200 transition">
-                                                    Lihat Detail
-                                                </button>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="5" class="p-8 text-center text-gray-500">
-                                            <p class="font-bold text-gray-700 mb-1">Belum Ada Pengajuan Jasa</p>
-                                        </td>
-                                    </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
             <!-- TAB: Ulasan Saya -->
             <div id="tab-ulasan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">

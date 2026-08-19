@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -28,8 +29,16 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['images', 'reviews', 'seller.profile'])->findOrFail($id);
+        
+        $activeServiceRequest = null;
+        if (Auth::check() && $product->isJasa()) {
+            $activeServiceRequest = \App\Models\ServiceRequest::where('product_id', $id)
+                ->where('user_id', Auth::id())
+                ->whereIn('status', ['pending', 'quoted'])
+                ->first();
+        }
 
-        return view('product.show', compact('product'));
+        return view('product.show', compact('product', 'activeServiceRequest'));
     }
 
     /**
@@ -57,10 +66,15 @@ class ProductController extends Controller
             'akuntansi' => 'Akuntansi',
         ];
 
-        $products = Product::where('is_active', true)
+        $query = Product::where('is_active', true)
             ->with('images')
-            ->where('category', 'like', '%' . ($categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug))) . '%')
-            ->get();
+            ->where('category', 'like', '%' . ($categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug))) . '%');
+
+        if (request()->has('type')) {
+            $query->where('type', request('type'));
+        }
+
+        $products = $query->get();
 
         $categoryName = $categoryNames[$slug] ?? ucfirst(str_replace('-', ' ', $slug));
         $currentSubcategories = $subcategories[$slug] ?? [];

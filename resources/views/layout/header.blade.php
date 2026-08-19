@@ -5,7 +5,7 @@
         <div class="absolute top-0 left-0 w-full h-36 z-0 pointer-events-none overflow-hidden hidden md:block">
             <svg class="w-full h-full opacity-90" preserveAspectRatio="none" viewBox="0 0 1000 144">
                 <!-- Top Line (Blue) -->
-                <path d="M -10 112 L 200 112 L 260 30 L 1010 30" fill="none" stroke="#0a84d4" stroke-width="4" stroke-linejoin="round" />
+                <path d="M -10 112 L 200 112 L 260 30 L 1010 30" fill="none" stroke="#3B82F6" stroke-width="4" stroke-linejoin="round" />
                 <!-- Bottom Line (Yellow) -->
                 <path d="M -10 120 L 200 120 L 260 38 L 1010 38" fill="none" stroke="#ffb900" stroke-width="4" stroke-linejoin="round" />
             </svg>
@@ -13,7 +13,7 @@
 
         <!-- Mobile Ribbon (Garis Lurus di bawah) -->
         <div class="absolute bottom-0 left-0 w-full flex flex-col z-0 pointer-events-none block md:hidden">
-            <div class="w-full h-[3px] bg-[#0a84d4]"></div>
+            <div class="w-full h-[3px] bg-[#3B82F6]"></div>
             <div class="w-full h-[3px] bg-[#ffb900]"></div>
         </div>
 
@@ -115,27 +115,7 @@
                                 <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                                 <span>Cari "<span class="desktop-search-keyword font-bold"></span>"</span>
                             </a>
-                            
-                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'merchandise') }}?q=' + encodeURIComponent(document.getElementById('desktop-search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
-                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>"<span class="desktop-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Produk Sekolah</span></span>
-                            </a>
-                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'dkv-animasi') }}?q=' + encodeURIComponent(document.getElementById('desktop-search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
-                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>"<span class="desktop-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa DKV & Animasi</span></span>
-                            </a>
-                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pemasaran') }}?q=' + encodeURIComponent(document.getElementById('desktop-search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
-                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>"<span class="desktop-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Pemasaran</span></span>
-                            </a>
-                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pplg') }}?q=' + encodeURIComponent(document.getElementById('desktop-search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
-                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>"<span class="desktop-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa PPLG</span></span>
-                            </a>
-                            <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'akuntansi') }}?q=' + encodeURIComponent(document.getElementById('desktop-search-input').value);" class="flex items-center px-4 py-3 hover:bg-gray-50 text-gray-700 text-sm transition border-b border-gray-50 last:border-0">
-                                <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                                <span>"<span class="desktop-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Akuntansi</span></span>
-                            </a>
+
                         </div>
                     </form>
                     
@@ -228,27 +208,7 @@
                         <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
                         <span>Cari "<span class="modal-search-keyword font-bold"></span>"</span>
                     </a>
-                    
-                    <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'merchandise') }}?q=' + encodeURIComponent(document.getElementById('modal-search-input').value);" class="flex items-center px-4 py-3 hover:bg-white hover:shadow-sm rounded-lg text-gray-700 transition mb-1">
-                        <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                        <span>"<span class="modal-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Produk Sekolah</span></span>
-                    </a>
-                    <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'dkv-animasi') }}?q=' + encodeURIComponent(document.getElementById('modal-search-input').value);" class="flex items-center px-4 py-3 hover:bg-white hover:shadow-sm rounded-lg text-gray-700 transition mb-1">
-                        <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                        <span>"<span class="modal-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa DKV & Animasi</span></span>
-                    </a>
-                    <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pemasaran') }}?q=' + encodeURIComponent(document.getElementById('modal-search-input').value);" class="flex items-center px-4 py-3 hover:bg-white hover:shadow-sm rounded-lg text-gray-700 transition mb-1">
-                        <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                        <span>"<span class="modal-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Pemasaran</span></span>
-                    </a>
-                    <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'pplg') }}?q=' + encodeURIComponent(document.getElementById('modal-search-input').value);" class="flex items-center px-4 py-3 hover:bg-white hover:shadow-sm rounded-lg text-gray-700 transition mb-1">
-                        <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                        <span>"<span class="modal-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa PPLG</span></span>
-                    </a>
-                    <a href="#" onclick="event.preventDefault(); window.location.href='{{ route('kategori', 'akuntansi') }}?q=' + encodeURIComponent(document.getElementById('modal-search-input').value);" class="flex items-center px-4 py-3 hover:bg-white hover:shadow-sm rounded-lg text-gray-700 transition mb-1">
-                        <i class="ph ph-magnifying-glass text-gray-400 mr-3 text-lg"></i>
-                        <span>"<span class="modal-search-keyword font-bold"></span>" di <span class="font-medium text-primary">Jasa Akuntansi</span></span>
-                    </a>
+
                 </div>
             </div>
         </div>

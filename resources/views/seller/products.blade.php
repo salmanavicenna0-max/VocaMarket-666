@@ -67,7 +67,7 @@
                     </li>
                     <li>
                         <button onclick="switchTab('produk')" id="nav-produk" class="w-full text-left flex items-center gap-3 px-5 py-4 text-primary font-medium bg-blue-50 border-l-4 border-primary transition">
-                            <i class="ph-fill ph-package text-xl"></i> {{ Auth::user()->isAdmin() ? 'Produk' : 'Produk Saya' }}
+                            {{ Auth::user()->isAdmin() ? 'Produk' : 'Produk Saya' }}
                         </button>
                     </li>
                     <li>
@@ -113,7 +113,7 @@
                     </li>
                     <li>
                         <button onclick="switchTab('kelolapengguna')" id="nav-kelolapengguna" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            <i class="ph-fill ph-users text-xl text-indigo-500"></i> Kelola Pengguna
+                            Kelola Pengguna
                         </button>
                     </li>
                     @endif
@@ -122,15 +122,18 @@
                             Konfigurasi Toko
                         </button>
                     </li>
-                    <li>
-                        <button onclick="switchTab('statustoko')" id="nav-statustoko" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
-                            Status Toko
-                        </button>
-                    </li>
+
                     @if(Auth::user()->seller_status === 'approved' || Auth::user()->isAdmin())
                     <li>
                         <button onclick="switchTab('bannerberanda')" id="nav-bannerberanda" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
                             Banner Beranda
+                        </button>
+                    </li>
+                    @endif
+                    @if(Auth::user()->isAdmin())
+                    <li>
+                        <button onclick="switchTab('aturpembayaran')" id="nav-aturpembayaran" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            Atur Pembayaran
                         </button>
                     </li>
                     @endif
@@ -399,7 +402,14 @@
                                     <p class="text-[10px] text-gray-500">{{ $order->code_order }}</p>
                                 </div>
                             </div>
-                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded border border-blue-200">{{ $order->status_label }}</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded border border-blue-200">
+                                @php $dRej = $order->refunds->first(); @endphp
+                                @if($order->status == 'selesai' && $dRej && $dRej->status === \App\Models\Refund::STATUS_REJECTED)
+                                    <i class="ph-fill ph-x-circle mr-1"></i>Refund Ditolak
+                                @else
+                                    {{ $order->status_label }}
+                                @endif
+                            </span>
                         </div>
                         <div class="p-4 flex gap-4 flex-col">
                             @foreach($order->items as $item)
@@ -420,17 +430,30 @@
 
                           <div class="p-4 border-t border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-gray-50">
 
-                              <!-- Lihat Bukti Bayar -->
-                              <div>
+                              <!-- Lihat Bukti Bayar + Catatan Refund -->
+                              <div class="flex flex-col gap-2 max-w-[340px]">
                                   @if($order->payments && $order->payments->count() > 0)
                                       <a href="{{ asset('storage/' . $order->payments->last()->payment_proof) }}" target="_blank" class="text-primary text-sm font-bold hover:underline flex items-center gap-1">
                                           <i class="ph-bold ph-image"></i> Lihat Bukti Pembayaran
                                       </a>
                                   @endif
+                                  @php $pendingRefund = $order->refunds->first(); @endphp
+                                  @if($order->status == 'menunggu_pengembalian' && $pendingRefund && $pendingRefund->reason)
+                                      <div class="w-full bg-orange-50 border border-orange-200 rounded-lg p-2 text-xs">
+                                          <p class="font-bold text-orange-800 mb-0.5">Catatan Refund dari Pembeli</p>
+                                          <p class="text-gray-700 leading-snug">{{ $pendingRefund->reason }}</p>
+                                      </div>
+                                  @endif
                               </div>
 
-                              <div class="flex justify-end gap-2">
-                                  @if($order->status == 'menunggu_verifikasi' || $order->status == 'diproses')
+                               <div class="flex justify-end gap-2">
+                                   <a href="{{ route('admin.orders.show', $order->id) }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-50 transition focus:outline-none flex items-center gap-1">
+                                       <i class="ph-bold ph-eye"></i> Lihat Detail
+                                   </a>
+                                   <a href="{{ route('admin.orders.invoice', $order->id) }}" target="_blank" class="px-4 py-2 border border-primary text-primary rounded-lg text-sm font-bold hover:bg-blue-50 transition focus:outline-none flex items-center gap-1">
+                                       <i class="ph-bold ph-printer"></i> Cetak Invoice
+                                   </a>
+                                   @if($order->status == 'menunggu_verifikasi' || $order->status == 'diproses')
                                       <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
                                           @csrf
                                           <input type="hidden" name="status" value="dibatalkan">
@@ -438,28 +461,42 @@
                                       </form>
                                   @endif
 
-                                   @if($order->status == 'menunggu_pengembalian')
-                                       <form action="{{ route('admin.refund.approve', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Setujui refund ini dan teruskan ke penjual?');">
-                                           @csrf
-                                           <button type="submit" class="px-4 py-2 bg-yellow-500 text-gray-900 rounded-lg text-sm font-extrabold hover:bg-yellow-400 transition shadow-sm focus:outline-none flex items-center gap-1">
-                                               <i class="ph-bold ph-check"></i> Setujui Refund (Teruskan ke Penjual)
-                                           </button>
-                                       </form>
-                                       <form action="{{ route('admin.refund.reject', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Tolak refund ini?');">
-                                           @csrf
-                                           <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak Refund</button>
-                                       </form>
-                                   @endif
-                                   @if($order->status == 'menunggu_pengembalian_penjual')
-                                       <form action="{{ route('seller.refund.approve', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Setujui refund ini?');">
-                                           @csrf
-                                           <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition shadow-sm focus:outline-none">Konfirmasi Refund Penjual</button>
-                                       </form>
-                                       <form action="{{ route('seller.refund.reject', $order->id) }}" method="POST" class="inline" onsubmit="return confirm('Tolak refund?');">
-                                           @csrf
-                                           <button type="submit" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition focus:outline-none">Tolak Refund</button>
-                                       </form>
-                                   @endif
+                                   @auth
+@if($order->status == 'menunggu_pengembalian' && Auth::user()->isAdmin())
+                                        <div class="flex flex-col items-end gap-2 w-full max-w-[340px]">
+                                            <form action="{{ route('admin.refund.approve', $order->id) }}" method="POST" enctype="multipart/form-data" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 space-y-1.5">
+                                                @csrf
+                                                <label class="block text-[11px] font-bold text-gray-600">Bukti Transfer (Screenshot) <span class="text-red-500">*</span></label>
+                                                <input type="file" name="proof_image" required accept="image/*" class="text-[11px] w-full">
+                                                <input type="text" name="transfer_reference" placeholder="No. referensi transfer (opsional)" class="w-full border border-gray-300 rounded px-2 py-1 text-xs">
+                                                <input type="text" name="admin_note" placeholder="Catatan admin (opsional)" class="w-full border border-gray-300 rounded px-2 py-1 text-xs">
+                                                <button type="submit" class="w-full px-3 py-1.5 bg-yellow-500 text-gray-900 rounded-lg text-xs font-extrabold hover:bg-yellow-400 transition">
+                                                    <i class="ph-bold ph-check"></i> Setujui &amp; Kirim Bukti Transfer
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('admin.refund.reject', $order->id) }}" method="POST" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 space-y-1.5">
+                                                @csrf
+                                                <input type="text" name="reason" required placeholder="Alasan penolakan (wajib)" class="w-full border border-gray-300 rounded px-2 py-1 text-xs">
+                                                <label class="flex items-center gap-1 text-[10px] text-gray-500">
+                                                    <input type="checkbox" name="fraud" value="1"> Palsu (peringatan akun)
+                                                </label>
+                                                <button type="submit" class="w-full px-3 py-1.5 bg-white border border-red-200 text-red-600 rounded-lg text-xs font-bold hover:bg-red-50 transition">
+                                                    <i class="ph-bold ph-x"></i> Tolak Refund
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @elseif($order->status == 'menunggu_pengembalian')
+                                        <div class="w-full max-w-[340px] flex flex-col items-end gap-1.5">
+                                            <span class="text-xs font-bold text-orange-600 flex items-center gap-1">
+                                                <i class="ph-bold ph-warning"></i> Refund sedang ditinjau Admin
+                                            </span>
+                                        </div>
+                                    @elseif($order->status == 'menunggu_konfirmasi_pembeli')
+                                        <span class="text-xs font-bold text-blue-600 flex items-center gap-1">
+                                            <i class="ph-bold ph-user-check"></i> Menunggu konfirmasi pembeli
+                                        </span>
+                                    @endif
+                                   @endauth
                                    @if($order->status == 'menunggu_verifikasi')
                                       <form action="{{ route('seller.order.status', $order->id) }}" method="POST">
                                           @csrf
@@ -731,7 +768,7 @@
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
                                     </td>
                                     <td class="p-4 text-center font-bold text-gray-700">
-                                        {{ $product->stock }}
+                                        {{ $product->isJasa() ? '-' : $product->stock }}
                                     </td>
                                     <td class="p-4">
                                         <div class="flex items-center justify-center gap-2">
@@ -992,6 +1029,79 @@
             </div>
             @endif
 
+            <!-- TAB: Atur Pembayaran -->
+            @if(Auth::user()->isAdmin())
+            <div id="tab-aturpembayaran" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 bg-blue-50/50 rounded-t-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-wallet text-primary"></i> Atur Metode Pembayaran
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Kelola rekening tujuan pembayaran yang ditampilkan ke pembeli saat checkout.</p>
+                    </div>
+                    <button onclick="openPaymentModal()" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2 shrink-0">
+                        <i class="ph-bold ph-plus"></i> Tambah Metode Pembayaran
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    @if($paymentMethods->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-left text-gray-500">
+                                    <th class="py-3 pr-4 font-semibold">Urutan</th>
+                                    <th class="py-3 pr-4 font-semibold">Nama Metode</th>
+                                    <th class="py-3 pr-4 font-semibold">Nomor Rekening</th>
+                                    <th class="py-3 pr-4 font-semibold">Atas Nama</th>
+                                    <th class="py-3 pr-4 font-semibold">Status</th>
+                                    <th class="py-3 font-semibold text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($paymentMethods as $method)
+                                <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                    <td class="py-3 pr-4">{{ $method->sort_order }}</td>
+                                    <td class="py-3 pr-4 font-bold text-gray-900">{{ $method->name }}</td>
+                                    <td class="py-3 pr-4">{{ $method->account_number }}</td>
+                                    <td class="py-3 pr-4">{{ $method->account_name ?? '-' }}</td>
+                                    <td class="py-3 pr-4">
+                                        @if($method->is_active)
+                                        <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded border border-green-200">Aktif</span>
+                                        @else
+                                        <span class="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded border border-gray-200">Nonaktif</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-3 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button onclick='editPayment(@json($method))' class="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-lg text-xs font-bold hover:bg-gray-50 transition flex items-center gap-1.5">
+                                                <i class="ph-bold ph-pencil-simple"></i> Edit
+                                            </button>
+                                            <form action="{{ route('seller.payment_method.destroy', $method->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus metode pembayaran ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition flex items-center gap-1.5">
+                                                    <i class="ph-bold ph-trash"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <div class="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center flex flex-col items-center">
+                        <i class="ph-fill ph-wallet text-6xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-700 mb-2">Belum Ada Metode Pembayaran</h3>
+                        <p class="text-gray-500 max-w-md">Belum ada metode pembayaran yang terdaftar. Klik tombol "Tambah Metode Pembayaran" untuk mulai menambahkan.</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
+
         </div>
     </div>
 </div>
@@ -1102,6 +1212,38 @@
                 <i class="ph-bold ph-floppy-disk"></i> Simpan Produk
             </button>
         </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crop Foto -->
+<div id="cropModal" class="fixed inset-0 z-[150] hidden bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <i class="ph-bold ph-crop text-primary"></i> Potong Foto
+                <span id="cropProgress" class="text-xs font-medium text-gray-400 ml-1"></span>
+            </h3>
+            <button type="button" onclick="skipCrop()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <p class="text-xs text-gray-500 mb-3">Geser foto untuk memposisikan, gunakan slider atau scroll untuk memperbesar/memperkecil. Hasil potongan berbentuk kotak (1:1).</p>
+            <div class="relative bg-gray-900 rounded-xl overflow-hidden select-none" id="cropStage" style="height: min(60vh, 440px); touch-action: none;">
+                <canvas id="cropCanvas" class="w-full h-full block cursor-grab"></canvas>
+            </div>
+            <div class="flex items-center gap-3 mt-4">
+                <i class="ph-bold ph-magnifying-glass-minus text-gray-400"></i>
+                <input type="range" id="cropZoom" min="100" max="300" value="100" class="flex-1 accent-blue-600">
+                <i class="ph-bold ph-magnifying-glass-plus text-gray-400"></i>
+            </div>
+            <div class="flex gap-3 justify-end mt-6">
+                <button type="button" onclick="skipCrop()" class="px-5 py-2.5 text-gray-600 font-bold hover:bg-gray-100 rounded-xl transition">Lewati</button>
+                <button type="button" onclick="applyCrop()" class="px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2">
+                    <i class="ph-bold ph-check"></i> Terapkan
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -1331,6 +1473,60 @@
 </div>
 
 @if(Auth::user()->isAdmin())
+<!-- Modal Tambah Metode Pembayaran -->
+<div id="paymentModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+            <h3 id="paymentModalTitle" class="font-bold text-lg text-gray-900">Tambah Metode Pembayaran</h3>
+            <button onclick="closePaymentModal()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors focus:outline-none">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="paymentForm" action="{{ route('seller.payment_method.store') }}" method="POST" class="flex flex-col gap-5">
+                @csrf
+                <input type="hidden" name="payment_method_id" id="payment_method_id">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Nama Metode <span class="text-red-500">*</span></label>
+                        <input type="text" name="name" id="pay_name" placeholder="Contoh: BCA, Mandiri, Gopay" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Nomor Rekening / Akun <span class="text-red-500">*</span></label>
+                        <input type="text" name="account_number" id="pay_account_number" placeholder="Contoh: 123456789" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1.5">Atas Nama</label>
+                    <input type="text" name="account_name" id="pay_account_name" placeholder="Contoh: VocaMarket" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Urutan Tampil</label>
+                        <input type="number" name="sort_order" id="pay_sort_order" min="0" placeholder="0" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1.5">Status</label>
+                        <select name="is_active" id="pay_is_active" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:border-primary bg-white transition">
+                            <option value="1">Aktif</option>
+                            <option value="0">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
+                    <button type="button" onclick="closePaymentModal()" class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm">Simpan Metode Pembayaran</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Tambah User Baru -->
 <div id="addUserModal" class="fixed inset-0 z-[100] hidden bg-gray-900/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto pt-4 pb-10 opacity-0 transition-opacity duration-300">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg transform scale-95 transition-transform duration-300 relative mt-4 mb-auto">
@@ -1641,6 +1837,11 @@
         setTimeout(() => {
             modal.classList.add('hidden');
             selectedMediaFiles = [];
+            cropQueue = [];
+            cropProcessing = false;
+            cropTotal = 0;
+            cropCurrent = 0;
+            closeCropModal();
             updateFileInputAndPreview();
         }, 300); // match duration-300
     }
@@ -1654,6 +1855,8 @@
 
 
     function switchTab(tabId) {
+        // Remember active tab so page reloads (e.g. after delete) stay on the same tab
+        try { sessionStorage.setItem('seller_activetab', tabId); } catch (e) {}
         // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.add('hidden');
@@ -1784,23 +1987,53 @@
         }
     }
 
-    // 3. Media Upload Accumulation & Preview (Max 6 Photos/Videos)
+    // 3. Media Upload Accumulation & Preview (Max 10 Photos/Videos)
     let selectedMediaFiles = [];
+    let cropQueue = [];
+    let cropProcessing = false;
+    let cropTotal = 0;
+    let cropCurrent = 0;
 
     function handleMediaSelect(event) {
         const newFiles = Array.from(event.target.files);
 
-        // Append new files up to max 10 total
         for (let file of newFiles) {
-            if (selectedMediaFiles.length < 10) {
-                const exists = selectedMediaFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!exists) {
-                    selectedMediaFiles.push(file);
-                }
+            if (selectedMediaFiles.length + cropQueue.length >= 10) break;
+            const exists = selectedMediaFiles.some(f => f.name === file.name && f.size === file.size);
+            if (exists) continue;
+
+            const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|webm|mov|ogg|m4v)$/i);
+            if (isVideo) {
+                // Video langsung ditambahkan (tidak bisa di-crop)
+                selectedMediaFiles.push(file);
+            } else {
+                cropQueue.push(file);
+                cropTotal++;
             }
         }
 
-        updateFileInputAndPreview();
+        // Kosongkan input supaya file yang sama bisa dipilih lagi
+        event.target.value = '';
+
+        if (!cropProcessing) {
+            cropCurrent = 0;
+            processCropQueue();
+        }
+    }
+
+    function processCropQueue() {
+        if (cropQueue.length === 0) {
+            cropProcessing = false;
+            updateFileInputAndPreview();
+            return;
+        }
+        cropProcessing = true;
+        openCropModal(cropQueue.shift());
+    }
+
+    function skipCrop() {
+        closeCropModal();
+        processCropQueue();
     }
 
     function removeMediaFile(index) {
@@ -1858,6 +2091,237 @@
         }
     }
 
+    // 3b. Crop Foto Sebelum Upload
+    const cropState = {
+        img: null,
+        scale: 1,
+        offsetX: 0,
+        offsetY: 0,
+        baseScale: 1,
+        stageW: 0,
+        stageH: 0,
+        imgW: 0,
+        imgH: 0,
+        dragging: false,
+        dragStartX: 0,
+        dragStartY: 0,
+        origOffsetX: 0,
+        origOffsetY: 0,
+        currentFile: null,
+        cropRect: null
+    };
+
+    function openCropModal(file) {
+        cropState.currentFile = file;
+        cropCurrent++;
+        const modal = document.getElementById('cropModal');
+        const canvas = document.getElementById('cropCanvas');
+        const stage = document.getElementById('cropStage');
+        modal.classList.remove('hidden');
+
+        document.getElementById('cropProgress').textContent = cropTotal > 0 ? `(${cropCurrent} dari ${cropTotal})` : '';
+
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = function() {
+            cropState.img = img;
+            cropState.imgW = img.width;
+            cropState.imgH = img.height;
+            cropState.stageW = stage.clientWidth;
+            cropState.stageH = stage.clientHeight;
+
+            const s = Math.max(cropState.stageW / img.width, cropState.stageH / img.height);
+            cropState.baseScale = s;
+            cropState.scale = 1;
+            cropState.offsetX = (cropState.stageW - img.width * s) / 2;
+            cropState.offsetY = (cropState.stageH - img.height * s) / 2;
+
+            document.getElementById('cropZoom').value = 100;
+            drawCrop();
+            URL.revokeObjectURL(url);
+        };
+        img.src = url;
+    }
+
+    function closeCropModal() {
+        document.getElementById('cropModal').classList.add('hidden');
+        cropState.img = null;
+        cropState.cropRect = null;
+    }
+
+    function drawCrop() {
+        const canvas = document.getElementById('cropCanvas');
+        const img = cropState.img;
+        if (!img) return;
+
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const cssW = cropState.stageW;
+        const cssH = cropState.stageH;
+        canvas.width = cssW * dpr;
+        canvas.height = cssH * dpr;
+        ctx.scale(dpr, dpr);
+
+        ctx.clearRect(0, 0, cssW, cssH);
+        ctx.fillStyle = '#111827';
+        ctx.fillRect(0, 0, cssW, cssH);
+
+        const drawW = img.width * cropState.baseScale * cropState.scale;
+        const drawH = img.height * cropState.baseScale * cropState.scale;
+        ctx.drawImage(img, cropState.offsetX, cropState.offsetY, drawW, drawH);
+
+        const side = Math.min(cssW, cssH) * 0.8;
+        const cx = (cssW - side) / 2;
+        const cy = (cssH - side) / 2;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(cssW, 0);
+        ctx.lineTo(cssW, cssH);
+        ctx.lineTo(0, cssH);
+        ctx.closePath();
+        ctx.rect(cx, cy, side, side);
+        ctx.fill('evenodd');
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cx, cy, side, side);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1;
+        const third = side / 3;
+        for (let i = 1; i < 3; i++) {
+            ctx.beginPath();
+            ctx.moveTo(cx + third * i, cy);
+            ctx.lineTo(cx + third * i, cy + side);
+            ctx.moveTo(cx, cy + third * i);
+            ctx.lineTo(cx + side, cy + third * i);
+            ctx.stroke();
+        }
+
+        cropState.cropRect = { cx, cy, side };
+    }
+
+    function clampCropOffset() {
+        const img = cropState.img;
+        if (!img || !cropState.cropRect) return;
+        const r = cropState.cropRect;
+        const drawW = img.width * cropState.baseScale * cropState.scale;
+        const drawH = img.height * cropState.baseScale * cropState.scale;
+        const minX = r.cx + r.side - drawW;
+        const maxX = r.cx;
+        const minY = r.cy + r.side - drawH;
+        const maxY = r.cy;
+        cropState.offsetX = Math.min(maxX, Math.max(minX, cropState.offsetX));
+        cropState.offsetY = Math.min(maxY, Math.max(minY, cropState.offsetY));
+    }
+
+    function updateCropZoom(value) {
+        cropState.scale = value / 100;
+        clampCropOffset();
+        drawCrop();
+    }
+
+    function initCropCanvasEvents() {
+        const canvas = document.getElementById('cropCanvas');
+        const zoom = document.getElementById('cropZoom');
+        const stage = document.getElementById('cropStage');
+
+        if (!canvas) return;
+
+        canvas.addEventListener('mousedown', e => {
+            cropState.dragging = true;
+            cropState.dragStartX = e.clientX;
+            cropState.dragStartY = e.clientY;
+            cropState.origOffsetX = cropState.offsetX;
+            cropState.origOffsetY = cropState.offsetY;
+            canvas.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (!cropState.dragging) return;
+            cropState.offsetX = cropState.origOffsetX + (e.clientX - cropState.dragStartX);
+            cropState.offsetY = cropState.origOffsetY + (e.clientY - cropState.dragStartY);
+            clampCropOffset();
+            drawCrop();
+        });
+
+        window.addEventListener('mouseup', () => {
+            cropState.dragging = false;
+            canvas.style.cursor = 'grab';
+        });
+
+        canvas.addEventListener('touchstart', e => {
+            if (e.touches.length === 1) {
+                const t = e.touches[0];
+                cropState.dragging = true;
+                cropState.dragStartX = t.clientX;
+                cropState.dragStartY = t.clientY;
+                cropState.origOffsetX = cropState.offsetX;
+                cropState.origOffsetY = cropState.offsetY;
+            }
+            e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchmove', e => {
+            if (!cropState.dragging || e.touches.length !== 1) return;
+            const t = e.touches[0];
+            cropState.offsetX = cropState.origOffsetX + (t.clientX - cropState.dragStartX);
+            cropState.offsetY = cropState.origOffsetY + (t.clientY - cropState.dragStartY);
+            clampCropOffset();
+            drawCrop();
+            e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => {
+            cropState.dragging = false;
+        });
+
+        if (zoom) {
+            zoom.addEventListener('input', e => updateCropZoom(parseInt(e.target.value, 10)));
+        }
+        if (stage) {
+            stage.addEventListener('wheel', e => {
+                e.preventDefault();
+                let val = parseInt(zoom.value, 10) + (e.deltaY < 0 ? 15 : -15);
+                val = Math.max(100, Math.min(300, val));
+                zoom.value = val;
+                updateCropZoom(val);
+            }, { passive: false });
+        }
+    }
+    initCropCanvasEvents();
+
+    function applyCrop() {
+        const img = cropState.img;
+        const r = cropState.cropRect;
+        if (!img || !r) return;
+
+        const outputSize = 800;
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = outputSize;
+        outCanvas.height = outputSize;
+        const octx = outCanvas.getContext('2d');
+
+        const drawW = img.width * cropState.baseScale * cropState.scale;
+        const drawH = img.height * cropState.baseScale * cropState.scale;
+        const sx = (r.cx - cropState.offsetX) / drawW * img.width;
+        const sy = (r.cy - cropState.offsetY) / drawH * img.height;
+        const sw = r.side / drawW * img.width;
+        const sh = r.side / drawH * img.height;
+
+        octx.drawImage(img, sx, sy, sw, sh, 0, 0, outputSize, outputSize);
+
+        outCanvas.toBlob(blob => {
+            const original = cropState.currentFile;
+            const name = (original.name.replace(/\.[^.]+$/, '') || 'foto') + '-crop-' + Date.now() + '.jpg';
+            const croppedFile = new File([blob], name, { type: 'image/jpeg' });
+            selectedMediaFiles.push(croppedFile);
+            closeCropModal();
+            processCropQueue();
+        }, 'image/jpeg', 0.92);
+    }
     // 4. Form Submit & Toast
     function submitProduk(e) {
         e.preventDefault(); // prevent actual reload
@@ -2072,6 +2536,13 @@
             if (document.getElementById('tab-' + tabId)) {
                 switchTab(tabId);
             }
+        } else if (sessionStorage.getItem('seller_activetab')) {
+            const savedTab = sessionStorage.getItem('seller_activetab');
+            if (document.getElementById('tab-' + savedTab)) {
+                switchTab(savedTab);
+            } else {
+                switchTab('dashboard');
+            }
         } else {
             switchTab('dashboard');
         }
@@ -2130,6 +2601,56 @@
         bannerModalInner.classList.add('scale-95');
         setTimeout(() => {
             bannerModal.classList.add('hidden');
+        }, 300);
+    }
+
+    // --- Payment Method Modal Logic ---
+    const paymentMethodModal = document.getElementById('paymentModal');
+    const paymentMethodModalInner = paymentMethodModal ? paymentMethodModal.querySelector('div') : null;
+
+    function openPaymentModal() {
+        if (!paymentMethodModal) return;
+        document.getElementById('paymentForm').reset();
+        document.getElementById('payment_method_id').value = '';
+        document.getElementById('paymentForm').action = '{{ route('seller.payment_method.store') }}';
+        if (document.getElementById('paymentForm').querySelector('input[name="_method"]')) {
+            document.getElementById('paymentForm').querySelector('input[name="_method"]').remove();
+        }
+        document.getElementById('pay_is_active').value = '1';
+        document.getElementById('paymentModalTitle').innerText = 'Tambah Metode Pembayaran';
+        paymentMethodModal.classList.remove('hidden');
+        setTimeout(() => {
+            paymentMethodModal.classList.remove('opacity-0');
+            paymentMethodModalInner.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function editPayment(method) {
+        if (!paymentMethodModal) return;
+        document.getElementById('paymentModalTitle').innerText = 'Edit Metode Pembayaran';
+        document.getElementById('payment_method_id').value = method.id;
+        document.getElementById('pay_name').value = method.name || '';
+        document.getElementById('pay_account_number').value = method.account_number || '';
+        document.getElementById('pay_account_name').value = method.account_name || '';
+        document.getElementById('pay_sort_order').value = method.sort_order || 0;
+        document.getElementById('pay_is_active').value = method.is_active ? '1' : '0';
+        document.getElementById('paymentForm').action = '{{ route('seller.payment_method.update', 'PAYID') }}'.replace('PAYID', method.id);
+        if (document.getElementById('paymentForm').querySelector('input[name="_method"]')) {
+            document.getElementById('paymentForm').querySelector('input[name="_method"]').remove();
+        }
+        paymentMethodModal.classList.remove('hidden');
+        setTimeout(() => {
+            paymentMethodModal.classList.remove('opacity-0');
+            paymentMethodModalInner.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closePaymentModal() {
+        if (!paymentMethodModal) return;
+        paymentMethodModal.classList.add('opacity-0');
+        paymentMethodModalInner.classList.add('scale-95');
+        setTimeout(() => {
+            paymentMethodModal.classList.add('hidden');
         }, 300);
     }
 
@@ -2286,7 +2807,7 @@
         document.getElementById('quoteModal').classList.remove('hidden');
         document.getElementById('quoteDesc').innerText = desc;
         document.getElementById('quoted_price').value = price > 0 ? price : '';
-        document.getElementById('quoteForm').action = '/seller/service-request/' + id + '/quote';
+        document.getElementById('quoteForm').action = '{{ route('seller.service.request.quote', ['id' => '__ID__']) }}'.replace('__ID__', id);
     }
     function closeQuoteModal() {
         document.getElementById('quoteModal').classList.add('hidden');

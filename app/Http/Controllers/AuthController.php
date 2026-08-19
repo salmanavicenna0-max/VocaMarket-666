@@ -18,7 +18,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $loginType = str_contains($request->username, '@') ? 'email' : 'nis';
+        $loginType = str_contains($request->username, '@') ? 'email' : 'name';
 
         $authData = [
             $loginType => $request->username,

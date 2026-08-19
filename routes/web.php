@@ -14,6 +14,7 @@ use App\Http\Controllers\SellerDashboardController;
 use App\Http\Controllers\SellerOrderController;
 use App\Http\Controllers\SellerProfileController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', [ProductController::class, 'index']);
 Route::get('/search', [ProductController::class, 'search'])->name('search');
@@ -26,6 +27,14 @@ Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.a
 Route::patch('/cart/{id}/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy')->middleware('auth');
 
+// Chat Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/chat/conversations', [ChatController::class, 'getConversations'])->name('chat.conversations');
+    Route::get('/chat/messages/{id}', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/start', [ChatController::class, 'startChat'])->name('chat.start');
+});
+
 Route::post('/service-request/{productId}', [\App\Http\Controllers\ServiceRequestController::class, 'store'])->name('service.request')->middleware('auth');
 
 // Checkout
@@ -34,9 +43,12 @@ Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.s
 
 // Orders
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
-Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
+        Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice')->middleware('auth');
 Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->middleware('auth');
 Route::post('/orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund')->middleware('auth');
+Route::post('/refund/{id}/confirm', [OrderController::class, 'confirmRefund'])->name('refund.confirm')->middleware('auth');
+Route::post('/refund/{id}/dispute', [OrderController::class, 'disputeRefund'])->name('refund.dispute')->middleware('auth');
 
 // Payments
 Route::post('/orders/{orderId}/payment', [PaymentController::class, 'store'])->name('payments.store')->middleware('auth');
@@ -85,6 +97,10 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
     Route::post('/homepage-banner', [SellerDashboardController::class, 'storeHomepageBanner'])->name('homepage_banner.store');
     Route::delete('/homepage-banner/{id}', [SellerDashboardController::class, 'destroyHomepageBanner'])->name('homepage_banner.destroy');
     Route::get('/seller/dashboard/data', [SellerDashboardController::class, 'getDashboardData'])->name('seller.dashboard.data');
+
+    Route::post('/payment-method', [SellerDashboardController::class, 'storePaymentMethod'])->name('payment_method.store');
+    Route::post('/payment-method/{id}', [SellerDashboardController::class, 'updatePaymentMethod'])->name('payment_method.update');
+    Route::delete('/payment-method/{id}', [SellerDashboardController::class, 'destroyPaymentMethod'])->name('payment_method.destroy');
 });
 
 Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');
@@ -100,13 +116,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/products/submissions', [AdminController::class, 'productSubmissions'])->name('admin.products.submissions');
     Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.products.approve');
     Route::post('/admin/products/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.products.reject');
-    Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::get('/seller/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::get('/seller/orders/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
+    Route::get('/seller/orders/{id}/invoice', [AdminController::class, 'invoiceOrder'])->name('admin.orders.invoice');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
     Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
     Route::delete('/admin/banners/{id}', [AdminController::class, 'destroyBanner'])->name('admin.banners.destroy');
-    Route::post('/seller/refund/{id}/approve', [SellerOrderController::class, 'sellerApproveRefund'])->name('seller.refund.approve');
-    Route::post('/seller/refund/{id}/reject', [SellerOrderController::class, 'sellerRejectRefund'])->name('seller.refund.reject');
     Route::resource('admin/users', UserController::class);
     Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');
 });

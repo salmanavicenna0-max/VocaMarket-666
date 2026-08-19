@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Refund;
+use App\Models\PaymentMethod;
 
 class AdminController extends Controller
 {
@@ -103,28 +105,98 @@ class AdminController extends Controller
 
     public function transactions()
     {
-        $orders = Order::with(['user', 'seller', 'items.product'])->latest()->paginate(20);
+        $orders = Order::with(['user', 'seller', 'items.product', 'refunds'])->latest()->paginate(20);
         return view('Admin.transactions.index', compact('orders'));
     }
 
-    public function approveRefund($id)
+    public function showOrder($id)
     {
-        $order = Order::findOrFail($id);
-        if ($order->status === Order::STATUS_MENUNGGU_PENGEMBALIAN) {
-            $order->update(['status' => Order::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL]);
-            return back()->with('success', 'Refund disetujui Admin & diteruskan ke Penjual untuk konfirmasi.');
-        }
-        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian admin.');
+        $order = Order::with(['user', 'seller', 'items.product.images', 'payments', 'refunds'])
+            ->findOrFail($id);
+
+        $paymentMethods = PaymentMethod::active()->orderBy('sort_order')->get();
+
+        return view('Admin.transactions.show', compact('order', 'paymentMethods'));
     }
 
-    public function rejectRefund($id)
+    public function invoiceOrder($id)
+    {
+        $order = Order::with(['user', 'seller', 'items.product.images', 'payments', 'refunds'])
+            ->findOrFail($id);
+
+        return view('order.invoice', compact('order'));
+    }
+
+    public function approveRefund(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        if ($order->status === Order::STATUS_MENUNGGU_PENGEMBALIAN) {
-            $order->update(['status' => Order::STATUS_SELESAI]);
-            return back()->with('success', 'Komplain ditolak, pesanan dikembalikan ke status selesai.');
+
+        if ($order->status !== Order::STATUS_MENUNGGU_PENGEMBALIAN) {
+            return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian admin.');
         }
-        return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+
+        $request->validate([
+            'proof_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'transfer_reference' => 'nullable|string|max:100',
+            'admin_note' => 'nullable|string|max:1000',
+        ]);
+
+        $proofPath = $request->file('proof_image')->store('refunds', 'public');
+
+        $refund = $order->refunds()->latest()->first();
+
+        if ($refund) {
+            $refund->update([
+                'status' => Refund::STATUS_PROOF_SENT,
+                'proof_path' => $proofPath,
+                'transfer_reference' => $request->transfer_reference,
+                'admin_note' => $request->admin_note,
+                'handled_by' => auth()->id(),
+                'proof_sent_at' => now(),
+                'dispute_reason' => null,
+                'investigation_note' => null,
+            ]);
+        }
+
+        $order->update(['status' => Order::STATUS_MENUNGGU_KONFIRMASI_PEMBELI]);
+
+        return back()->with('success', 'Refund disetujui & bukti transfer terkirim ke pembeli untuk konfirmasi.');
+    }
+
+    public function rejectRefund(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if (!in_array($order->status, [Order::STATUS_MENUNGGU_PENGEMBALIAN, Order::STATUS_MENUNGGU_KONFIRMASI_PEMBELI])) {
+            return back()->with('error', 'Pesanan tidak dalam status menunggu pengembalian.');
+        }
+
+        $request->validate([
+            'reason' => 'required|string|min:5',
+        ]);
+
+        $refund = $order->refunds()->latest()->first();
+
+        if ($refund) {
+            $refund->update([
+                'status' => Refund::STATUS_REJECTED,
+                'rejection_reason' => $request->reason,
+                'handled_by' => auth()->id(),
+            ]);
+        }
+
+        if ($request->boolean('fraud')) {
+            $order->user()->increment('refund_warnings');
+            $warnings = (int) $order->user()->value('refund_warnings');
+            if ($warnings >= 3) {
+                $order->user()->update(['account_restricted' => true]);
+            }
+        }
+
+        $order->update(['status' => Order::STATUS_SELESAI]);
+
+        $fraudNote = $request->boolean('fraud') ? ' Pengajuan ditandai palsu dan peringatan dicatat ke akun pembeli.' : '';
+        return back()->with('success', 'Pengajuan refund ditolak, pesanan kembali ke status selesai.' . $fraudNote);
     }
     public function storeBanner(Request $request)
     {

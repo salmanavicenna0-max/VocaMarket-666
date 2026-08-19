@@ -11,7 +11,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0a84d4', // Sidebar blue
+                        primary: '#3B82F6', // Sidebar blue
                         accent: '#ffb900',  // Yellow
                         body: '#eaeaea'     // Light gray background
                     }

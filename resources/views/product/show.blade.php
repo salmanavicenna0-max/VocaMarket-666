@@ -144,7 +144,7 @@
                         {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
                     </a>
                 </div>
-                <a href="#" onclick="openMiniChat(event)" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
+                <a href="#" onclick="event.preventDefault(); startNewChat({{ $product->user_id ?? 1 }}, {{ $product->id }})" class="px-5 py-2 border border-primary text-primary font-bold rounded-xl hover:bg-blue-50 transition text-sm flex items-center gap-1.5">
                     <i class="ph-bold ph-chat-circle text-lg"></i> Chat Langsung
                 </a>
             </div>
@@ -159,11 +159,23 @@
                     <span class="text-gray-500 text-sm">Harga Mulai Dari</span>
                     <span class="font-bold text-gray-900 text-lg">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <button type="button" onclick="openServiceModal()" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
-                        Ajukan Pemesanan Jasa
-                    </button>
-                </div>
+                  <div class="flex flex-col gap-2">
+                      @if(isset($activeServiceRequest))
+                          @if($activeServiceRequest->status === 'quoted')
+                              <a href="{{ route('orders.index') }}?tab=jasa" class="w-full text-center py-2.5 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition shadow-sm flex items-center justify-center gap-2">
+                                  <i class="ph-bold ph-bell-ringing"></i> Penawaran Tersedia (Lihat)
+                              </a>
+                          @else
+                              <a href="{{ route('orders.index') }}?tab=jasa" class="w-full text-center py-2.5 bg-yellow-500 text-white font-bold rounded-xl hover:bg-yellow-600 transition shadow-sm flex items-center justify-center gap-2">
+                                  <i class="ph-bold ph-hourglass"></i> Menunggu Penawaran
+                              </a>
+                          @endif
+                      @else
+                          <button type="button" onclick="openServiceModal()" class="w-full py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-sm">
+                              Ajukan Pemesanan Jasa
+                          </button>
+                      @endif
+                  </div>
                 <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
                     <span class="flex items-center gap-1"><i class="ph-bold ph-shield-check text-green-500 text-sm"></i> Aman & Terpercaya</span>
                     <span class="flex items-center gap-1"><i class="ph-bold ph-chat-circle text-blue-500 text-sm"></i> Bisa Diskusi</span>

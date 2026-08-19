@@ -20,15 +20,12 @@ class UserProfileController extends Controller
         $profile = $user->profile ?? new Profile();
 
         // Ambil transaksi (sebagai pembeli)
-        $orders = Order::where('user_id', $user->id)->with('items.product')->latest()->get();
+        $orders = Order::where('user_id', $user->id)->with(['items.product', 'refunds'])->latest()->get();
         
         // Ambil ulasan yang pernah dibuat
         $reviews = Review::where('user_id', $user->id)->with('product')->latest()->get();
 
-        // Ambil pengajuan jasa
-        $serviceRequests = \App\Models\ServiceRequest::where('user_id', $user->id)->with('product.seller')->latest()->get();
-
-        return view('profile.user', compact('user', 'profile', 'orders', 'reviews', 'serviceRequests'));
+        return view('profile.user', compact('user', 'profile', 'orders', 'reviews'));
     }
 
     /**
@@ -78,13 +75,6 @@ class UserProfileController extends Controller
             ];
         }
 
-        $refundRequests = Order::whereHas('items.product', function($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->where('status', Order::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL)
-        ->with(['items.product', 'user'])
-        ->latest()
-        ->get();
-
         return view('user.submissions', compact(
             'user',
             'products',
@@ -92,8 +82,7 @@ class UserProfileController extends Controller
             'completedOrdersCount',
             'pendingProductsCount',
             'approvedProductsCount',
-            'salesData',
-            'refundRequests'
+            'salesData'
         ));
     }
 

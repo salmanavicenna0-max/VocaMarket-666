@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'E-Commerce Sekolah')</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,10 +12,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0a84d4', 
+                        primary: '#3B82F6', 
                         accent: '#ffb900',  
-                        'primary-dark': '#0a84d4',
-                        'accent-hover': '#ffb900',
+                        'primary-dark': '#2563EB',
+                        'accent-hover': '#e6a600',
                         blue: {
                             50: '#eef8ff',
                             100: '#d9efff',
@@ -22,7 +23,7 @@
                             300: '#8ed4ff',
                             400: '#59bcff',
                             500: '#32a2ff',
-                            600: '#0a84d4', // The exact requested color
+                            600: '#3B82F6', // The exact requested color
                             700: '#0267ad',
                             800: '#06578e',
                             900: '#0b4875',
@@ -160,8 +161,7 @@
                 <span class="font-bold text-sm">Chat</span>
             </div>
             <div class="flex items-center gap-1 text-gray-500">
-                <button class="hover:bg-gray-100 p-1.5 rounded transition" onclick="closeMiniChat(event)"><i class="ph-bold ph-arrows-in-simple"></i></button>
-                <button class="hover:bg-gray-100 p-1.5 rounded transition" onclick="closeMiniChat(event)"><i class="ph-bold ph-caret-down"></i></button>
+                <button class="hover:bg-gray-100 p-1.5 rounded transition" onclick="closeMiniChat(event)"><i class="ph-bold ph-x text-lg"></i></button>
             </div>
         </div>
         
@@ -174,56 +174,13 @@
                 <div class="p-2 border-b border-gray-100 flex items-center gap-2">
                     <div class="relative flex-1">
                         <i class="ph-bold ph-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                        <input type="text" placeholder="Cari nama" class="w-full bg-gray-50 text-xs rounded border border-gray-200 pl-7 pr-2 py-1.5 outline-none focus:border-primary transition">
+                        <input type="text" id="chat-search-input" onkeyup="filterChatList()" placeholder="Cari nama" class="w-full bg-gray-50 text-xs rounded border border-gray-200 pl-7 pr-2 py-1.5 outline-none focus:border-primary transition">
                     </div>
-                    <button class="text-xs text-gray-500 flex items-center gap-1 hover:text-gray-700">Semua <i class="ph-bold ph-caret-down"></i></button>
                 </div>
                 <!-- List -->
-                <div class="flex-1 overflow-y-auto hide-scrollbar">
-                    
-                    <!-- Chat Item 1 (Active) -->
-                    <div class="flex items-start gap-2 p-3 bg-blue-50/50 cursor-pointer border-l-2 border-primary">
-                        <div class="relative shrink-0 mt-0.5">
-                            <img src="https://ui-avatars.com/api/?name=Siswa+Esemka" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
-                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-0.5">
-                                <h4 class="font-bold text-gray-900 text-xs truncate">Toko Siswa Esemka</h4>
-                                <span class="text-[10px] text-gray-400">10:42</span>
-                            </div>
-                            <p class="text-xs text-gray-800 truncate font-medium">Baik kak, pesanannya ak...</p>
-                        </div>
-                    </div>
-
-                    <!-- Chat Item 2 -->
-                    <div class="flex items-start gap-2 p-3 hover:bg-gray-50 cursor-pointer transition border-l-2 border-transparent">
-                        <div class="relative shrink-0 mt-0.5">
-                            <img src="https://picsum.photos/seed/toko-alat-tulis-kita/100/100" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-0.5">
-                                <h4 class="font-bold text-gray-900 text-xs truncate">Toko Alat Tulis Kita</h4>
-                                <span class="text-[10px] text-gray-400">Kemarin</span>
-                            </div>
-                            <p class="text-xs text-gray-500 truncate">Sama-sama kak, terima...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Chat Item 3 -->
-                    <div class="flex items-start gap-2 p-3 hover:bg-gray-50 cursor-pointer transition border-l-2 border-transparent">
-                        <div class="relative shrink-0 mt-0.5">
-                            <img src="https://picsum.photos/seed/desain/100/100" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-0.5">
-                                <h4 class="font-bold text-gray-900 text-xs truncate">Studio Animasi 666</h4>
-                                <span class="text-[10px] text-gray-400">26/07</span>
-                            </div>
-                            <p class="text-xs text-gray-500 truncate">Revisi sudah dikirim ke...</p>
-                        </div>
-                    </div>
-
+                <div class="flex-1 overflow-y-auto hide-scrollbar" id="chat-conversation-list">
+                    <!-- Conversations will be loaded here via JS -->
+                    <div class="p-4 text-center text-gray-400 text-xs">Belum ada percakapan</div>
                 </div>
             </div>
 
@@ -231,62 +188,40 @@
             <div class="w-3/5 flex flex-col bg-gray-50/50">
                 
                 <!-- Chat Header -->
-                <div class="p-2 border-b border-gray-200 flex items-center justify-between bg-white shrink-0">
+                <div class="p-2 border-b border-gray-200 flex items-center justify-between bg-white shrink-0" id="active-chat-header" style="display: none;">
                     <div class="flex items-center gap-2">
-                        <span class="font-bold text-gray-900 text-sm">Toko Siswa Esemka</span>
+                        <span class="font-bold text-gray-900 text-sm" id="active-chat-name">Pilih obrolan</span>
                     </div>
-                    <button class="text-gray-400 hover:text-primary transition"><i class="ph-bold ph-dots-three text-xl"></i></button>
                 </div>
                 
                 <!-- Pinned Product Info -->
-                <div class="bg-white p-2 border-b border-gray-100 flex items-center justify-between shrink-0 shadow-sm z-10">
+                <div class="bg-white p-2 border-b border-gray-100 flex items-center justify-between shrink-0 shadow-sm z-10 hidden" id="active-chat-product">
                     <div class="flex items-center gap-2">
-                        <img src="https://picsum.photos/seed/seragam/50/50" class="w-10 h-10 rounded object-cover border border-gray-200">
+                        <img src="" id="active-chat-product-img" class="w-10 h-10 rounded object-cover border border-gray-200">
                         <div class="flex flex-col">
-                            <span class="text-xs font-medium text-gray-800 line-clamp-1">Seragam SD Merah Putih</span>
-                            <span class="text-xs font-bold text-primary">Rp55.000</span>
+                            <span class="text-xs font-medium text-gray-800 line-clamp-1" id="active-chat-product-name"></span>
+                            <span class="text-xs font-bold text-primary" id="active-chat-product-price"></span>
                         </div>
                     </div>
-                    <button class="px-3 py-1 bg-white border border-primary text-primary text-xs rounded hover:bg-blue-50 transition">Kirim Link</button>
+                    <button onclick="sendProductMessage()" class="px-3 py-1 bg-white border border-primary text-primary text-[10px] font-bold rounded hover:bg-blue-50 transition shrink-0">Kirim Link</button>
                 </div>
 
                 <!-- Messages -->
-                <div class="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
-                    <div class="text-center my-1">
-                        <span class="text-[10px] bg-gray-200/70 text-gray-500 px-2 py-0.5 rounded">Hari Ini</span>
-                    </div>
-                    
-                    <!-- Bubble Self -->
-                    <div class="flex flex-col items-end gap-1">
-                        <div class="bg-blue-100 text-gray-800 rounded-lg rounded-tr-sm px-3 py-2 text-xs max-w-[80%] border border-blue-200/50">
-                            Halo min, apakah seragam ini ready stock ukuran L?
-                        </div>
-                        <span class="text-[9px] text-gray-400">10:40</span>
-                    </div>
-                    
-                    <!-- Bubble Other -->
-                    <div class="flex flex-col items-start gap-1">
-                        <div class="flex gap-2">
-                            <img src="https://ui-avatars.com/api/?name=Siswa+Esemka" class="w-6 h-6 rounded-full shrink-0">
-                            <div class="bg-white text-gray-800 border border-gray-200 rounded-lg rounded-tl-sm px-3 py-2 text-xs max-w-[80%]">
-                                Halo kak! Ready stok banyak, silakan langsung diorder ya 😊
-                            </div>
-                        </div>
-                        <span class="text-[9px] text-gray-400 ml-8">10:42</span>
+                <div class="flex-1 p-3 overflow-y-auto flex flex-col gap-3" id="active-chat-messages">
+                    <div class="h-full flex items-center justify-center text-gray-400 text-xs">
+                        Pilih obrolan untuk mulai mengirim pesan
                     </div>
                 </div>
 
                 <!-- Chat Input Box -->
-                <div class="p-2 bg-white border-t border-gray-200 flex flex-col gap-2 shrink-0">
-                    <div class="flex items-center gap-3 px-1 text-gray-400">
-                        <button class="hover:text-primary transition"><i class="ph-bold ph-image text-lg"></i></button>
-                        <button class="hover:text-primary transition"><i class="ph-bold ph-smiley text-lg"></i></button>
-                        <button class="hover:text-primary transition"><i class="ph-bold ph-plus-circle text-lg"></i></button>
+                <div class="p-3 bg-white border-t border-gray-200 flex items-end gap-2 shrink-0" id="active-chat-input" style="display: none;">
+                    <input type="hidden" id="current-conversation-id">
+                    <div class="flex-1">
+                        <textarea id="chat-message-input" rows="1" placeholder="Tulis pesan..." class="w-full bg-gray-50 border border-gray-200 rounded-2xl py-2 px-3 outline-none resize-none text-xs text-gray-800 placeholder-gray-400 focus:border-primary focus:bg-white transition" style="min-height: 36px; max-height: 80px;"></textarea>
                     </div>
-                    <textarea rows="2" placeholder="Tulis pesan..." class="w-full bg-transparent border-none outline-none resize-none text-xs text-gray-800 placeholder-gray-400 px-1"></textarea>
-                    <div class="flex justify-end">
-                        <button class="px-5 py-1.5 bg-gray-100 text-gray-400 font-medium text-xs rounded hover:bg-primary hover:text-white transition">Kirim</button>
-                    </div>
+                    <button onclick="sendChatMessage()" id="chat-send-btn" class="shrink-0 w-9 h-9 flex items-center justify-center bg-primary text-white rounded-full hover:bg-blue-600 transition disabled:opacity-50 disabled:bg-gray-300 mb-0.5">
+                        <i class="ph-bold ph-paper-plane-right text-sm"></i>
+                    </button>
                 </div>
             </div>
             
@@ -294,20 +229,44 @@
     </div>
 
 <script>
+    let chatPollInterval = null;
+    let currentActiveConversationId = null;
+    let currentActiveProductId = null;
+    let csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+    let chatBaseUrl = @json(rtrim(request()->getBaseUrl(), '/'));
+    let chatConversationsUrl = chatBaseUrl + '/chat/conversations';
+    let chatMessagesUrlPrefix = chatBaseUrl + '/chat/messages';
+    let chatSendUrl = chatBaseUrl + '/chat/send';
+    let chatStartUrl = chatBaseUrl + '/chat/start';
+    let chatStorageUrl = chatBaseUrl + '/storage/';
+    let chatProductUrlBase = chatBaseUrl + '/';
+
     function openMiniChat(event) {
         if(event) event.preventDefault();
-        const widget = document.getElementById('mini-chat-widget');
-        widget.style.display = 'flex';
+        @auth
+            const widget = document.getElementById('mini-chat-widget');
+            widget.style.display = 'flex';
+            loadConversations();
+            // Start polling for new messages every 5 seconds
+            if (!chatPollInterval) {
+                chatPollInterval = setInterval(pollChat, 5000);
+            }
+        @else
+            window.location.href = '{{ route('login') }}';
+        @endauth
     }
 
     function closeMiniChat(event) {
         if(event) event.stopPropagation();
         const widget = document.getElementById('mini-chat-widget');
         widget.style.display = 'none';
+        if (chatPollInterval) {
+            clearInterval(chatPollInterval);
+            chatPollInterval = null;
+        }
     }
 
     function toggleMiniChatBody(event) {
-        // Now toggles the whole widget display instead of just the body
         if(event) event.stopPropagation();
         const widget = document.getElementById('mini-chat-widget');
         if (widget.style.display === 'none') {
@@ -315,6 +274,247 @@
         } else {
             closeMiniChat();
         }
+    }
+
+    function pollChat() {
+        loadConversations(true);
+        if (currentActiveConversationId) {
+            loadMessages(currentActiveConversationId, null, null, true, currentActiveProductId !== null);
+        }
+    }
+
+    function loadConversations(isPolling = false) {
+        fetch(chatConversationsUrl, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const listContainer = document.getElementById('chat-conversation-list');
+            if (!isPolling) listContainer.innerHTML = '';
+            
+            if (data.conversations && data.conversations.length > 0) {
+                let html = '';
+                data.conversations.forEach(conv => {
+                    const isActive = conv.id === currentActiveConversationId ? 'bg-blue-50/50 border-primary' : 'hover:bg-gray-50 border-transparent';
+                    const unreadBadge = conv.unread_count > 0 ? `<div class="absolute bottom-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] text-white font-bold">${conv.unread_count}</div>` : '';
+                    const avatar = conv.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(conv.name)}`;
+                    
+                    html += `
+                    <div onclick="loadMessages(${conv.id}, '${conv.name}', '${avatar}')" class="flex items-start gap-2 p-3 cursor-pointer border-l-2 transition ${isActive}">
+                        <div class="relative shrink-0 mt-0.5">
+                            <img src="${avatar}" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                            ${unreadBadge}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-0.5">
+                                <h4 class="font-bold text-gray-900 text-xs truncate">${conv.name}</h4>
+                                <span class="text-[10px] text-gray-400">${conv.last_message_time}</span>
+                            </div>
+                            <p class="text-xs ${conv.unread_count > 0 ? 'text-gray-900 font-bold' : 'text-gray-500'} truncate">${(conv.last_message || '').trim() === '[PRODUCT_CARD]' ? '<i>Mengirim tautan produk</i>' : conv.last_message}</p>
+                        </div>
+                    </div>`;
+                });
+                listContainer.innerHTML = html;
+                filterChatList(); // Apply current filter if any
+            } else {
+                if (!isPolling) listContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-xs">Belum ada obrolan</div>';
+            }
+        }).catch(err => console.error(err));
+    }
+
+    function loadMessages(conversationId, name = null, avatar = null, isPolling = false, showProductContext = false) {
+        currentActiveConversationId = conversationId;
+        document.getElementById('current-conversation-id').value = conversationId;
+        document.getElementById('active-chat-header').style.display = 'flex';
+        document.getElementById('active-chat-input').style.display = 'flex';
+        
+        if (name) {
+            document.getElementById('active-chat-name').textContent = name;
+        }
+
+        // Highlight selected conversation
+        loadConversations(true);
+
+        fetch(chatMessagesUrlPrefix + '/' + conversationId, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            const msgsContainer = document.getElementById('active-chat-messages');
+            
+            // Product info
+            const productInfo = document.getElementById('active-chat-product');
+            if (data.product && showProductContext) {
+                currentActiveProductId = data.product.id;
+                document.getElementById('active-chat-product-img').src = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
+                document.getElementById('active-chat-product-name').textContent = data.product.name;
+                document.getElementById('active-chat-product-price').textContent = 'Rp ' + data.product.price.toLocaleString('id-ID');
+                productInfo.classList.remove('hidden');
+            } else {
+                currentActiveProductId = null;
+                productInfo.classList.add('hidden');
+            }
+
+            if (data.messages && data.messages.length > 0) {
+                let html = '';
+                data.messages.forEach(msg => {
+                    let messageContent = msg.message;
+                    
+                    // Render rich product card if token matched
+                    if ((msg.message || '').trim() === '[PRODUCT_CARD]' && data.product) {
+                        const productUrl = chatProductUrlBase + 'product/' + data.product.id;
+                        const img = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
+                        const price = 'Rp ' + data.product.price.toLocaleString('id-ID');
+                        messageContent = `
+                        <div class="flex flex-col gap-1.5 text-left">
+                            <span>Halo, saya mau tanya tentang produk ini:</span>
+                            <a href="${productUrl}" class="flex items-center gap-2 bg-white rounded border border-gray-200 p-1.5 hover:bg-gray-50 transition min-w-[180px] max-w-[220px]">
+                                <img src="${img}" class="w-10 h-10 rounded object-cover shrink-0 border border-gray-100">
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-xs font-bold text-gray-800 line-clamp-1">${data.product.name}</span>
+                                    <span class="text-[10px] text-primary font-bold">${price}</span>
+                                </div>
+                            </a>
+                        </div>`;
+                    }
+
+                    if (msg.is_mine) {
+                        html += `
+                        <div class="flex flex-col items-end gap-1">
+                            <div class="bg-blue-100 text-gray-800 rounded-lg rounded-tr-sm px-3 py-2 text-xs max-w-[80%] border border-blue-200/50 break-words">
+                                ${messageContent}
+                            </div>
+                            <span class="text-[9px] text-gray-400">${msg.time}</span>
+                        </div>`;
+                    } else {
+                        html += `
+                        <div class="flex flex-col items-start gap-1">
+                            <div class="flex gap-2">
+                                <div class="bg-white text-gray-800 border border-gray-200 rounded-lg rounded-tl-sm px-3 py-2 text-xs max-w-[80%] break-words">
+                                    ${messageContent}
+                                </div>
+                            </div>
+                            <span class="text-[9px] text-gray-400">${msg.time}</span>
+                        </div>`;
+                    }
+                });
+                
+                // Only auto-scroll if not polling, or if user is already at the bottom
+                const isAtBottom = msgsContainer.scrollHeight - msgsContainer.scrollTop <= msgsContainer.clientHeight + 50;
+                msgsContainer.innerHTML = html;
+                if (!isPolling || isAtBottom) {
+                    msgsContainer.scrollTop = msgsContainer.scrollHeight;
+                }
+            } else {
+                msgsContainer.innerHTML = '<div class="h-full flex items-center justify-center text-gray-400 text-xs">Belum ada pesan</div>';
+            }
+        }).catch(err => console.error(err));
+    }
+
+    function sendProductMessage() {
+        if(!currentActiveProductId) return;
+        sendChatMessage('[PRODUCT_CARD]');
+    }
+
+    function sendChatMessage(overrideMessage = null) {
+        const input = document.getElementById('chat-message-input');
+        const btn = document.getElementById('chat-send-btn');
+        const message = overrideMessage || input.value.trim();
+        const convId = document.getElementById('current-conversation-id').value;
+
+        if (!message || !convId) return;
+
+        btn.disabled = true;
+        
+        fetch(chatSendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                conversation_id: convId,
+                message: message
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            if (data.success) {
+                input.value = '';
+                loadMessages(convId);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            btn.disabled = false;
+        });
+    }
+
+    function filterChatList() {
+        const input = document.getElementById('chat-search-input');
+        if (!input) return;
+        const keyword = input.value.toLowerCase();
+        const chatItems = document.querySelectorAll('#chat-conversation-list > div.cursor-pointer');
+        
+        chatItems.forEach(item => {
+            const nameElement = item.querySelector('h4');
+            if (nameElement) {
+                const name = nameElement.textContent.toLowerCase();
+                if (name.includes(keyword)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // Handle Enter to send message
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatInput = document.getElementById('chat-message-input');
+        if (chatInput) {
+            chatInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        }
+    });
+
+    function startNewChat(sellerId, productId = null) {
+        @auth
+            fetch(chatStartUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    seller_id: sellerId,
+                    product_id: productId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    openMiniChat();
+                    loadMessages(data.conversation_id, null, null, false, productId !== null);
+                } else if(data.error) {
+                    alert(data.error);
+                }
+            })
+            .catch(err => console.error(err));
+        @else
+            window.location.href = '{{ route('login') }}';
+        @endauth
     }
 
     document.addEventListener('DOMContentLoaded', function() {

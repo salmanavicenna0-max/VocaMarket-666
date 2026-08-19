@@ -14,7 +14,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0a84d4',
+                        primary: '#3B82F6',
                         accent: '#ffb900',
                         body: '#f4f6f9'
                     }
