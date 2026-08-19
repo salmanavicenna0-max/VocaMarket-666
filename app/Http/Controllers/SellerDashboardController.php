@@ -49,6 +49,34 @@ class SellerDashboardController extends Controller
         $homepageBanners = \App\Models\HomepageBanner::where('user_id', $user->id)->get();
         $serviceRequests = \App\Models\ServiceRequest::where('seller_id', $user->id)->with(['product', 'user'])->latest()->get();
 
+        // Data untuk Laporan
+        $completedItems = collect();
+        foreach ($orders->where('status', 'selesai') as $order) {
+            foreach ($order->items as $item) {
+                if ($item->product) {
+                    $completedItems->push($item);
+                }
+            }
+        }
+        $laporanTotalKeseluruhan = $completedItems->sum('subtotal');
+        $laporanTotalProduk = $completedItems->filter(function($i) { return !$i->product->isJasa(); })->sum('subtotal');
+        $laporanTotalJasa = $completedItems->filter(function($i) { return $i->product->isJasa(); })->sum('subtotal');
+        
+        $laporanKategori = $completedItems->groupBy(function($item) {
+            return $item->product->category ?? 'Lainnya';
+        })->map(function($items) {
+            return $items->sum('subtotal');
+        })->sortDesc();
+
+        $laporanSubKategori = $completedItems->groupBy(function($item) {
+            $cat = $item->product->category ?? 'Lainnya';
+            $sub = $item->product->type ?? 'Umum';
+            return $cat . ' - ' . $sub;
+        })->map(function($items) {
+            return $items->sum('subtotal');
+        })->sortDesc();
+        $paymentMethods = \App\Models\PaymentMethod::orderBy('sort_order')->orderBy('name')->get();
+
         $pendingProducts = Product::with(['seller', 'images'])
             ->where('approval_status', 'pending')
             ->latest()
@@ -58,7 +86,7 @@ class SellerDashboardController extends Controller
 
         $salesData = $this->buildSalesData($orders);
 
-        return view('seller.products', compact('products', 'orders', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'serviceRequests', 'pendingProducts', 'allUsers', 'salesData'));
+        return view('seller.products', compact('products', 'orders', 'completedItems', 'reviews', 'totalRevenue', 'completedOrders', 'totalProducts', 'user', 'profile', 'pendingOrdersCount', 'ordersSiapDikirim', 'totalReviewsCount', 'homepageBanners', 'serviceRequests', 'pendingProducts', 'allUsers', 'salesData', 'paymentMethods', 'laporanTotalKeseluruhan', 'laporanTotalProduk', 'laporanTotalJasa', 'laporanKategori', 'laporanSubKategori'));
     }
 
     public function storeProduct(Request $request)
@@ -265,6 +293,57 @@ class SellerDashboardController extends Controller
         $banner->delete();
         
         return back()->with('success', 'Banner berhasil dihapus!');
+    }
+
+    public function storePaymentMethod(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'account_number' => 'required|string|max:50',
+            'account_name' => 'nullable|string|max:100',
+            'is_active' => 'sometimes|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        \App\Models\PaymentMethod::create([
+            'name' => $request->name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'is_active' => $request->boolean('is_active'),
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil ditambahkan!');
+    }
+
+    public function updatePaymentMethod(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'account_number' => 'required|string|max:50',
+            'account_name' => 'nullable|string|max:100',
+            'is_active' => 'sometimes|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $method = \App\Models\PaymentMethod::findOrFail($id);
+        $method->update([
+            'name' => $request->name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'is_active' => $request->boolean('is_active'),
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return back()->with('success', 'Metode pembayaran berhasil diperbarui!');
+    }
+
+    public function destroyPaymentMethod($id)
+    {
+        $method = \App\Models\PaymentMethod::findOrFail($id);
+        $method->delete();
+
+        return back()->with('success', 'Metode pembayaran berhasil dihapus!');
     }
 
     public function getDashboardData()

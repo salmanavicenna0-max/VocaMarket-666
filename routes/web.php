@@ -46,6 +46,8 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show')->middleware('auth');
 Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->middleware('auth');
 Route::post('/orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund')->middleware('auth');
+Route::post('/refund/{id}/confirm', [OrderController::class, 'confirmRefund'])->name('refund.confirm')->middleware('auth');
+Route::post('/refund/{id}/dispute', [OrderController::class, 'disputeRefund'])->name('refund.dispute')->middleware('auth');
 
 // Payments
 Route::post('/orders/{orderId}/payment', [PaymentController::class, 'store'])->name('payments.store')->middleware('auth');
@@ -94,6 +96,10 @@ Route::prefix('seller')->middleware('auth')->name('seller.')->group(function () 
     Route::post('/homepage-banner', [SellerDashboardController::class, 'storeHomepageBanner'])->name('homepage_banner.store');
     Route::delete('/homepage-banner/{id}', [SellerDashboardController::class, 'destroyHomepageBanner'])->name('homepage_banner.destroy');
     Route::get('/seller/dashboard/data', [SellerDashboardController::class, 'getDashboardData'])->name('seller.dashboard.data');
+
+    Route::post('/payment-method', [SellerDashboardController::class, 'storePaymentMethod'])->name('payment_method.store');
+    Route::post('/payment-method/{id}', [SellerDashboardController::class, 'updatePaymentMethod'])->name('payment_method.update');
+    Route::delete('/payment-method/{id}', [SellerDashboardController::class, 'destroyPaymentMethod'])->name('payment_method.destroy');
 });
 
 Route::get('/seller/{id}', [SellerProfileController::class, 'show'])->name('seller.profile');
@@ -114,8 +120,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/refund/{id}/reject', [AdminController::class, 'rejectRefund'])->name('admin.refund.reject');
     Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
     Route::delete('/admin/banners/{id}', [AdminController::class, 'destroyBanner'])->name('admin.banners.destroy');
-    Route::post('/seller/refund/{id}/approve', [SellerOrderController::class, 'sellerApproveRefund'])->name('seller.refund.approve');
-    Route::post('/seller/refund/{id}/reject', [SellerOrderController::class, 'sellerRejectRefund'])->name('seller.refund.reject');
     Route::resource('admin/users', UserController::class);
     Route::post('/admin/users/{user}/approve-seller', [UserController::class, 'approveSeller'])->name('users.approve_seller');
 });

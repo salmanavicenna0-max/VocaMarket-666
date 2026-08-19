@@ -1,6 +1,30 @@
 @extends('layouts.app')
 @section('title', 'Beranda - VocaMarket')
 @section('content')
+    <style>
+        html { scroll-behavior: smooth; }
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .6s ease-out, transform .6s cubic-bezier(.22,.61,.36,1);
+        }
+        .reveal.revealed { opacity: 1; transform: translateY(0); }
+        .rec-wrap { container-type: inline-size; }
+        .rec-grid { grid-auto-flow: column; grid-template-rows: repeat(1, minmax(0, auto)); grid-auto-columns: minmax(0, calc(50cqw - 0.25rem)); width: max-content; }
+        @media (min-width: 768px) { .rec-grid { grid-auto-columns: minmax(0, calc(25cqw - 0.375rem)); } }
+        @media (min-width: 1024px) { .rec-grid { grid-auto-columns: minmax(0, calc(20cqw - 0.4rem)); } }
+        .rec-grid > * { min-width: 0; scroll-snap-align: start; }
+        .rec-wrap { scrollbar-width: thin; }
+        .rec-wrap::-webkit-scrollbar { height: 8px; }
+        .rec-wrap::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 9999px; }
+        .rec-wrap::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; border: 2px solid #f1f5f9; }
+        .rec-wrap::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+    </style>
+
     <!-- Carousel Section -->
             <div class="relative w-full overflow-hidden bg-white" id="main-carousel">
                 <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth" id="carousel-track">
@@ -175,7 +199,7 @@
             </div>
 
         <!-- REKOMENDASI SECTION -->
-        <div class="container mx-auto px-4 relative z-10 pt-8 pb-16">
+        <div class="container mx-auto px-4 relative z-10 pt-8 pb-16 reveal">
             
             <!-- Sticky/Tab Header -->
             <div class="bg-white rounded-t-sm shadow-sm border-b border-gray-200 flex mb-2 sticky top-0 z-40">
@@ -184,7 +208,7 @@
                 </div>
             </div>
             
-            <!-- Product Grid -->
+            <!-- Product Grid: Standard Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-8">
                 @foreach($products as $product)
                 <a href="{{ url('/product/' . $product->id) }}" class="bg-white rounded-sm border border-gray-200 hover:border-primary hover:shadow-md transition flex flex-col group relative overflow-hidden">
@@ -203,6 +227,10 @@
                             -{{ $product->discount_percentage }}%
                         </div>
                         @endif
+                        <!-- Category badge top right -->
+                        <div class="absolute {{ $product->discount_percentage ? 'top-7' : 'top-0' }} right-0 bg-blue-50 text-primary text-[11px] font-medium px-2 py-0.5 rounded-bl-sm shadow-sm z-10 flex items-center gap-1">
+                            <i class="ph-fill ph-tag"></i> {{ ucfirst($product->type ?? 'Produk') }}
+                        </div>
                     </div>
                     <div class="p-2.5 flex flex-col flex-1">
                         <h3 class="text-[13px] text-gray-800 line-clamp-2 leading-tight min-h-[38px] group-hover:text-primary transition">
@@ -216,32 +244,29 @@
                                     Rp{{ number_format($product->price, 0, ',', '.') }}
                                 @endif
                             </span>
-                            <div class="flex items-center justify-between">
-                                <span class="text-[11px] text-gray-500 flex items-center gap-1">
-                                    <i class="ph-fill ph-storefront"></i> 
-                                    {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
-                                </span>
-                                @if($product->rating > 0)
-                                <span class="text-[11px] font-medium text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded flex items-center gap-1">
-                                    <i class="ph-fill ph-star"></i> {{ number_format($product->rating, 1) }}
-                                </span>
-                                @else
-                                <span class="text-[11px] font-medium text-primary bg-blue-50 px-2 py-0.5 rounded flex items-center gap-1">
-                                    <i class="ph-fill ph-tag"></i> {{ ucfirst($product->type ?? 'Produk') }}
-                                </span>
-                                @endif
-                            </div>
+                                <div class="flex items-center justify-between gap-1">
+                                    <span class="text-[11px] text-gray-500 flex items-center gap-1 truncate min-w-0">
+                                        <i class="ph-fill ph-storefront"></i> 
+                                        {{ $product->seller && $product->seller->profile && $product->seller->profile->nama_toko ? $product->seller->profile->nama_toko : ($product->seller ? ('Toko ' . $product->seller->name) : ($product->store_name ?: 'Toko Esemka')) }}
+                                    </span>
+                                    <div class="flex items-center gap-1 flex-none">
+                                        @if($product->rating > 0)
+                                        <span class="text-[11px] font-medium text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded flex items-center gap-1">
+                                            <i class="ph-fill ph-star"></i> {{ number_format($product->rating, 1) }}
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </a>
                 @endforeach
             </div><div class="flex justify-center mt-8">
-                <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-12 py-2 rounded-sm shadow-sm transition font-medium">Muat Lebih Banyak</button>
             </div>
         </div>
 
             <!-- LOKASI TOKO SECTION -->
-            <div class="container mx-auto px-4 relative z-10 pt-4 pb-12">
+            <div class="container mx-auto px-4 relative z-10 pt-4 pb-12 reveal">
                 <div class="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden">
                     <div class="p-4 border-b border-gray-100 flex items-center gap-2">
                         <i class="ph-fill ph-map-pin-line text-2xl text-primary"></i>
@@ -268,7 +293,85 @@
                 </div>
             </div>
 
+            <!-- Floating Scroll Button -->
+            <button id="floating-scroll-btn" class="fixed bottom-6 right-6 z-[95] w-12 h-12 rounded-full bg-primary text-white shadow-lg hover:bg-primary-dark transition flex items-center justify-center opacity-0 translate-y-3 pointer-events-none">
+                <i id="floating-scroll-icon" class="ph-bold ph-arrow-down text-2xl"></i>
+            </button>
 
-@endsection
+            <script>
+                const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                const smoothScrollTo = (targetY) => {
+                    const startY = window.scrollY || document.documentElement.scrollTop;
+                    const maxY = document.documentElement.scrollHeight - window.innerHeight;
+                    const endY = Math.max(0, Math.min(targetY, maxY));
+                    const distance = endY - startY;
+                    if (Math.abs(distance) < 2) return;
+                    const duration = Math.min(1400, Math.max(500, Math.abs(distance) * 0.5));
+                    const startTime = performance.now();
+                    const step = (now) => {
+                        const t = Math.min(1, (now - startTime) / duration);
+                        window.scrollTo(0, startY + distance * easeInOutCubic(t));
+                        if (t < 1) requestAnimationFrame(step);
+                    };
+                    requestAnimationFrame(step);
+                };
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const btn = document.getElementById('floating-scroll-btn');
+                    const icon = document.getElementById('floating-scroll-icon');
+
+                    const updateScrollBtn = () => {
+                        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+                        if (scrollTop <= 100) {
+                            btn.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+                            btn.classList.add('opacity-100', 'translate-y-0');
+                            icon.classList.remove('ph-arrow-up');
+                            icon.classList.add('ph-arrow-down');
+                            btn.style.transform = 'scale(1)';
+                        } else if (docHeight - scrollTop <= 100) {
+                            btn.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+                            btn.classList.add('opacity-100', 'translate-y-0');
+                            icon.classList.remove('ph-arrow-down');
+                            icon.classList.add('ph-arrow-up');
+                            btn.style.transform = 'scale(1)';
+                        } else {
+                            btn.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+                            btn.classList.remove('opacity-100', 'translate-y-0');
+                        }
+                    };
+
+                    btn.addEventListener('click', () => {
+                        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                        btn.style.transform = 'scale(0.85)';
+                        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+                        smoothScrollTo(scrollTop <= 100 ? docHeight : 0);
+                    });
+
+                    window.addEventListener('scroll', updateScrollBtn, { passive: true });
+                    updateScrollBtn();
+
+                    const revealEls = document.querySelectorAll('.reveal');
+                    if ('IntersectionObserver' in window) {
+                        const io = new IntersectionObserver((entries) => {
+                            entries.forEach(e => {
+                                if (e.isIntersecting) {
+                                    e.target.classList.add('revealed');
+                                } else {
+                                    e.target.classList.remove('revealed');
+                                }
+                            });
+                        }, { threshold: 0.12 });
+                        revealEls.forEach(el => io.observe(el));
+                    } else {
+                        revealEls.forEach(el => el.classList.add('revealed'));
+                    }
+                });
+            </script>
+
+        @endsection
 
 

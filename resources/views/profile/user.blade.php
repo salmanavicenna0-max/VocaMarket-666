@@ -205,7 +205,7 @@
                 
                 <div class="p-6 flex flex-col gap-4">
                     @forelse($orders as $order)
-                        <div class="pesanan-user-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition" data-status="{{ $order->status_label }}">
+                        <div class="pesanan-user-item bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition" data-status="@if($order->status == 'selesai' && ($lr = $order->refunds->first()) && $lr->status === \App\Models\Refund::STATUS_REJECTED)Refund Dibatalkan@else{{ $order->status_label }}@endif">
                             <!-- Order Header -->
                             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex flex-wrap gap-4 items-center justify-between">
                                 <div>
@@ -218,7 +218,11 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Status</p>
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{{ $order->status_label }}</span>
+                                    @if($order->status == 'selesai' && ($lr2 = $order->refunds->first()) && $lr2->status === \App\Models\Refund::STATUS_REJECTED)
+                                        <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">Refund Dibatalkan</span>
+                                    @else
+                                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">{{ $order->status_label }}</span>
+                                    @endif
                                 </div>
                                 <div class="text-right">
                                     <p class="text-xs text-gray-500 mb-1">Total Belanja</p>

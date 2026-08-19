@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\PaymentMethod;
 
 class PaymentController extends Controller
 {
@@ -29,6 +30,10 @@ class PaymentController extends Controller
             'method' => ['nullable', 'string', 'max:50'],
             'payment_proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
+
+        if ($validated['method'] && !PaymentMethod::active()->where('name', $validated['method'])->exists()) {
+            return back()->with('error', 'Metode pembayaran tidak valid.');
+        }
 
         $proofPath = $request->file('payment_proof')->store('payments', 'public');
 

@@ -34,7 +34,11 @@
                         <p class="text-xs text-gray-500 mt-1">Dipesan pada {{ $order->created_at->format('d M Y, H:i') }}</p>
                     </div>
                     <div>
-                        @if($order->status == 'menunggu_pembayaran')
+                        @if($order->status == \App\Models\Order::STATUS_SELESAI && ($latestRefund = $order->refunds->first()) && $latestRefund->status === \App\Models\Refund::STATUS_REJECTED)
+                            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="ph-fill ph-x-circle text-xl"></i> Refund Dibatalkan — Pesanan Ditutup
+                            </div>
+                        @elseif($order->status == 'menunggu_pembayaran')
                             <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
                                 <i class="ph-fill ph-clock text-xl"></i> Menunggu Pembayaran
                             </div>
@@ -51,8 +55,19 @@
                                 <i class="ph-fill ph-check-circle text-xl"></i> Selesai
                             </div>
                         @elseif($order->status == 'menunggu_pengembalian')
-                            <div class="bg-orange-50 border border-orange-200 text-orange-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
-                                <i class="ph-fill ph-warning-circle text-xl"></i> Komplain Sedang Ditinjau Admin
+                            @php $pendingRefund = $order->refunds->first(); @endphp
+                            @if($pendingRefund && $pendingRefund->status === \App\Models\Refund::STATUS_DISPUTED)
+                                <div class="bg-orange-50 border border-orange-200 text-orange-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
+                                    <i class="ph-fill ph-shield-warning text-xl"></i> Sengketa Bukti — Admin Memeriksa Ulang
+                                </div>
+                            @else
+                                <div class="bg-orange-50 border border-orange-200 text-orange-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
+                                    <i class="ph-fill ph-warning-circle text-xl"></i> Komplain Sedang Ditinjau Admin
+                                </div>
+                            @endif
+                        @elseif($order->status == 'menunggu_konfirmasi_pembeli')
+                            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="ph-fill ph-image text-xl"></i> Bukti Transfer Terkirim — Silakan Periksa &amp; Konfirmasi
                             </div>
                         @elseif($order->status == 'pengembalian')
                             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-bold flex items-center gap-2">
@@ -72,6 +87,14 @@
                         <div>
                             <p class="text-sm text-blue-900 font-medium">Segera selesaikan pembayaran Anda!</p>
                             <p class="text-xs text-blue-700 mt-1">Pesanan akan otomatis dibatalkan jika melewati batas waktu pembayaran.</p>
+                        </div>
+                    </div>
+                @elseif($order->status == \App\Models\Order::STATUS_SELESAI && ($rRejected = $order->refunds->first()) && $rRejected->status === \App\Models\Refund::STATUS_REJECTED)
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                        <i class="ph-fill ph-x-circle text-red-600 mt-0.5"></i>
+                        <div>
+                            <p class="text-sm text-red-900 font-medium">Pengajuan refund Anda ditolak oleh Admin.</p>
+                            <p class="text-xs text-red-700 mt-1">Alasan: {{ $rRejected->rejection_reason }}</p>
                         </div>
                     </div>
                 @endif
@@ -208,20 +231,61 @@
                                         <span class="text-yellow-600 font-bold">Menunggu</span>
                                     @endif
                                 </div>
-                                <a href="{{ asset('storage/' . $payment->proof_image_path) }}" target="_blank" class="text-primary hover:underline flex items-center gap-1">
-                                    <i class="ph-bold ph-image"></i> Lihat Bukti Transfer
-                                </a>
+                                @if($payment->payment_proof)
+                                    <a href="{{ asset('storage/' . $payment->payment_proof) }}" target="_blank" class="text-primary hover:underline flex items-center gap-1">
+                                        <i class="ph-bold ph-image"></i> Lihat Bukti Transfer
+                                    </a>
+                                @endif
                             </div>
                         @endforeach
                     @endif
 
                     @if(in_array($order->status, ['diproses', 'selesai']))
-                        <form action="{{ route('orders.refund', $order->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mengajukan komplain/pengembalian? Permintaan akan ditinjau oleh Admin.');">
+                        <form action="{{ route('orders.refund', $order->id) }}" method="POST">
                             @csrf
+                            <label class="block text-xs font-bold text-gray-700 mb-1.5 mt-3">Catatan Pengajuan Refund <span class="text-red-500">*</span></label>
+                            <textarea name="reason" rows="3" required minlength="10" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" placeholder="Jelaskan alasan pengajuan komplain/pengembalian secara detail..."></textarea>
                             <button type="submit" class="w-full mt-3 py-3 bg-white border border-orange-300 text-orange-600 font-bold rounded-lg hover:bg-orange-50 transition text-sm flex items-center justify-center gap-2">
                                 <i class="ph-bold ph-warning-circle text-lg"></i> Ajukan Komplain / Refund
                             </button>
                         </form>
+                    @endif
+
+                    @if($order->status == 'menunggu_konfirmasi_pembeli')
+                        @php
+                            $refund = $order->refunds()->where('status', \App\Models\Refund::STATUS_PROOF_SENT)->first();
+                        @endphp
+                        @if($refund && $refund->proof_path)
+                            <div class="bg-white border border-gray-200 rounded-lg p-3">
+                                <p class="font-bold text-gray-800 text-sm mb-2 flex items-center gap-1.5">
+                                    <i class="ph-fill ph-seal-check text-green-600"></i> Bukti Transfer Refund dari Admin
+                                </p>
+                                <a href="{{ asset('storage/' . $refund->proof_path) }}" target="_blank" class="text-primary hover:underline flex items-center gap-1 text-xs mb-1">
+                                    <i class="ph-bold ph-image"></i> Lihat Screenshot Bukti Transfer
+                                </a>
+                                @if($refund->transfer_reference)
+                                    <p class="text-xs text-gray-500 mb-1">Referensi Transfer: {{ $refund->transfer_reference }}</p>
+                                @endif
+                                @if($refund->admin_note)
+                                    <p class="text-xs text-gray-500 mb-2">Catatan Admin: {{ $refund->admin_note }}</p>
+                                @endif
+
+                                <form action="{{ route('refund.confirm', $order->id) }}" method="POST" onsubmit="return confirm('Konfirmasi bahwa dana refund sudah benar-benar Anda terima?');">
+                                    @csrf
+                                    <button type="submit" class="w-full mt-2 py-2.5 bg-green-600 text-white font-bold rounded-lg text-sm hover:bg-green-700 transition flex items-center justify-center gap-1.5">
+                                        <i class="ph-bold ph-check"></i> Konfirmasi Dana Diterima
+                                    </button>
+                                </form>
+
+                                <form action="{{ route('refund.dispute', $order->id) }}" method="POST" onsubmit="return confirm('Anda menolak bukti transfer ini? Refund akan dikembalikan ke Admin untuk ditinjau ulang dan belum ditandai selesai.');">
+                                    @csrf
+                                    <textarea name="reason" rows="2" required minlength="10" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm mt-3 mb-2 focus:outline-none focus:border-red-400" placeholder="Alasan menolak bukti (wajib). Contoh: bukti palsu, nominal tidak sesuai, atau rekening salah..."></textarea>
+                                    <button type="submit" class="w-full py-2.5 border border-red-200 text-red-600 font-bold rounded-lg text-sm hover:bg-red-50 transition flex items-center justify-center gap-1.5">
+                                        <i class="ph-bold ph-x"></i> Tolak Bukti (Sengketa)
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -249,9 +313,9 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Bank Tujuan</label>
                         <select name="method" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary p-2 border" required>
-                            <option value="BCA">BCA - 123456789 (a.n VocaMarket)</option>
-                            <option value="Mandiri">Mandiri - 987654321 (a.n VocaMarket)</option>
-                            <option value="Gopay">Gopay - 08123456789</option>
+                            @foreach($paymentMethods as $pm)
+                                <option value="{{ $pm->name }}">{{ $pm->name }} - {{ $pm->account_number }}@if($pm->account_name) (a.n {{ $pm->account_name }})@endif</option>
+                            @endforeach
                         </select>
                     </div>
 

@@ -19,6 +19,7 @@ class Order extends Model
     const STATUS_DIBATALKAN = 'dibatalkan';
     const STATUS_DITOLAK = 'ditolak';
     const STATUS_MENUNGGU_PENGEMBALIAN = 'menunggu_pengembalian';
+    const STATUS_MENUNGGU_KONFIRMASI_PEMBELI = 'menunggu_konfirmasi_pembeli';
     const STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL = 'menunggu_pengembalian_penjual';
     const STATUS_PENGEMBALIAN = 'pengembalian';
 
@@ -55,6 +56,7 @@ class Order extends Model
             self::STATUS_DIBATALKAN => 'Dibatalkan',
             self::STATUS_DITOLAK => 'Ditolak',
             self::STATUS_MENUNGGU_PENGEMBALIAN => 'Menunggu Refund Admin',
+            self::STATUS_MENUNGGU_KONFIRMASI_PEMBELI => 'Menunggu Konfirmasi Pembeli (Refund)',
             self::STATUS_MENUNGGU_PENGEMBALIAN_PENJUAL => 'Menunggu Refund Penjual',
             self::STATUS_PENGEMBALIAN => 'Pengembalian Selesai',
             default => 'Tidak Diketahui',
@@ -84,6 +86,16 @@ class Order extends Model
     public function latestPayment(): HasOne
     {
         return $this->hasOne(Payment::class)->latestOfMany();
+    }
+
+    public function refunds(): HasMany
+    {
+        return $this->hasMany(Refund::class)->latest();
+    }
+
+    public function latestRefund(): HasOne
+    {
+        return $this->hasOne(Refund::class)->latestOfMany();
     }
 
     // -- Helpers --

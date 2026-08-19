@@ -180,7 +180,7 @@
                 <!-- List -->
                 <div class="flex-1 overflow-y-auto hide-scrollbar" id="chat-conversation-list">
                     <!-- Conversations will be loaded here via JS -->
-                    <div class="p-4 text-center text-gray-500 text-xs">Memuat obrolan...</div>
+                    <div class="p-4 text-center text-gray-400 text-xs">Belum ada percakapan</div>
                 </div>
             </div>
 
@@ -233,6 +233,13 @@
     let currentActiveConversationId = null;
     let currentActiveProductId = null;
     let csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+    let chatBaseUrl = @json(rtrim(request()->getBaseUrl(), '/'));
+    let chatConversationsUrl = chatBaseUrl + '/chat/conversations';
+    let chatMessagesUrlPrefix = chatBaseUrl + '/chat/messages';
+    let chatSendUrl = chatBaseUrl + '/chat/send';
+    let chatStartUrl = chatBaseUrl + '/chat/start';
+    let chatStorageUrl = chatBaseUrl + '/storage/';
+    let chatProductUrlBase = chatBaseUrl + '/';
 
     function openMiniChat(event) {
         if(event) event.preventDefault();
@@ -245,7 +252,7 @@
                 chatPollInterval = setInterval(pollChat, 5000);
             }
         @else
-            window.location.href = '/login';
+            window.location.href = '{{ route('login') }}';
         @endauth
     }
 
@@ -277,7 +284,7 @@
     }
 
     function loadConversations(isPolling = false) {
-        fetch('/chat/conversations', {
+        fetch(chatConversationsUrl, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -330,7 +337,7 @@
         // Highlight selected conversation
         loadConversations(true);
 
-        fetch(`/chat/messages/${conversationId}`, {
+        fetch(chatMessagesUrlPrefix + '/' + conversationId, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -343,7 +350,7 @@
             const productInfo = document.getElementById('active-chat-product');
             if (data.product && showProductContext) {
                 currentActiveProductId = data.product.id;
-                document.getElementById('active-chat-product-img').src = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : '/storage/' + data.product.thumbnail) : '';
+                document.getElementById('active-chat-product-img').src = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
                 document.getElementById('active-chat-product-name').textContent = data.product.name;
                 document.getElementById('active-chat-product-price').textContent = 'Rp ' + data.product.price.toLocaleString('id-ID');
                 productInfo.classList.remove('hidden');
@@ -359,8 +366,8 @@
                     
                     // Render rich product card if token matched
                     if ((msg.message || '').trim() === '[PRODUCT_CARD]' && data.product) {
-                        const productUrl = window.location.origin + '/product/' + data.product.id;
-                        const img = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : '/storage/' + data.product.thumbnail) : '';
+                        const productUrl = chatProductUrlBase + 'product/' + data.product.id;
+                        const img = data.product.thumbnail ? (data.product.thumbnail.startsWith('http') ? data.product.thumbnail : chatStorageUrl + data.product.thumbnail) : '';
                         const price = 'Rp ' + data.product.price.toLocaleString('id-ID');
                         messageContent = `
                         <div class="flex flex-col gap-1.5 text-left">
@@ -423,7 +430,7 @@
 
         btn.disabled = true;
         
-        fetch('/chat/send', {
+        fetch(chatSendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -483,7 +490,7 @@
 
     function startNewChat(sellerId, productId = null) {
         @auth
-            fetch('/chat/start', {
+            fetch(chatStartUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -506,7 +513,7 @@
             })
             .catch(err => console.error(err));
         @else
-            window.location.href = '/login';
+            window.location.href = '{{ route('login') }}';
         @endauth
     }
 

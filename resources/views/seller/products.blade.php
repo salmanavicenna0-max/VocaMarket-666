@@ -130,6 +130,18 @@
                         </button>
                     </li>
                     @endif
+                    @if(Auth::user()->isAdmin())
+                    <li>
+                        <button onclick="switchTab('aturpembayaran')" id="nav-aturpembayaran" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            Atur Pembayaran
+                        </button>
+                    </li>
+                    @endif
+                    <li>
+                        <button onclick="switchTab('laporan')" id="nav-laporan" class="w-full text-left flex items-center gap-3 px-5 py-4 text-gray-600 font-medium hover:bg-gray-50 hover:text-primary transition border-l-4 border-transparent">
+                            Laporan
+                        </button>
+                    </li>
                 </ul>
             </div>
 
@@ -988,6 +1000,266 @@
             </div>
             @endif
 
+            <!-- TAB: Laporan -->
+            <!-- TAB: Atur Pembayaran -->
+            <div id="tab-aturpembayaran" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-credit-card text-primary"></i> Atur Pembayaran
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Kelola metode pembayaran yang tersedia untuk pembeli.</p>
+                    </div>
+                    <button onclick="document.getElementById('modalAddPaymentMethod').classList.remove('hidden')" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2">
+                        <i class="ph-bold ph-plus"></i> Tambah Metode
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-gray-500 bg-gray-50">
+                                    <th class="py-3 px-4 font-semibold rounded-tl-lg">Nama Bank/E-Wallet</th>
+                                    <th class="py-3 px-4 font-semibold">Nomor Rekening</th>
+                                    <th class="py-3 px-4 font-semibold">Atas Nama</th>
+                                    <th class="py-3 px-4 font-semibold text-center">Status</th>
+                                    <th class="py-3 px-4 font-semibold text-right rounded-tr-lg">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($paymentMethods as $pm)
+                                <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                                    <td class="py-3 px-4 font-medium">{{ $pm->name }}</td>
+                                    <td class="py-3 px-4">{{ $pm->account_number }}</td>
+                                    <td class="py-3 px-4">{{ $pm->account_name }}</td>
+                                    <td class="py-3 px-4 text-center">
+                                        @if($pm->is_active)
+                                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Aktif</span>
+                                        @else
+                                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">Tidak Aktif</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <div class="flex justify-end gap-2">
+                                            <button onclick="editPaymentMethod({{ $pm->id }}, '{{ addslashes($pm->name) }}', '{{ addslashes($pm->account_number) }}', '{{ addslashes($pm->account_name) }}', {{ $pm->is_active ? 'true' : 'false' }})" class="text-blue-600 hover:bg-blue-50 p-2 rounded transition">
+                                                <i class="ph-bold ph-pencil-simple"></i>
+                                            </button>
+                                            <form action="{{ route('seller.payment_method.destroy', $pm->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus metode pembayaran ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:bg-red-50 p-2 rounded transition">
+                                                    <i class="ph-bold ph-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="py-8 text-center text-gray-500">Belum ada metode pembayaran.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-laporan" class="bg-white rounded-xl shadow-sm border border-gray-200 tab-content hidden">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="ph-fill ph-chart-line-up text-primary"></i> Laporan Transaksi
+                        </h2>
+                        <p class="text-gray-500 text-sm mt-1">Ringkasan transaksi yang telah selesai untuk keperluan pelaporan.</p>
+                    </div>
+                    <button onclick="window.print()" class="bg-primary hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2 shrink-0">
+                        <i class="ph-bold ph-printer"></i> Cetak Laporan
+                    </button>
+                </div>
+                <div class="p-6">
+                    <!-- Filter & Statistik -->
+                    <div class="mb-6 bg-gray-50 rounded-xl p-5 border border-gray-200">
+                        <div class="grid grid-cols-1 xl:grid-cols-5 gap-4 items-end">
+                            <div class="xl:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cari No Invoice</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="ph ph-magnifying-glass text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="searchInvoiceLaporan" class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 text-sm focus:ring-primary focus:border-primary" placeholder="Cari No Invoice..." onkeyup="filterLaporan()">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter Tipe</label>
+                                    <select id="filterTipeLaporan" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-primary focus:border-primary" onchange="filterLaporan()">
+                                        <option value="semua">Semua Produk & Jasa</option>
+                                        <option value="produk">Hanya Produk</option>
+                                        <option value="jasa">Hanya Jasa</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter Kategori</label>
+                                    <select id="filterKategoriLaporan" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-primary focus:border-primary" onchange="updateFilterSubKategoriLaporan(); filterLaporan()">
+                                        <option value="semua">Semua Kategori</option>
+                                        <optgroup label="Produk Sekolah">
+                                            <option value="Aksesoris">Aksesoris</option>
+                                            <option value="Merchandise">Merchandise</option>
+                                            <option value="Hardware">Hardware</option>
+                                        </optgroup>
+                                        <optgroup label="Jasa Setiap Jurusan">
+                                            <option value="DKV & Animasi">DKV & Animasi</option>
+                                            <option value="Pemasaran">Pemasaran</option>
+                                            <option value="PPLG">PPLG</option>
+                                            <option value="Akuntansi">Akuntansi</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Filter Sub-Kategori</label>
+                                    <select id="filterSubKategoriLaporan" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-primary focus:border-primary" onchange="filterLaporan()">
+                                        <option value="semua">Semua Sub-Kategori</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="xl:col-span-1">
+                                <div class="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center h-full flex flex-col justify-center">
+                                    <span class="text-xs font-bold text-primary uppercase tracking-wider">Total Terfilter</span>
+                                    <span class="text-xl font-bold text-primary mt-1" id="totalPendapatanLaporan">Rp0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-gray-800 mb-4 border-b pb-2"><i class="ph-fill ph-list-numbers text-primary mr-2"></i>Rincian Barang/Jasa Terjual</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left" id="tabelLaporan">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-gray-500 bg-gray-50">
+                                    <th class="py-3 px-4 font-semibold">Tanggal</th>
+                                    <th class="py-3 px-4 font-semibold">No Invoice</th>
+                                    <th class="py-3 px-4 font-semibold">Barang/Jasa</th>
+                                    <th class="py-3 px-4 font-semibold">Tipe</th>
+                                    <th class="py-3 px-4 font-semibold">Kategori</th>
+                                    <th class="py-3 px-4 font-semibold text-center">Qty</th>
+                                    <th class="py-3 px-4 font-semibold text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($completedItems as $item)
+                                @php
+                                    $isJasa = $item->product ? $item->product->isJasa() : false;
+                                    $tipe = $isJasa ? 'jasa' : 'produk';
+                                    $kat = $item->product->category ?? 'Lainnya';
+                                    $sub = $item->product->type ?? 'Umum';
+                                @endphp
+                                <tr class="border-b border-gray-100 hover:bg-gray-50/50 item-row" 
+                                    data-tipe="{{ $tipe }}" 
+                                    data-kategori="{{ $kat }}" 
+                                    data-subkategori="{{ $sub }}"
+                                    data-subtotal="{{ $item->subtotal }}"
+                                    data-invoice="{{ strtolower($item->order->code_order ?? '') }}">
+                                    <td class="py-3 px-4 whitespace-nowrap">{{ $item->created_at->format('d M Y') }}</td>
+                                    <td class="py-3 px-4 font-medium text-xs">{{ $item->order->code_order ?? '-' }}</td>
+                                    <td class="py-3 px-4 max-w-[250px] truncate" title="{{ $item->name_snapshot }}">{{ $item->name_snapshot }}</td>
+                                    <td class="py-3 px-4">
+                                        @if($isJasa)
+                                            <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs font-bold">Jasa</span>
+                                        @else
+                                            <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">Produk</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-3 px-4 text-xs text-gray-600">
+                                        {{ $kat }} <br>
+                                        <span class="text-[10px] text-gray-400">{{ $sub }}</span>
+                                    </td>
+                                    <td class="py-3 px-4 text-center font-bold">{{ $item->quantity }}</td>
+                                    <td class="py-3 px-4 font-bold text-gray-800 text-right">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="py-8 text-center text-gray-500">Belum ada barang/jasa yang terjual.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <script>
+                        function updateFilterSubKategoriLaporan() {
+                            const kat = document.getElementById('filterKategoriLaporan').value;
+                            const subSelect = document.getElementById('filterSubKategoriLaporan');
+                            
+                            const kData = {
+                                'Aksesoris': ['Ganci', 'Nametag', 'Pin', 'Kaos', 'Gelas Custom'],
+                                'Merchandise': ['Kaos Khusus Sekolah', 'Gelas BN', 'Pulpen BN'],
+                                'Hardware': ['IoT (Hardware)'],
+                                'DKV & Animasi': ['Animasi (Logo gerak, iklan, dll)', 'Motion Graphic', 'Video Promosi', 'Desain Grafis'],
+                                'Pemasaran': ['Digital Marketing', 'Admin Medsos'],
+                                'PPLG': ['Website', 'Mobile', 'Server Hosting', 'Cloud', 'Game DEV', 'Excel', 'IoT (Software)'],
+                                'Akuntansi': ['Pembukuan', 'Pembuatan Laporan', 'Konsul Pajak']
+                            };
+
+                            let options = '<option value="semua">Semua Sub-Kategori</option>';
+                            
+                            if (kat !== 'semua' && kData[kat]) {
+                                kData[kat].forEach(sub => {
+                                    options += `<option value="${sub}">${sub}</option>`;
+                                });
+                            } else {
+                                // Jika "Semua Kategori" dipilih, tampilkan semua opsi menggunakan optgroup
+                                for (const [k, v] of Object.entries(kData)) {
+                                    options += `<optgroup label="${k}">`;
+                                    v.forEach(sub => {
+                                        options += `<option value="${sub}">${sub}</option>`;
+                                    });
+                                    options += `</optgroup>`;
+                                }
+                            }
+                            subSelect.innerHTML = options;
+                        }
+
+                        function filterLaporan() {
+                            const filterTipe = document.getElementById('filterTipeLaporan').value;
+                            const filterKategori = document.getElementById('filterKategoriLaporan').value;
+                            const filterSub = document.getElementById('filterSubKategoriLaporan').value;
+                            const searchInvoice = document.getElementById('searchInvoiceLaporan').value.toLowerCase();
+                            
+                            const rows = document.querySelectorAll('#tabelLaporan tbody tr.item-row');
+                            let grandTotal = 0;
+                            
+                            rows.forEach(row => {
+                                const rowTipe = row.getAttribute('data-tipe');
+                                const rowKat = row.getAttribute('data-kategori');
+                                const rowSub = row.getAttribute('data-subkategori');
+                                const rowInvoice = row.getAttribute('data-invoice');
+                                const subtotal = parseFloat(row.getAttribute('data-subtotal')) || 0;
+                                
+                                let matchTipe = filterTipe === 'semua' || rowTipe === filterTipe;
+                                let matchKat = filterKategori === 'semua' || rowKat === filterKategori;
+                                let matchSub = filterSub === 'semua' || rowSub === filterSub;
+                                let matchInvoice = searchInvoice === '' || rowInvoice.includes(searchInvoice);
+                                
+                                if (matchTipe && matchKat && matchSub && matchInvoice) {
+                                    row.style.display = '';
+                                    grandTotal += subtotal;
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                            
+                            document.getElementById('totalPendapatanLaporan').innerText = 'Rp' + new Intl.NumberFormat('id-ID').format(grandTotal);
+                        }
+                        
+                        // Initialize on load
+                        document.addEventListener('DOMContentLoaded', () => {
+                            setTimeout(filterLaporan, 100);
+                        });
+                    </script>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -1650,6 +1922,9 @@
 
 
     function switchTab(tabId) {
+        // Simpan state tab aktif di session storage agar tidak mental saat reload/redirect
+        sessionStorage.setItem('sellerActiveTab', tabId);
+        
         // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.add('hidden');
@@ -2063,11 +2338,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        const savedTab = sessionStorage.getItem('sellerActiveTab');
         if (window.location.hash) {
             const tabId = window.location.hash.substring(1);
             if (document.getElementById('tab-' + tabId)) {
                 switchTab(tabId);
             }
+        } else if (savedTab && document.getElementById('tab-' + savedTab)) {
+            switchTab(savedTab);
         } else {
             switchTab('dashboard');
         }
@@ -2288,4 +2566,108 @@
         document.getElementById('quoteModal').classList.add('hidden');
     }
 </script>
+
+
+    <!-- Modal Tambah Payment Method -->
+    <div id="modalAddPaymentMethod" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="document.getElementById('modalAddPaymentMethod').classList.add('hidden')"></div>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:max-w-md sm:w-full">
+                <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h3 class="text-lg font-bold text-gray-900">Tambah Metode Pembayaran</h3>
+                    <button type="button" onclick="document.getElementById('modalAddPaymentMethod').classList.add('hidden')" class="text-gray-400 hover:text-gray-500 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+                <form action="{{ route('seller.payment_method.store') }}" method="POST">
+                    @csrf
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Bank/E-Wallet</label>
+                            <input type="text" name="name" required placeholder="Contoh: BCA, OVO, DANA" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nomor Rekening</label>
+                            <input type="text" name="account_number" required placeholder="Contoh: 1234567890" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Atas Nama</label>
+                            <input type="text" name="account_name" required placeholder="Contoh: Budi Santoso" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div class="flex items-center gap-2 mt-4">
+                            <input type="checkbox" name="is_active" id="is_active_add" value="1" checked class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <label for="is_active_add" class="text-sm text-gray-700">Aktifkan metode ini</label>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                        <button type="button" onclick="document.getElementById('modalAddPaymentMethod').classList.add('hidden')" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Payment Method -->
+    <div id="modalEditPaymentMethod" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="document.getElementById('modalEditPaymentMethod').classList.add('hidden')"></div>
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            <div class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:max-w-md sm:w-full">
+                <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h3 class="text-lg font-bold text-gray-900">Edit Metode Pembayaran</h3>
+                    <button type="button" onclick="document.getElementById('modalEditPaymentMethod').classList.add('hidden')" class="text-gray-400 hover:text-gray-500 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+                <form id="formEditPaymentMethod" method="POST">
+                    @csrf
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Bank/E-Wallet</label>
+                            <input type="text" name="name" id="edit_pm_name" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nomor Rekening</label>
+                            <input type="text" name="account_number" id="edit_pm_account_number" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Atas Nama</label>
+                            <input type="text" name="account_name" id="edit_pm_account_name" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                        <div class="flex items-center gap-2 mt-4">
+                            <input type="checkbox" name="is_active" id="edit_pm_is_active" value="1" class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <label for="edit_pm_is_active" class="text-sm text-gray-700">Aktifkan metode ini</label>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                        <button type="button" onclick="document.getElementById('modalEditPaymentMethod').classList.add('hidden')" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-blue-700 transition-colors">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function editPaymentMethod(id, name, account_number, account_name, is_active) {
+            const modal = document.getElementById('modalEditPaymentMethod');
+            const form = document.getElementById('formEditPaymentMethod');
+            
+            form.action = `/seller/payment-method/${id}`;
+            document.getElementById('edit_pm_name').value = name;
+            document.getElementById('edit_pm_account_number').value = account_number;
+            document.getElementById('edit_pm_account_name').value = account_name;
+            document.getElementById('edit_pm_is_active').checked = is_active;
+            
+            modal.classList.remove('hidden');
+        }
+    </script>
 @endsection
