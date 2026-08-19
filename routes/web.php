@@ -116,7 +116,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/products/submissions', [AdminController::class, 'productSubmissions'])->name('admin.products.submissions');
     Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.products.approve');
     Route::post('/admin/products/{id}/reject', [AdminController::class, 'rejectProduct'])->name('admin.products.reject');
-    Route::get('/seller/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+    Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
     Route::get('/seller/orders/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
     Route::get('/seller/orders/{id}/invoice', [AdminController::class, 'invoiceOrder'])->name('admin.orders.invoice');
     Route::post('/admin/refund/{id}/approve', [AdminController::class, 'approveRefund'])->name('admin.refund.approve');
